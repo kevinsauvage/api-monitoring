@@ -1,36 +1,183 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# API Pulse - Unified API Monitoring Platform
+
+API Pulse is a comprehensive platform for monitoring, tracking, and optimizing APIs across multiple providers. Get real-time health checks, cost monitoring, and intelligent alerts for all your API integrations.
+
+## Features
+
+- **Unified Dashboard**: Monitor all your APIs in one place
+- **Health Checks**: Automated monitoring with customizable intervals
+- **Cost Tracking**: Monitor spending across API providers
+- **Smart Alerts**: Get notified via Slack, email, or webhook
+- **Rate Limit Monitoring**: Track usage to prevent throttling
+- **Secure Key Vault**: Encrypted storage with audit logs
+- **Multi-tier Subscriptions**: Hobby, Startup, and Business plans
+
+## Tech Stack
+
+- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
+- **Backend**: Next.js API Routes, Prisma ORM
+- **Database**: PostgreSQL
+- **Authentication**: NextAuth.js
+- **UI Components**: Radix UI, Lucide React
+- **Charts**: Recharts
+- **Encryption**: Node.js crypto module
 
 ## Getting Started
 
-First, run the development server:
+### Prerequisites
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- Node.js 18+
+- PostgreSQL database
+- npm or yarn
+
+### Installation
+
+1. **Clone the repository**
+
+   ```bash
+   git clone <repository-url>
+   cd api-monitoring
+   ```
+
+2. **Install dependencies**
+
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+
+   ```bash
+   cp env.example .env.local
+   ```
+
+   Update `.env.local` with your configuration:
+
+   ```env
+   # Database
+   DATABASE_URL="postgresql://username:password@localhost:5432/api_pulse?schema=public"
+
+   # NextAuth.js
+   NEXTAUTH_URL="http://localhost:3000"
+   NEXTAUTH_SECRET="your-secret-key-here"
+
+   # OAuth Providers (optional)
+   GOOGLE_CLIENT_ID=""
+   GOOGLE_CLIENT_SECRET=""
+   GITHUB_CLIENT_ID=""
+   GITHUB_CLIENT_SECRET=""
+
+   # Email Configuration
+   SMTP_HOST=""
+   SMTP_PORT=""
+   SMTP_USER=""
+   SMTP_PASSWORD=""
+   FROM_EMAIL=""
+
+   # Slack Integration
+   SLACK_BOT_TOKEN=""
+   SLACK_SIGNING_SECRET=""
+
+   # Encryption
+   ENCRYPTION_KEY="your-32-character-encryption-key"
+   ```
+
+4. **Set up the database**
+
+   ```bash
+   npx prisma generate
+   npx prisma db push
+   ```
+
+5. **Run the development server**
+
+   ```bash
+   npm run dev
+   ```
+
+6. **Open your browser**
+   Navigate to [http://localhost:3000](http://localhost:3000)
+
+## Project Structure
+
+```
+src/
+├── app/                    # Next.js app directory
+│   ├── api/               # API routes
+│   ├── auth/              # Authentication pages
+│   ├── dashboard/         # Dashboard pages
+│   └── globals.css        # Global styles
+├── components/            # Reusable components
+├── lib/                   # Utility functions
+│   ├── auth.ts           # NextAuth configuration
+│   ├── db.ts             # Prisma client
+│   └── encryption.ts     # Encryption utilities
+└── prisma/               # Database schema
+    └── schema.prisma     # Prisma schema
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Subscription Tiers
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Hobby (Free)
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- 3 API connections
+- 5-minute monitoring intervals
+- 7-day data retention
+- Email alerts only
 
-## Learn More
+### Startup ($49/month)
 
-To learn more about Next.js, take a look at the following resources:
+- 15 API connections
+- 1-minute monitoring intervals
+- 30-day data retention
+- Slack + email alerts
+- Cost analytics
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### Business ($199/month)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+- Unlimited API connections
+- Real-time monitoring
+- 90-day data retention
+- All alert channels
+- Team collaboration
 
-## Deploy on Vercel
+## Development
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### Database Commands
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+# Generate Prisma client
+npx prisma generate
+
+# Push schema changes
+npx prisma db push
+
+# Open Prisma Studio
+npx prisma studio
+
+# Reset database
+npx prisma db push --force-reset
+```
+
+### Building for Production
+
+```bash
+npm run build
+npm start
+```
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Add tests if applicable
+5. Submit a pull request
+
+## License
+
+This project is licensed under the MIT License.
+
+## Support
+
+For support, email support@apipulse.com or join our Discord community.
