@@ -164,7 +164,7 @@ export default function Dashboard() {
           Welcome back, {session?.user?.name?.split(" ")[0] || "User"}!
         </h1>
         <p className="text-slate-600 dark:text-slate-300">
-          Here's an overview of your API monitoring status.
+          Here&apos;s an overview of your API monitoring status.
         </p>
       </div>
 

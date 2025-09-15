@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { signIn, getSession } from "next-auth/react";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Zap, Eye, EyeOff } from "lucide-react";
@@ -32,6 +32,7 @@ export default function SignIn() {
         router.push("/dashboard");
       }
     } catch (error) {
+      console.error("Sign in error:", error);
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
@@ -192,7 +193,7 @@ export default function SignIn() {
           </div>
 
           <p className="mt-6 text-center text-sm text-slate-600 dark:text-slate-300">
-            Don't have an account?{" "}
+            Don&apos;t have an account?{" "}
             <Link
               href="/auth/signup"
               className="font-medium text-blue-600 hover:text-blue-500"

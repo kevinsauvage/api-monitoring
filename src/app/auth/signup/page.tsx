@@ -65,6 +65,7 @@ export default function SignUp() {
         setError(data.message || "An error occurred during registration");
       }
     } catch (error) {
+      console.error("Sign up error:", error);
       setError("An error occurred. Please try again.");
     } finally {
       setIsLoading(false);
