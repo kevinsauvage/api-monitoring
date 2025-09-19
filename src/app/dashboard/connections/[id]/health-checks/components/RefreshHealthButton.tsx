@@ -4,6 +4,7 @@ import { useState } from "react";
 import { RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import { log } from "@/lib/logger";
 import { refreshHealthData } from "@/actions/health-actions";
 
 export default function RefreshHealthButton() {
@@ -20,7 +21,7 @@ export default function RefreshHealthButton() {
         toast.error("Failed to refresh health data");
       }
     } catch (error) {
-      console.error("Failed to refresh health data", {
+      log.error("Failed to refresh health data", {
         error: error instanceof Error ? error.message : String(error),
       });
       toast.error("Failed to refresh health data");

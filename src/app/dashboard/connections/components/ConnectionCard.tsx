@@ -41,6 +41,7 @@ import {
 } from "@/actions/connection-actions";
 import { formatTime } from "@/lib/utils";
 import { toast } from "sonner";
+import { log } from "@/lib/logger";
 
 // Use Prisma's generated types instead of custom interfaces
 import type { SerializedConnectionWithHealthChecks } from "@/lib/serializers";
@@ -69,7 +70,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
         toast.error(result.error ?? "Failed to update connection");
       }
     } catch (error) {
-      console.error(
+      log.error(
         "Error toggling connection:",
         error instanceof Error ? error.message : String(error)
       );
@@ -87,7 +88,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
         toast.error(result.error ?? "Failed to delete connection");
       }
     } catch (error) {
-      console.error(
+      log.error(
         "Error deleting connection:",
         error instanceof Error ? error.message : String(error)
       );

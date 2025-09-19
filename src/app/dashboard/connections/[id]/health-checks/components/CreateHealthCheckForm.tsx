@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
+import { log } from "@/lib/logger";
 import { createHealthCheck } from "@/actions/health-actions";
 import { getIntervalOptions, getDefaultInterval } from "@/lib/plan-limits";
 import type { Subscription } from "@prisma/client";
@@ -92,7 +93,7 @@ export default function CreateHealthCheckForm({
         }
       }
     } catch (error) {
-      console.error(
+      log.error(
         "Failed to create health check:",
         error instanceof Error ? error.message : String(error)
       );

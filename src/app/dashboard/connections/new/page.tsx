@@ -9,6 +9,7 @@ import PlanLimitsCard from "./components/PlanLimitsCard";
 import ProviderSelection from "./components/ProviderSelection";
 import ConnectionForm from "./components/ConnectionForm";
 import { API_PROVIDERS } from "./components/constants";
+import { log } from "@/lib/logger";
 
 export default function NewConnectionPage() {
   const { data: session } = useSession();
@@ -78,7 +79,7 @@ export default function NewConnectionPage() {
         message: result.message,
       });
     } catch (error) {
-      console.error(
+      log.error(
         "Validation error:",
         error instanceof Error ? error.message : String(error)
       );

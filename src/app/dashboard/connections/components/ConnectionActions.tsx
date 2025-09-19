@@ -15,6 +15,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
+import { log } from "@/lib/logger";
 import {
   toggleConnectionActive,
   deleteConnection,
@@ -50,7 +51,7 @@ export default function ConnectionActions({
         toast.error(result.message);
       }
     } catch (error) {
-      console.error(
+      log.error(
         "Failed to toggle connection:",
         error instanceof Error ? error.message : String(error)
       );
@@ -72,7 +73,7 @@ export default function ConnectionActions({
         toast.error(result.message);
       }
     } catch (error) {
-      console.error(
+      log.error(
         "Failed to delete connection:",
         error instanceof Error ? error.message : String(error)
       );

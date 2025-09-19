@@ -38,6 +38,7 @@ import {
 } from "@/actions/health-actions";
 import { formatTime } from "@/lib/utils";
 import { toast } from "sonner";
+import { log } from "@/lib/logger";
 
 import type { HealthCheckWithResults } from "@/lib/services/health-check.service";
 
@@ -59,7 +60,7 @@ export default function HealthCheckCard({ healthCheck }: HealthCheckCardProps) {
         toast.error(result.error ?? "Failed to trigger health check");
       }
     } catch (error) {
-      console.error(
+      log.error(
         "Error triggering health check:",
         error instanceof Error ? error.message : String(error)
       );
@@ -77,7 +78,7 @@ export default function HealthCheckCard({ healthCheck }: HealthCheckCardProps) {
         toast.error(result.error ?? "Failed to delete health check");
       }
     } catch (error) {
-      console.error(
+      log.error(
         "Error deleting health check:",
         error instanceof Error ? error.message : String(error)
       );

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { log } from "@/lib/logger";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, RefreshCw, ArrowLeft } from "lucide-react";
@@ -15,7 +16,7 @@ export default function ConnectionsError({
 }) {
   useEffect(() => {
     // Log the error to console for debugging
-    console.error("Connections error:", error.message);
+    log.error("Connections error:", error.message);
   }, [error]);
 
   return (

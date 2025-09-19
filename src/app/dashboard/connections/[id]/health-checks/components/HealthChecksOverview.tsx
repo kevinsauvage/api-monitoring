@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { triggerHealthCheck } from "@/actions/health-actions";
 import { toast } from "sonner";
+import { log } from "@/lib/logger";
 import type { HealthCheck } from "@prisma/client";
 
 // Type for serialized health check data with results
@@ -79,7 +80,7 @@ export default function HealthChecksOverview({
         );
       }
     } catch (error) {
-      console.error(
+      log.error(
         "Error triggering all health checks:",
         error instanceof Error ? error.message : String(error)
       );

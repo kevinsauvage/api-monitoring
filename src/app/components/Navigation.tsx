@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { log } from "@/lib/logger";
 import { Zap, User, LogOut, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -71,7 +72,7 @@ export default function Navigation() {
                       onSelect={(event) => {
                         event.preventDefault();
                         signOut({ callbackUrl: "/" }).catch((error) => {
-                          console.error(
+                          log.error(
                             "Sign out error:",
                             error instanceof Error
                               ? error.message

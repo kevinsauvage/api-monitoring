@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
+import { log } from "@/lib/logger";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Zap, Eye, EyeOff } from "lucide-react";
@@ -32,7 +33,7 @@ export default function SignIn() {
         router.push("/dashboard");
       }
     } catch (error) {
-      console.error(
+      log.error(
         "Sign in error:",
         error instanceof Error ? error.message : String(error)
       );
