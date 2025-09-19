@@ -7,7 +7,7 @@ generator client {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = env("PRISMA_DATABASE_URL")
 }
 
 model Account {
@@ -69,6 +69,9 @@ model ApiConnection {
   baseUrl     String
   apiKey      String   @db.Text // encrypted
   secretKey   String?  @db.Text // encrypted (for providers that need it)
+  accountSid  String?  @db.Text // encrypted (for Twilio)
+  authToken   String?  @db.Text // encrypted (for Twilio)
+  token       String?  @db.Text // encrypted (for GitHub, Slack, etc.)
   isActive    Boolean  @default(true)
   userId      String
   createdAt   DateTime @default(now())
@@ -91,7 +94,11 @@ model HealthCheck {
   expectedStatus  Int      @default(200)
   timeout         Int      @default(5000) // milliseconds
   interval        Int      @default(300) // seconds
+  headers         Json?     // Custom headers as JSON
+  body            String?  // Request body for POST/PUT/PATCH
+  queryParams     Json?    // Query parameters as JSON
   isActive        Boolean  @default(true)
+  lastExecutedAt  DateTime? // Track when last executed
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

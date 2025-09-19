@@ -1,44 +1,33 @@
-"use client";
+import DashboardSidebar from "@/app/dashboard/components/DashboardSidebar";
+import DashboardHeader from "./components/DashboardHeader";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { getDashboardService } from "@/lib/di";
+import { redirect } from "next/navigation";
 
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import DashboardSidebar from "@/components/DashboardSidebar";
-import DashboardHeader from "@/components/DashboardHeader";
-
-export default function DashboardLayout({
+export default async function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { data: session, status } = useSession();
-  const router = useRouter();
+  const session = await getServerSession(authOptions);
 
-  useEffect(() => {
-    if (status === "loading") return; // Still loading
-
-    if (!session) {
-      router.push("/auth/signin");
-    }
-  }, [session, status, router]);
-
-  if (status === "loading") {
-    return (
-      <div className="min-h-screen bg-slate-50 dark:bg-slate-900 flex items-center justify-center">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-      </div>
-    );
+  if (!session?.user?.id) {
+    redirect("/auth/signin");
   }
 
-  if (!session) {
-    return null;
+  const dashboardService = getDashboardService();
+  const user = await dashboardService.getUser();
+
+  if (!user) {
+    redirect("/auth/signin");
   }
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-slate-900">
+    <div className="min-h-screen bg-background lg:flex">
       <DashboardSidebar />
-      <div className="lg:pl-64">
-        <DashboardHeader />
+      <div className="w-full">
+        <DashboardHeader user={user} />
         <main className="py-6">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             {children}

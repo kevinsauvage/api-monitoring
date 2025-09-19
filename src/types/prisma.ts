@@ -1,12 +1,6 @@
-import { User as PrismaUser } from "@prisma/client";
+import type { User as PrismaUser, Prisma } from "@prisma/client";
 
-export interface UserWithPassword extends PrismaUser {
-  password: string | null;
-}
+// Use Prisma's generated types instead of custom interfaces
+export type UserWithPassword = PrismaUser;
 
-export interface UserCreateInput {
-  name: string;
-  email: string;
-  password: string;
-  subscription?: "HOBBY" | "STARTUP" | "BUSINESS";
-}
+export type UserCreateInput = Prisma.UserCreateInput;
