@@ -28,7 +28,7 @@ import { Alert, AlertDescription } from "@/components/ui/alert";
 import { createConnection } from "@/actions/connection-actions";
 import type { ConnectionCreateResult } from "@/lib/shared/types";
 import { ZodError } from "@/components/ui/zod-error";
-import { API_PROVIDERS } from "./constants";
+import { API_PROVIDERS } from "@/components/utils/constants";
 
 // Initial state for useActionState
 const initialState: ConnectionCreateResult = {

@@ -1,11 +1,11 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import HealthCheckResultsTable from "../../health/components/HealthCheckResultsTable";
-import ConnectionHeader from "./components/ConnectionHeader";
-import ConnectionMetrics from "./components/ConnectionMetrics";
-import ConnectionResponseTimeChart from "./components/ConnectionResponseTimeChart";
-import ConnectionSuccessRateChart from "./components/ConnectionSuccessRateChart";
-import ConnectionUptimeChart from "./components/ConnectionUptimeChart";
-import ConnectionDetailsCard from "./components/ConnectionDetailsCard";
+import ConnectionHeader from "@/components/features/connections/ConnectionHeader";
+import ConnectionMetrics from "@/components/features/connections/ConnectionMetrics";
+import ConnectionResponseTimeChart from "@/components/features/connections/ConnectionResponseTimeChart";
+import ConnectionSuccessRateChart from "@/components/features/connections/ConnectionSuccessRateChart";
+import ConnectionUptimeChart from "@/components/features/connections/ConnectionUptimeChart";
+import ConnectionDetailsCard from "@/components/features/connections/ConnectionDetailsCard";
 import {
   getConnectionService,
   getCheckResultRepository,

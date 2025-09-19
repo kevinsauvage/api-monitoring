@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Sparkles } from "lucide-react";
-import { API_PROVIDERS } from "./constants";
+import { API_PROVIDERS } from "@/components/utils/constants";
 
 interface ProviderSelectionProps {
   selectedProvider: string;

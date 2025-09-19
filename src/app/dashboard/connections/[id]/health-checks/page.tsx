@@ -1,7 +1,10 @@
-import { getConnectionService, getHealthCheckService } from "@/lib/infrastructure/di";
-import HealthChecksHeader from "./components/HealthChecksHeader";
-import HealthChecksOverview from "./components/HealthChecksOverview";
-import HealthChecksList from "./components/HealthChecksList";
+import {
+  getConnectionService,
+  getHealthCheckService,
+} from "@/lib/infrastructure/di";
+import HealthChecksHeader from "@/components/features/health-checks/HealthChecksHeader";
+import HealthChecksOverview from "@/components/features/health-checks/HealthChecksOverview";
+import HealthChecksList from "@/components/features/health-checks/HealthChecksList";
 
 export default async function ConnectionHealthChecksPage({
   params,

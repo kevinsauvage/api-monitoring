@@ -3,7 +3,7 @@ import { authOptions } from "@/lib/infrastructure/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity } from "lucide-react";
 import HealthCheckResultsTable from "./components/HealthCheckResultsTable";
-import RefreshHealthButton from "../connections/[id]/health-checks/components/RefreshHealthButton";
+import RefreshHealthButton from "@/components/features/health-checks/RefreshHealthButton";
 import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 
 export default async function HealthPage() {

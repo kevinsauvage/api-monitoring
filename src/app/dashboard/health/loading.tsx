@@ -2,7 +2,7 @@ import {
   CardSkeleton,
   ChartSkeleton,
   TableSkeleton,
-} from "@/components/LoadingSkeleton";
+} from "@/components/shared/feedback/LoadingSkeleton";
 
 export default function HealthLoading() {
   return (

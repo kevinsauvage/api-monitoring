@@ -1,4 +1,4 @@
-import ConnectionActions from "../../components/ConnectionActions";
+import ConnectionActions from "./ConnectionActions";
 
 interface ConnectionHeaderProps {
   connection: {

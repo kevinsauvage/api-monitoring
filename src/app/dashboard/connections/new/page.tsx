@@ -4,11 +4,11 @@ import { useState } from "react";
 import { useSession } from "next-auth/react";
 import { validateConnection } from "@/actions/connection-actions";
 import type { Subscription } from "@prisma/client";
-import NewConnectionHeader from "./components/NewConnectionHeader";
-import PlanLimitsCard from "./components/PlanLimitsCard";
-import ProviderSelection from "./components/ProviderSelection";
-import ConnectionForm from "./components/ConnectionForm";
-import { API_PROVIDERS } from "./components/constants";
+import NewConnectionHeader from "@/components/features/connections/NewConnectionHeader";
+import PlanLimitsCard from "@/components/features/connections/PlanLimitsCard";
+import ProviderSelection from "@/components/features/connections/ProviderSelection";
+import ConnectionForm from "@/components/features/connections/ConnectionForm";
+import { API_PROVIDERS } from "@/components/utils/constants";
 import { log } from "@/lib/shared/utils/logger";
 
 export default function NewConnectionPage() {

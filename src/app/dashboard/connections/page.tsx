@@ -1,6 +1,6 @@
-import ConnectionsHeader from "./components/ConnectionsHeader";
-import ConnectionsOverview from "./components/ConnectionsOverview";
-import ConnectionsList from "./components/ConnectionsList";
+import ConnectionsHeader from "@/components/features/connections/ConnectionsHeader";
+import ConnectionsOverview from "@/components/features/connections/ConnectionsOverview";
+import ConnectionsList from "@/components/features/connections/ConnectionsList";
 import { getConnectionService } from "@/lib/infrastructure/di";
 import { serializeConnectionWithHealthChecks } from "@/lib/core/serializers";
 

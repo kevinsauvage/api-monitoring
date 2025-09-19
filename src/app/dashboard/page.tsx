@@ -1,9 +1,9 @@
-import DashboardStats from "./components/DashboardStats";
-import RecentActivity from "./components/RecentActivity";
-import PerformanceMetrics from "./components/PerformanceMetrics";
-import ResponseTimeChart from "./components/ResponseTimeChart";
-import SuccessRateChart from "./components/SuccessRateChart";
-import UptimeChart from "./components/UptimeChart";
+import DashboardStats from "@/components/features/dashboard/DashboardStats";
+import RecentActivity from "@/components/features/dashboard/RecentActivity";
+import PerformanceMetrics from "@/components/features/dashboard/PerformanceMetrics";
+import ResponseTimeChart from "@/components/shared/charts/ResponseTimeChart";
+import SuccessRateChart from "@/components/shared/charts/SuccessRateChart";
+import UptimeChart from "@/components/shared/charts/UptimeChart";
 import { getDashboardService } from "@/lib/infrastructure/di";
 import {
   getStatusData,

@@ -1,8 +1,8 @@
-import Navigation from "./components/Navigation";
-import HeroSection from "./components/HeroSection";
-import FeaturesSection from "./components/FeaturesSection";
-import PricingSection from "./components/PricingSection";
-import Footer from "./components/Footer";
+import Navigation from "@/components/shared/layout/Navigation";
+import HeroSection from "@/components/shared/layout/HeroSection";
+import FeaturesSection from "@/components/shared/layout/FeaturesSection";
+import PricingSection from "@/components/shared/layout/PricingSection";
+import Footer from "@/components/shared/layout/Footer";
 
 export default function Home() {
   return (

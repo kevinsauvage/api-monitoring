@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { getPlanIcon, getPlanColor } from "../../components/planUtils";
+import { getPlanIcon, getPlanColor } from "@/components/utils/planUtils";
 import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
 import type { Subscription } from "@prisma/client";
 

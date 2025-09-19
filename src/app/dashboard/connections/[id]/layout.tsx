@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getConnectionService } from "@/lib/infrastructure/di";
-import ConnectionNavigation from "./components/ConnectionNavigation";
+import ConnectionNavigation from "@/components/features/connections/ConnectionNavigation";
 
 export default async function ConnectionLayout({
   children,

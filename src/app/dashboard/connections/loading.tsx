@@ -1,4 +1,4 @@
-import { CardSkeleton } from "@/components/LoadingSkeleton";
+import { CardSkeleton } from "@/components/shared/feedback/LoadingSkeleton";
 
 export default function ConnectionsLoading() {
   return (

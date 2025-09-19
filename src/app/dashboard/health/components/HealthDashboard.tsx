@@ -9,7 +9,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
-import RefreshHealthButton from "../../connections/[id]/health-checks/components/RefreshHealthButton";
+import RefreshHealthButton from "@/components/features/health-checks/RefreshHealthButton";
 import HealthCheckResultsTable from "./HealthCheckResultsTable";
 import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
 import type { CheckResultWithDetails } from "@/lib/core/repositories";

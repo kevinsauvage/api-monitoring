@@ -1,4 +1,4 @@
-import { CardSkeleton, ChartSkeleton } from "@/components/LoadingSkeleton";
+import { CardSkeleton, ChartSkeleton } from "@/components/shared/feedback/LoadingSkeleton";
 
 export default function DashboardLoading() {
   return (

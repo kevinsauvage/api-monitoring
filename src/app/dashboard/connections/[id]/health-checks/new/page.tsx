@@ -1,5 +1,5 @@
 import { getConnectionService } from "@/lib/infrastructure/di";
-import CreateHealthCheckForm from "../components/CreateHealthCheckForm";
+import CreateHealthCheckForm from "@/components/features/health-checks/CreateHealthCheckForm";
 
 export default async function NewHealthCheckPage({
   params,

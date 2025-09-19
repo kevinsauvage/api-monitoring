@@ -1,5 +1,5 @@
-import DashboardSidebar from "@/app/dashboard/components/DashboardSidebar";
-import DashboardHeader from "./components/DashboardHeader";
+import DashboardSidebar from "@/components/features/dashboard/DashboardSidebar";
+import DashboardHeader from "@/components/features/dashboard/DashboardHeader";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/infrastructure/auth";
 import { getDashboardService } from "@/lib/infrastructure/di";

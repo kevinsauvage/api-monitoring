@@ -7,7 +7,7 @@ import type {
 import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
 import { encrypt } from "@/lib/infrastructure/encryption";
 import { validateApiConnection } from "@/lib/shared/utils/api-validation";
-import type { UserWithPassword } from "@/types/prisma";
+import type { UserWithPassword } from "@/lib/shared/types/prisma";
 import type {
   ConnectionValidationInput,
   ConnectionCreateInput,
