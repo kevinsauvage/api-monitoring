@@ -16,7 +16,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import type { UptimeData } from "@/lib/types";
+import type { UptimeData } from "@/lib/shared/types";
 
 interface UptimeChartProps {
   data: UptimeData;

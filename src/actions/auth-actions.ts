@@ -1,11 +1,11 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { UserRepository } from "@/lib/repositories";
+import { UserRepository } from "@/lib/core/repositories";
 import { redirect } from "next/navigation";
-import { handleActionError } from "@/lib/error-handler";
-import { authSchemas } from "@/lib/schemas";
-import type { RegistrationInput } from "@/lib/types";
+import { handleActionError } from "@/lib/shared/errors/error-handler";
+import { authSchemas } from "@/lib/shared/schemas";
+import type { RegistrationInput } from "@/lib/shared/types";
 
 export interface RegistrationResult {
   success: boolean;

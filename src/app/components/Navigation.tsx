@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { log } from "@/lib/logger";
+import { log } from "@/lib/shared/utils/logger";
 import { Zap, User, LogOut, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {

@@ -11,9 +11,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import RefreshHealthButton from "../../connections/[id]/health-checks/components/RefreshHealthButton";
 import HealthCheckResultsTable from "./HealthCheckResultsTable";
-import { formatTimestamp, formatResponseTime } from "@/lib/utils";
-import type { CheckResultWithDetails } from "@/lib/repositories";
-import { serializeCheckResultsWithDetails } from "@/lib/serializers";
+import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
+import type { CheckResultWithDetails } from "@/lib/core/repositories";
+import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 
 interface DashboardData {
   totalHealthChecks: number;

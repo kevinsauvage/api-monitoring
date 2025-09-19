@@ -1,6 +1,6 @@
 "use client";
 
-import { formatTimeForChart } from "@/lib/utils";
+import { formatTimeForChart } from "@/lib/shared/utils/utils";
 import {
   LineChart,
   Line,
@@ -18,7 +18,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { TrendingUp, TrendingDown } from "lucide-react";
-import type { SerializedCheckResultWithDetails } from "@/lib/serializers";
+import type { SerializedCheckResultWithDetails } from "@/lib/core/serializers";
 
 interface ResponseTimeChartProps {
   data: SerializedCheckResultWithDetails[];

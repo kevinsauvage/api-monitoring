@@ -1,4 +1,4 @@
-import { getConnectionService, getHealthCheckService } from "@/lib/di";
+import { getConnectionService, getHealthCheckService } from "@/lib/infrastructure/di";
 import HealthChecksHeader from "./components/HealthChecksHeader";
 import HealthChecksOverview from "./components/HealthChecksOverview";
 import HealthChecksList from "./components/HealthChecksList";

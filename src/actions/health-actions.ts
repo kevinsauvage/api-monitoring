@@ -2,10 +2,10 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { getHealthCheckService } from "@/lib/di";
-import { handleActionError } from "@/lib/error-handler";
-import { healthCheckSchemas } from "@/lib/schemas";
-import type { HealthCheckCreateInput } from "@/lib/types";
+import { getHealthCheckService } from "@/lib/infrastructure/di";
+import { handleActionError } from "@/lib/shared/errors/error-handler";
+import { healthCheckSchemas } from "@/lib/shared/schemas";
+import type { HealthCheckCreateInput } from "@/lib/shared/types";
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export async function refreshHealthData() {

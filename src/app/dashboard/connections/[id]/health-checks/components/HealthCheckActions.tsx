@@ -19,7 +19,7 @@ import {
   toggleHealthCheckActive,
   triggerHealthCheck,
 } from "@/actions/health-actions";
-import { log } from "@/lib/logger";
+import { log } from "@/lib/shared/utils/logger";
 
 interface HealthCheckActionsProps {
   healthCheckId: string;

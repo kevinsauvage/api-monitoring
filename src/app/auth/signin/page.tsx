@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { signIn } from "next-auth/react";
-import { log } from "@/lib/logger";
+import { log } from "@/lib/shared/utils/logger";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Zap, Eye, EyeOff } from "lucide-react";

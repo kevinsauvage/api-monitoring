@@ -6,13 +6,16 @@ import ConnectionResponseTimeChart from "./components/ConnectionResponseTimeChar
 import ConnectionSuccessRateChart from "./components/ConnectionSuccessRateChart";
 import ConnectionUptimeChart from "./components/ConnectionUptimeChart";
 import ConnectionDetailsCard from "./components/ConnectionDetailsCard";
-import { getConnectionService, getCheckResultRepository } from "@/lib/di";
+import {
+  getConnectionService,
+  getCheckResultRepository,
+} from "@/lib/infrastructure/di";
 import {
   getResponseTimeData,
   getStatusData,
   getUptimeData,
-} from "@/lib/utils/check-result-utils";
-import { serializeCheckResultsWithDetails } from "@/lib/serializers";
+} from "@/lib/shared/utils/check-result-utils";
+import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 
 export default async function ConnectionOverviewPage({
   params,

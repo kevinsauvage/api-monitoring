@@ -9,7 +9,7 @@ import PlanLimitsCard from "./components/PlanLimitsCard";
 import ProviderSelection from "./components/ProviderSelection";
 import ConnectionForm from "./components/ConnectionForm";
 import { API_PROVIDERS } from "./components/constants";
-import { log } from "@/lib/logger";
+import { log } from "@/lib/shared/utils/logger";
 
 export default function NewConnectionPage() {
   const { data: session } = useSession();

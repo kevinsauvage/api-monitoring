@@ -16,7 +16,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import ConnectionCard from "./ConnectionCard";
 
-import type { SerializedConnectionWithHealthChecks } from "@/lib/serializers";
+import type { SerializedConnectionWithHealthChecks } from "@/lib/core/serializers";
 
 interface ConnectionsListProps {
   connections: SerializedConnectionWithHealthChecks[];

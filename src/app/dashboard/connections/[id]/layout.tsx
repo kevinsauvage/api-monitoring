@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getConnectionService } from "@/lib/di";
+import { getConnectionService } from "@/lib/infrastructure/di";
 import ConnectionNavigation from "./components/ConnectionNavigation";
 
 export default async function ConnectionLayout({

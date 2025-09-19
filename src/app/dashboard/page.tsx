@@ -4,11 +4,14 @@ import PerformanceMetrics from "./components/PerformanceMetrics";
 import ResponseTimeChart from "./components/ResponseTimeChart";
 import SuccessRateChart from "./components/SuccessRateChart";
 import UptimeChart from "./components/UptimeChart";
-import { getDashboardService } from "@/lib/di";
-import { getStatusData, getUptimeData } from "@/lib/utils/check-result-utils";
-import { authOptions } from "@/lib/auth";
+import { getDashboardService } from "@/lib/infrastructure/di";
+import {
+  getStatusData,
+  getUptimeData,
+} from "@/lib/shared/utils/check-result-utils";
+import { authOptions } from "@/lib/infrastructure/auth";
 import { getServerSession } from "next-auth";
-import { serializeCheckResultsWithDetails } from "@/lib/serializers";
+import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);

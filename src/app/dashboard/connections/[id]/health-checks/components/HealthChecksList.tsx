@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import HealthCheckCard from "./HealthCheckCard";
-import type { HealthCheckWithResults } from "@/lib/services/health-check.service";
+import type { HealthCheckWithResults } from "@/lib/core/services/health-check.service";
 
 interface HealthChecksListProps {
   healthChecks: HealthCheckWithResults[];

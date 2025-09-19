@@ -15,7 +15,7 @@ import {
 } from "lucide-react";
 import { triggerHealthCheck } from "@/actions/health-actions";
 import { toast } from "sonner";
-import { log } from "@/lib/logger";
+import { log } from "@/lib/shared/utils/logger";
 import type { HealthCheck } from "@prisma/client";
 
 // Type for serialized health check data with results

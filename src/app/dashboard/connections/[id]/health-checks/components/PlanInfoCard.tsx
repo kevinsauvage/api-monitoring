@@ -1,7 +1,7 @@
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Info, Crown, Star, Zap } from "lucide-react";
-import { getPlanLimits } from "@/lib/plan-limits";
+import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
 import type { Subscription } from "@prisma/client";
 
 interface PlanInfoCardProps {

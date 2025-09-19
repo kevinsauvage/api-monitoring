@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { formatTimestamp } from "@/lib/utils";
+import { formatTimestamp } from "@/lib/shared/utils/utils";
 
 interface ConnectionDetailsCardProps {
   connection: {

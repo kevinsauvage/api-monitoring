@@ -17,7 +17,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Activity } from "lucide-react";
-import type { UptimeData } from "@/lib/types";
+import type { UptimeData } from "@/lib/shared/types";
 
 interface ConnectionUptimeChartProps {
   data: UptimeData;

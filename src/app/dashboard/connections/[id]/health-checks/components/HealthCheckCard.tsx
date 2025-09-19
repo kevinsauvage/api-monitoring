@@ -36,11 +36,11 @@ import {
   deleteHealthCheck,
   triggerHealthCheck,
 } from "@/actions/health-actions";
-import { formatTime } from "@/lib/utils";
+import { formatTime } from "@/lib/shared/utils/utils";
 import { toast } from "sonner";
-import { log } from "@/lib/logger";
+import { log } from "@/lib/shared/utils/logger";
 
-import type { HealthCheckWithResults } from "@/lib/services/health-check.service";
+import type { HealthCheckWithResults } from "@/lib/core/services/health-check.service";
 
 interface HealthCheckCardProps {
   healthCheck: HealthCheckWithResults;

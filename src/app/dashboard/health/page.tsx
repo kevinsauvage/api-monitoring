@@ -1,10 +1,10 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "@/lib/infrastructure/auth";
 import { Card, CardContent } from "@/components/ui/card";
 import { Activity } from "lucide-react";
 import HealthCheckResultsTable from "./components/HealthCheckResultsTable";
 import RefreshHealthButton from "../connections/[id]/health-checks/components/RefreshHealthButton";
-import { serializeCheckResultsWithDetails } from "@/lib/serializers";
+import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 
 export default async function HealthPage() {
   const session = await getServerSession(authOptions);
@@ -13,7 +13,7 @@ export default async function HealthPage() {
     return null;
   }
 
-  const { CheckResultRepository } = await import("@/lib/repositories");
+  const { CheckResultRepository } = await import("@/lib/core/repositories");
   const checkResultRepository = new CheckResultRepository();
 
   const recentResults = await checkResultRepository.findByUserIdWithDetails(

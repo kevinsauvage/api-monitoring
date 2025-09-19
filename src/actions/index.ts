@@ -13,7 +13,7 @@ export type {
   ConnectionValidationResult,
   ConnectionCreateResult,
   ConnectionActionResult,
-} from "@/lib/types";
+} from "@/lib/shared/types";
 
 export {
   refreshHealthData,

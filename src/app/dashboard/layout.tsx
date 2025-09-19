@@ -1,8 +1,8 @@
 import DashboardSidebar from "@/app/dashboard/components/DashboardSidebar";
 import DashboardHeader from "./components/DashboardHeader";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
-import { getDashboardService } from "@/lib/di";
+import { authOptions } from "@/lib/infrastructure/auth";
+import { getDashboardService } from "@/lib/infrastructure/di";
 import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({

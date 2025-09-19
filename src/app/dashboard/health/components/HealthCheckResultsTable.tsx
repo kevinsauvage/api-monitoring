@@ -21,9 +21,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { CheckCircle, XCircle, AlertTriangle, Clock } from "lucide-react";
-import { formatTimestamp, formatResponseTime } from "@/lib/utils";
-import type { SortField, SortDirection } from "@/lib/types";
-import type { SerializedCheckResultWithDetails } from "@/lib/serializers";
+import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
+import type { SortField, SortDirection } from "@/lib/shared/types";
+import type { SerializedCheckResultWithDetails } from "@/lib/core/serializers";
 
 export interface HealthCheckResultsTableProps {
   results: SerializedCheckResultWithDetails[];

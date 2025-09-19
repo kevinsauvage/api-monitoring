@@ -5,16 +5,18 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-import { log } from "@/lib/logger";
+import { log } from "@/lib/shared/utils/logger";
 import { createHealthCheck } from "@/actions/health-actions";
-import { getIntervalOptions, getDefaultInterval } from "@/lib/plan-limits";
+import {
+  getIntervalOptions,
+  getDefaultInterval,
+} from "@/lib/shared/utils/plan-limits";
 import type { Subscription } from "@prisma/client";
 import FormHeader from "./FormHeader";
 import PlanInfoCard from "./PlanInfoCard";
 import BasicConfigSection from "./BasicConfigSection";
 import AdvancedConfigSection from "./AdvancedConfigSection";
 import FormActions from "./FormActions";
-import type { ZodError } from "zod";
 
 interface CreateHealthCheckFormProps {
   apiConnectionId: string;

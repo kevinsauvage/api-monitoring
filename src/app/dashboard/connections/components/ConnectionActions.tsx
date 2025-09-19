@@ -15,7 +15,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 import { toast } from "sonner";
-import { log } from "@/lib/logger";
+import { log } from "@/lib/shared/utils/logger";
 import {
   toggleConnectionActive,
   deleteConnection,

@@ -39,12 +39,12 @@ import {
   toggleConnectionActive,
   deleteConnection,
 } from "@/actions/connection-actions";
-import { formatTime } from "@/lib/utils";
+import { formatTime } from "@/lib/shared/utils/utils";
 import { toast } from "sonner";
-import { log } from "@/lib/logger";
+import { log } from "@/lib/shared/utils/logger";
 
 // Use Prisma's generated types instead of custom interfaces
-import type { SerializedConnectionWithHealthChecks } from "@/lib/serializers";
+import type { SerializedConnectionWithHealthChecks } from "@/lib/core/serializers";
 
 interface ConnectionCardProps {
   connection: SerializedConnectionWithHealthChecks;
@@ -130,7 +130,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
   const healthChecksWithResults =
     connection.healthChecks?.filter((hc) => hc.lastExecutedAt) ?? [];
   const totalResults = healthChecksWithResults.length;
-  const successfulResults = healthChecksWithResults.length; // All executed health checks are considered successful
+  const _successfulResults = healthChecksWithResults.length; // All executed health checks are considered successful
   const successRate = totalResults > 0 ? 100 : 0; // Simplified - if executed, consider successful
 
   // Since we don't have response time data in health check configuration, use default

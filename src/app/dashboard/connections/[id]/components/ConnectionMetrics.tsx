@@ -13,7 +13,7 @@ import {
 import type {
   ConnectionWithHealthChecks,
   CheckResultWithDetails,
-} from "@/lib/repositories";
+} from "@/lib/core/repositories";
 
 interface ConnectionMetricsProps {
   connection: ConnectionWithHealthChecks;

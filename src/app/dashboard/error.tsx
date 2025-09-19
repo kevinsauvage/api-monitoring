@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import { log } from "@/lib/logger";
+import { log } from "@/lib/shared/utils/logger";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";

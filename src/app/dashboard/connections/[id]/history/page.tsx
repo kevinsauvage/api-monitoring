@@ -1,8 +1,8 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { History } from "lucide-react";
-import { getConnectionService, getHealthCheckService } from "@/lib/di";
+import { getConnectionService, getHealthCheckService } from "@/lib/infrastructure/di";
 import HealthCheckResultsTable from "../../../health/components/HealthCheckResultsTable";
-import { serializeCheckResultsWithDetails } from "@/lib/serializers";
+import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 
 export default async function ConnectionHistoryPage({
   params,

@@ -16,7 +16,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
-import type { StatusData } from "@/lib/types";
+import type { StatusData } from "@/lib/shared/types";
 
 interface SuccessRateChartProps {
   data: StatusData;

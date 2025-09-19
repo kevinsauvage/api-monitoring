@@ -3,7 +3,7 @@ import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { getPlanIcon, getPlanColor } from "./planUtils";
-import { getPlanLimits } from "@/lib/plan-limits";
+import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
 import type { Subscription } from "@prisma/client";
 
 interface ConnectionsHeaderProps {

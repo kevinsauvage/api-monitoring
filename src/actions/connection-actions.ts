@@ -1,17 +1,17 @@
 "use server";
 
-import { getConnectionService } from "@/lib/di";
+import { getConnectionService } from "@/lib/infrastructure/di";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { handleActionError } from "@/lib/error-handler";
-import { connectionSchemas } from "@/lib/schemas";
+import { handleActionError } from "@/lib/shared/errors/error-handler";
+import { connectionSchemas } from "@/lib/shared/schemas";
 import type {
   ConnectionValidationResult,
   ConnectionCreateResult,
   ConnectionActionResult,
   ConnectionValidationInput,
   ConnectionCreateInput,
-} from "@/lib/types";
+} from "@/lib/shared/types";
 
 const connectionService = getConnectionService();
 

@@ -1,8 +1,8 @@
 import ConnectionsHeader from "./components/ConnectionsHeader";
 import ConnectionsOverview from "./components/ConnectionsOverview";
 import ConnectionsList from "./components/ConnectionsList";
-import { getConnectionService } from "@/lib/di";
-import { serializeConnectionWithHealthChecks } from "@/lib/serializers";
+import { getConnectionService } from "@/lib/infrastructure/di";
+import { serializeConnectionWithHealthChecks } from "@/lib/core/serializers";
 
 export default async function ConnectionsPage() {
   const connectionService = getConnectionService();

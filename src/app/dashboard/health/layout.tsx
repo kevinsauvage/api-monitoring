@@ -1,7 +1,7 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth";
+import { authOptions } from "@/lib/infrastructure/auth";
 import { redirect } from "next/navigation";
-import { getMonitoringService } from "@/lib/di";
+import { getMonitoringService } from "@/lib/infrastructure/di";
 import HealthNavigation from "./components/HealthNavigation";
 
 export default async function HealthLayout({
@@ -22,7 +22,7 @@ export default async function HealthLayout({
 
   // Get additional data needed for the dashboard
   const { HealthCheckRepository, CheckResultRepository } = await import(
-    "@/lib/repositories"
+    "@/lib/core/repositories"
   );
   const healthCheckRepository = new HealthCheckRepository();
   const checkResultRepository = new CheckResultRepository();

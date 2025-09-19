@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { getCronService } from "@/lib/di";
-import { log } from "@/lib/logger";
+import { getCronService } from "@/lib/infrastructure/di";
+import { log } from "@/lib/shared/utils/logger";
 
 /**
  * Cron job endpoint for running health checks
