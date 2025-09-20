@@ -5,8 +5,8 @@ import {
 import HealthChecksHeader from "@/components/features/health-checks/HealthChecksHeader";
 import HealthChecksOverview from "@/components/features/health-checks/HealthChecksOverview";
 import HealthChecksList from "@/components/features/health-checks/HealthChecksList";
+import { notFound } from "next/navigation";
 
-// Enable route-level caching for connection health checks
 export const revalidate = 300; // 5 minutes
 
 export default async function ConnectionHealthChecksPage({
@@ -21,7 +21,7 @@ export default async function ConnectionHealthChecksPage({
   const connection = await connectionService.getConnectionById(parameters.id);
 
   if (!connection) {
-    return null; // Layout handles the not found case
+    return notFound();
   }
 
   const { healthChecks } =

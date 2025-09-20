@@ -16,6 +16,9 @@ import {
   getUptimeData,
 } from "@/lib/shared/utils/check-result-utils";
 import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
+import { notFound } from "next/navigation";
+
+export const revalidate = 300; // 5 minutes
 
 export default async function ConnectionOverviewPage({
   params,
@@ -27,7 +30,7 @@ export default async function ConnectionOverviewPage({
   const connection = await connectionService.getConnectionById(parameters.id);
 
   if (!connection) {
-    return null; // Layout handles the not found case
+    return notFound();
   }
 
   const checkResultRepository = getCheckResultRepository();

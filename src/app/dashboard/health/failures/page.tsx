@@ -7,7 +7,6 @@ import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
 import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
 import { CheckResultRepository } from "@/lib/core/repositories";
 
-// Enable route-level caching for failures page
 export const revalidate = 120; // 2 minutes
 
 export default async function FailuresPage() {

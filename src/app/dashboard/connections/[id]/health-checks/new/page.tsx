@@ -1,7 +1,7 @@
 import { getConnectionService } from "@/lib/infrastructure/di";
 import CreateHealthCheckForm from "@/components/features/health-checks/CreateHealthCheckForm";
+import { notFound } from "next/navigation";
 
-// Enable route-level caching for new health check page
 export const revalidate = 600; // 10 minutes
 
 export default async function NewHealthCheckPage({
@@ -14,7 +14,7 @@ export default async function NewHealthCheckPage({
   const connection = await connectionService.getConnectionById(parameters.id);
 
   if (!connection) {
-    return null; // Layout handles the not found case
+    return notFound();
   }
 
   return (

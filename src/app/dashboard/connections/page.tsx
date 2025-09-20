@@ -23,7 +23,6 @@ export default async function ConnectionsPage() {
     );
   }
 
-  // Serialize connections for client components
   const serializedConnections = connections.map(
     serializeConnectionWithHealthChecks
   );

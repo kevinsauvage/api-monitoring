@@ -1,8 +1,14 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { History } from "lucide-react";
-import { getConnectionService, getHealthCheckService } from "@/lib/infrastructure/di";
+import {
+  getConnectionService,
+  getHealthCheckService,
+} from "@/lib/infrastructure/di";
 import HealthCheckResultsTable from "../../../health/components/HealthCheckResultsTable";
 import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
+import { notFound } from "next/navigation";
+
+export const revalidate = 300; // 5 minutes
 
 export default async function ConnectionHistoryPage({
   params,
@@ -16,7 +22,7 @@ export default async function ConnectionHistoryPage({
   const connection = await connectionService.getConnectionById(parameters.id);
 
   if (!connection) {
-    return null; // Layout handles the not found case
+    return notFound();
   }
 
   const recentResults = await healthCheckService.getConnectionHistory(

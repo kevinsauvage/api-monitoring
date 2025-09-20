@@ -15,7 +15,6 @@ import RefreshHealthButton from "@/components/features/health-checks/RefreshHeal
 import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 import { CheckResultRepository } from "@/lib/core/repositories";
 
-// Enable route-level caching for health page
 export const revalidate = 180; // 3 minutes
 
 export default async function HealthPage() {
@@ -34,7 +33,6 @@ export default async function HealthPage() {
 
   const serializedResults = serializeCheckResultsWithDetails(recentResults);
 
-  // Calculate health metrics
   const totalChecks = serializedResults.length;
   const successfulChecks = serializedResults.filter(
     (r) => r.status === "SUCCESS"
@@ -58,7 +56,6 @@ export default async function HealthPage() {
 
   return (
     <div className="space-y-8">
-      {/* Header Section */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
@@ -71,7 +68,6 @@ export default async function HealthPage() {
         <RefreshHealthButton />
       </div>
 
-      {/* Health Metrics Cards */}
       {totalChecks > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           <Card className="border-emerald-200/50 dark:border-emerald-800/50 hover:border-emerald-300 dark:hover:border-emerald-700 transition-colors">
