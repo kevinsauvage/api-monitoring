@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import HealthCheckResultsTable from "../../health/components/HealthCheckResultsTable";
+import HealthCheckResultsTable from "@/components/features/health-checks/HealthCheckResultsTable";
 import ConnectionHeader from "@/components/features/connections/ConnectionHeader";
 import ConnectionMetrics from "@/components/features/connections/ConnectionMetrics";
 import ConnectionResponseTimeChart from "@/components/features/connections/ConnectionResponseTimeChart";

@@ -4,7 +4,7 @@ import {
   getConnectionService,
   getHealthCheckService,
 } from "@/lib/infrastructure/di";
-import HealthCheckResultsTable from "../../../health/components/HealthCheckResultsTable";
+import HealthCheckResultsTable from "@/components/features/health-checks/HealthCheckResultsTable";
 import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 import { notFound } from "next/navigation";
 

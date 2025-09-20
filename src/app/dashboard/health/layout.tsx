@@ -4,7 +4,7 @@ import { authOptions } from "@/lib/infrastructure/auth";
 import { getMonitoringService } from "@/lib/infrastructure/di";
 import HealthLayoutHeader from "@/components/features/health-checks/HealthLayoutHeader";
 import HealthMetricsCards from "@/components/features/health-checks/HealthMetricsCards";
-import HealthNavigation from "./components/HealthNavigation";
+import HealthNavigation from "@/components/features/health-checks/HealthNavigation";
 import {
   CheckResultRepository,
   HealthCheckRepository,

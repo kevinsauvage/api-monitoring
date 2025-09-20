@@ -12,3 +12,6 @@ export { default as HealthLayoutHeader } from "./HealthLayoutHeader";
 export { default as HealthMetricsCards } from "./HealthMetricsCards";
 export { default as PlanInfoCard } from "./PlanInfoCard";
 export { default as RefreshHealthButton } from "./RefreshHealthButton";
+export { default as HealthCheckResultsTable } from "./HealthCheckResultsTable";
+export { default as HealthDashboard } from "./HealthDashboard";
+export { default as HealthNavigation } from "./HealthNavigation";

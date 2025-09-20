@@ -18,7 +18,6 @@ import { toast } from "sonner";
 import { log } from "@/lib/shared/utils/logger";
 import type { HealthCheck } from "@prisma/client";
 
-// Type for serialized health check data with results
 type SerializedHealthCheckWithResults = Omit<
   HealthCheck,
   "createdAt" | "updatedAt" | "lastExecutedAt"
@@ -58,7 +57,6 @@ export default function HealthChecksOverview({
         return;
       }
 
-      // Trigger all active health checks
       const results = await Promise.allSettled(
         activeHealthCheckIds.map(async (id) => triggerHealthCheck(id))
       );
@@ -90,7 +88,6 @@ export default function HealthChecksOverview({
     }
   };
 
-  // Calculate metrics from health check results
   const allResults = healthChecks.flatMap((hc) => hc.recentResults);
   const totalChecks = allResults.length;
   const successfulChecks = allResults.filter(
@@ -99,7 +96,6 @@ export default function HealthChecksOverview({
   const successRate =
     totalChecks > 0 ? (successfulChecks / totalChecks) * 100 : 0;
 
-  // Calculate response time metrics
   const averageResponseTime =
     totalChecks > 0
       ? allResults.reduce((sum, r) => sum + r.responseTime, 0) / totalChecks
@@ -109,7 +105,6 @@ export default function HealthChecksOverview({
   const maxResponseTime =
     totalChecks > 0 ? Math.max(...allResults.map((r) => r.responseTime)) : 0;
 
-  // Calculate status distribution
   const statusCounts = allResults.reduce<Record<string, number>>(
     (acc, result) => {
       acc[result.status] = (acc[result.status] || 0) + 1;
@@ -155,7 +150,6 @@ export default function HealthChecksOverview({
 
   return (
     <div className="space-y-6">
-      {/* Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {overviewStats.map((stat, index) => {
           const Icon = stat.icon;
@@ -182,7 +176,6 @@ export default function HealthChecksOverview({
         })}
       </div>
 
-      {/* Status Distribution */}
       <Card>
         <CardHeader>
           <div className="flex items-center justify-between">
@@ -258,7 +251,6 @@ export default function HealthChecksOverview({
         </CardContent>
       </Card>
 
-      {/* Health Check Status Summary */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center">

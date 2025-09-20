@@ -10,7 +10,7 @@ import {
   Clock,
   TrendingUp,
 } from "lucide-react";
-import HealthCheckResultsTable from "./components/HealthCheckResultsTable";
+import HealthCheckResultsTable from "@/components/features/health-checks/HealthCheckResultsTable";
 import RefreshHealthButton from "@/components/features/health-checks/RefreshHealthButton";
 import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 import { CheckResultRepository } from "@/lib/core/repositories";

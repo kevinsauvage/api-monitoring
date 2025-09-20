@@ -6,12 +6,18 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import RefreshHealthButton from "@/components/features/health-checks/RefreshHealthButton";
-import HealthCheckResultsTable from "./HealthCheckResultsTable";
-import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
+import HealthCheckResultsTable from "@/components/features/health-checks/HealthCheckResultsTable";
+import { StatusBadge, MethodBadge } from "@/components/shared";
+import {
+  formatTimestamp,
+  formatResponseTime,
+  getStatusIcon,
+  getUptimeColor,
+  getResponseTimeColor,
+} from "@/lib/shared/utils";
 import type { CheckResultWithDetails } from "@/lib/core/repositories";
 import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 
@@ -44,69 +50,20 @@ export default function HealthDashboard({
 
   const serializedResults = serializeCheckResultsWithDetails(recentResults);
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "SUCCESS":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
-      case "FAILURE":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
-      case "TIMEOUT":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
-      case "ERROR":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "SUCCESS":
-        return <CheckCircle className="w-4 h-4" />;
-      case "FAILURE":
-      case "ERROR":
-        return <XCircle className="w-4 h-4" />;
-      case "TIMEOUT":
-        return <Clock className="w-4 h-4" />;
-      default:
-        return <AlertTriangle className="w-4 h-4" />;
-    }
-  };
-
-  const getUptimeColor = (uptime: number) => {
-    if (uptime >= 99) return "text-green-600 dark:text-green-400";
-    if (uptime >= 95) return "text-yellow-600 dark:text-yellow-400";
-    return "text-red-600 dark:text-red-400";
-  };
-
-  const getResponseTimeColor = (responseTime: number) => {
-    if (responseTime < 500) return "text-green-600 dark:text-green-400";
-    if (responseTime < 2000) return "text-yellow-600 dark:text-yellow-400";
-    return "text-red-600 dark:text-red-400";
-  };
-
   return (
     <div className="space-y-6">
-      {/* Header with refresh button */}
       <div className="flex items-center justify-between">
         <div>
           <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
             Health Overview
           </h2>
           <p className="text-sm text-slate-600 dark:text-slate-300">
-            Last updated:{" "}
-            {new Date().toLocaleDateString("us-Us", {
-              // show date in format of mm/dd/yyyy
-              month: "2-digit",
-              day: "2-digit",
-              year: "numeric",
-            })}
+            Last updated: {formatTimestamp(new Date())}
           </p>
         </div>
         <RefreshHealthButton />
       </div>
 
-      {/* Key Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -175,7 +132,6 @@ export default function HealthDashboard({
         </Card>
       </div>
 
-      {/* Detailed Tabs */}
       <Tabs defaultValue="recent" className="space-y-4">
         <TabsList>
           <TabsTrigger value="recent">Recent Activity</TabsTrigger>
@@ -228,18 +184,18 @@ export default function HealthDashboard({
                         <div className="flex items-center space-x-4">
                           <div className="flex items-center space-x-2">
                             {getStatusIcon(result.status)}
-                            <Badge
-                              variant="outline"
-                              className={getStatusColor(result.status)}
-                            >
-                              {result.status}
-                            </Badge>
+                            <StatusBadge
+                              status={result.status}
+                              variant="extended"
+                            />
                           </div>
                           <div>
-                            <p className="font-medium text-slate-900 dark:text-white">
-                              {result.healthCheck.method}{" "}
-                              {result.healthCheck.endpoint}
-                            </p>
+                            <div className="flex items-center gap-2">
+                              <MethodBadge method={result.healthCheck.method} />
+                              <span className="font-medium text-slate-900 dark:text-white">
+                                {result.healthCheck.endpoint}
+                              </span>
+                            </div>
                             <p className="text-sm text-slate-600 dark:text-slate-300">
                               {result.healthCheck.apiConnection.name} (
                               {result.healthCheck.apiConnection.provider})

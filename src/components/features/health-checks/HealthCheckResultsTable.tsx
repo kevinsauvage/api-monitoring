@@ -23,6 +23,12 @@ import {
 } from "@/components/ui/select";
 import { CheckCircle, XCircle, AlertTriangle, Clock } from "lucide-react";
 import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
+import { StatusBadge, MethodBadge } from "@/components/shared";
+import {
+  getStatusColor,
+  getStatusIcon,
+  getMethodColor,
+} from "@/lib/shared/utils";
 import type { SortField, SortDirection } from "@/lib/shared/types";
 import type { SerializedCheckResultWithDetails } from "@/lib/core/serializers";
 
@@ -106,38 +112,7 @@ export default function HealthCheckResultsTable({
     updateFilters(searchTerm, value);
   };
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "SUCCESS":
-        return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-700";
-      case "FAILURE":
-        return "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-700";
-      case "TIMEOUT":
-        return "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-700";
-      case "ERROR":
-        return "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-700";
-      default:
-        return "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-700";
-    }
-  };
-
-  const getStatusIcon = (status: string) => {
-    switch (status) {
-      case "SUCCESS":
-        return (
-          <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
-        );
-      case "FAILURE":
-      case "ERROR":
-        return <XCircle className="w-4 h-4 text-red-600 dark:text-red-400" />;
-      case "TIMEOUT":
-        return <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400" />;
-      default:
-        return (
-          <AlertTriangle className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-        );
-    }
-  };
+  // Status utility functions are now imported from shared utils
 
   // Since filtering is now done server-side, we just need to sort the results
   const sortedResults = useMemo(() => {
@@ -295,13 +270,7 @@ export default function HealthCheckResultsTable({
                       <div className="flex-shrink-0">
                         {getStatusIcon(result.status)}
                       </div>
-                      <Badge
-                        className={`${getStatusColor(
-                          result.status
-                        )} font-medium`}
-                      >
-                        {result.status}
-                      </Badge>
+                      <StatusBadge status={result.status} variant="extended" />
                     </div>
                   </TableCell>
                   {results.some((r) => r.healthCheck) && (
@@ -309,12 +278,10 @@ export default function HealthCheckResultsTable({
                       {result.healthCheck ? (
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
-                            <Badge
-                              variant="outline"
+                            <MethodBadge
+                              method={result.healthCheck.method}
                               className="text-xs font-mono"
-                            >
-                              {result.healthCheck.method}
-                            </Badge>
+                            />
                             <span className="font-medium text-foreground truncate">
                               {result.healthCheck.endpoint}
                             </span>

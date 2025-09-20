@@ -1,15 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
 import {
   MoreVertical,
   ExternalLink,
   Activity,
-  Clock,
-  CheckCircle,
-  XCircle,
-  AlertTriangle,
   Trash2,
   Power,
   PowerOff,
@@ -24,26 +19,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
+import { ConfirmationDialog } from "@/components/shared";
 import {
   toggleConnectionActive,
   deleteConnection,
 } from "@/actions/connection-actions";
 import { formatTime } from "@/lib/shared/utils/utils";
-import { toast } from "sonner";
-import { log } from "@/lib/shared/utils/logger";
+import {
+  getProviderColor,
+  getActiveStatusColor,
+  getStatusIcon,
+  getStatusColor,
+} from "@/lib/shared/utils";
+import { useAsyncAction, useConfirmationDialog } from "@/lib/shared/hooks";
 
-// Use Prisma's generated types instead of custom interfaces
 import type { SerializedConnectionWithHealthChecks } from "@/lib/core/serializers";
 
 interface ConnectionCardProps {
@@ -51,127 +41,60 @@ interface ConnectionCardProps {
 }
 
 export default function ConnectionCard({ connection }: ConnectionCardProps) {
-  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const { execute: executeToggle, isLoading: isToggling } = useAsyncAction({
+    successMessage: `Connection ${
+      connection.isActive ? "deactivated" : "activated"
+    } successfully`,
+    errorMessage: "Failed to update connection",
+  });
 
-  const handleToggleActive = async () => {
-    try {
-      const result = await toggleConnectionActive(
-        connection.id,
-        connection.isActive
-      );
+  const { execute: executeDelete, isLoading: isDeleting } = useAsyncAction({
+    successMessage: "Connection deleted successfully",
+    errorMessage: "Failed to delete connection",
+  });
 
-      if (result.success) {
-        toast.success(
-          `Connection ${
-            connection.isActive ? "deactivated" : "activated"
-          } successfully`
-        );
-      } else {
-        toast.error(result.error ?? "Failed to update connection");
-      }
-    } catch (error) {
-      log.error(
-        "Error toggling connection:",
-        error instanceof Error ? error.message : String(error)
-      );
-      toast.error("Failed to update connection");
-    }
+  const deleteDialog = useConfirmationDialog({
+    title: "Delete Connection",
+    description: `Are you sure you want to delete the connection ${connection.name}? This action cannot be undone and will remove all associated health checks and monitoring data.`,
+    confirmText: "Delete",
+    variant: "destructive",
+  });
+
+  const handleToggleActive = () => {
+    void executeToggle(async () =>
+      toggleConnectionActive(connection.id, connection.isActive)
+    );
   };
 
-  const handleDelete = async () => {
-    try {
-      const result = await deleteConnection(connection.id);
-
-      if (result.success) {
-        toast.success("Connection deleted successfully");
-      } else {
-        toast.error(result.error ?? "Failed to delete connection");
-      }
-    } catch (error) {
-      log.error(
-        "Error deleting connection:",
-        error instanceof Error ? error.message : String(error)
-      );
-      toast.error("Failed to delete connection");
-    } finally {
-      setShowDeleteModal(false);
-    }
+  const handleDelete = () => {
+    deleteDialog.openDialog();
   };
 
-  const getProviderColor = (provider: string) => {
-    switch (provider.toLowerCase()) {
-      case "stripe":
-        return "bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200";
-      case "twilio":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200";
-      case "sendgrid":
-        return "bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200";
-      case "github":
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
-      case "slack":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200";
-      default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
-    }
+  const handleConfirmDelete = () => {
+    void executeDelete(async () => deleteConnection(connection.id));
   };
 
-  const getStatusColor = (isActive: boolean) => {
-    return isActive
-      ? "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-      : "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-200";
-  };
-
-  // Calculate health metrics
-  const totalHealthChecks = connection.healthChecks?.length ?? 0;
+  const totalHealthChecks = connection.healthChecks?.length || 0;
   const activeHealthChecks =
-    connection.healthChecks?.filter((hc) => hc.isActive).length ?? 0;
+    connection.healthChecks?.filter((hc) => hc.isActive).length || 0;
 
-  // Calculate metrics from health checks
-  const healthChecksWithResults =
-    connection.healthChecks?.filter((hc) => hc.lastExecutedAt) ?? [];
+  const healthChecksWithResults = connection.healthChecks?.filter(
+    (hc) => hc.lastExecutedAt
+  );
   const totalResults = healthChecksWithResults.length;
-  const _successfulResults = healthChecksWithResults.length; // All executed health checks are considered successful
-  const successRate = totalResults > 0 ? 100 : 0; // Simplified - if executed, consider successful
+  const successRate = totalResults > 0 ? 100 : 0;
 
-  // Since we don't have response time data in health check configuration, use default
   const averageResponseTime = 0;
 
-  // Get the most recent execution time
-  const lastExecutedHealthCheck = healthChecksWithResults.sort(
-    (a, b) =>
-      new Date(b.lastExecutedAt!).getTime() -
-      new Date(a.lastExecutedAt!).getTime()
-  )[0];
+  const lastExecutedHealthCheck = healthChecksWithResults
+    .filter((hc) => hc.lastExecutedAt)
+    .sort(
+      (a, b) =>
+        new Date(b.lastExecutedAt!).getTime() -
+        new Date(a.lastExecutedAt!).getTime()
+    )[0];
 
   const lastStatus = lastExecutedHealthCheck ? "SUCCESS" : "UNKNOWN";
-
-  const getLastStatusColor = (status: string) => {
-    switch (status) {
-      case "SUCCESS":
-        return "text-green-600";
-      case "FAILURE":
-      case "ERROR":
-        return "text-red-600";
-      case "TIMEOUT":
-        return "text-yellow-600";
-      default:
-        return "text-gray-600";
-    }
-  };
-
-  const getLastStatusIcon = (status: string) => {
-    switch (status) {
-      case "SUCCESS":
-        return <CheckCircle className="w-4 h-4" />;
-      case "FAILURE":
-      case "ERROR":
-        return <XCircle className="w-4 h-4" />;
-      case "TIMEOUT":
-        return <Clock className="w-4 h-4" />;
-      default:
-        return <Activity className="w-4 h-4" />;
-    }
-  };
 
   return (
     <>
@@ -196,7 +119,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
             </div>
 
             <div className="flex items-center space-x-2">
-              <Badge className={getStatusColor(connection.isActive)}>
+              <Badge className={getActiveStatusColor(connection.isActive)}>
                 {connection.isActive ? "Active" : "Inactive"}
               </Badge>
 
@@ -222,21 +145,29 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem onClick={() => void handleToggleActive()}>
+                  <DropdownMenuItem
+                    onClick={handleToggleActive}
+                    disabled={isToggling}
+                  >
                     {connection.isActive ? (
                       <PowerOff className="mr-2 h-4 w-4" />
                     ) : (
                       <Power className="mr-2 h-4 w-4" />
                     )}
-                    {connection.isActive ? "Deactivate" : "Activate"}
+                    {isToggling
+                      ? "Updating..."
+                      : connection.isActive
+                      ? "Deactivate"
+                      : "Activate"}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    onClick={() => setShowDeleteModal(true)}
+                    onClick={handleDelete}
                     className="text-red-600 focus:text-red-600"
+                    disabled={isDeleting}
                   >
                     <Trash2 className="mr-2 h-4 w-4" />
-                    Delete
+                    {isDeleting ? "Deleting..." : "Delete"}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -246,7 +177,6 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
 
         <CardContent className="pt-0">
           <div className="space-y-4">
-            {/* Health Check Summary */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-muted-foreground">Health Checks</p>
@@ -265,7 +195,6 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
               </div>
             </div>
 
-            {/* Performance Metrics */}
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <p className="text-sm text-muted-foreground">Avg. Response</p>
@@ -279,12 +208,11 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
               </div>
             </div>
 
-            {/* Last Result */}
-            {lastExecutedHealthCheck && (
+            {lastExecutedHealthCheck?.lastExecutedAt && (
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center space-x-2">
-                  <div className={getLastStatusColor(lastStatus)}>
-                    {getLastStatusIcon(lastStatus)}
+                  <div className={getStatusColor(lastStatus)}>
+                    {getStatusIcon(lastStatus)}
                   </div>
                   <span className="text-sm font-medium">
                     Last check: {lastStatus}
@@ -293,13 +221,12 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                   <span>N/A</span>
                   <span>
-                    {formatTime(lastExecutedHealthCheck.lastExecutedAt!)}
+                    {formatTime(lastExecutedHealthCheck.lastExecutedAt)}
                   </span>
                 </div>
               </div>
             )}
 
-            {/* Quick Actions */}
             <div className="flex space-x-2 pt-2">
               <Button variant="outline" size="sm" asChild className="flex-1">
                 <Link href={`/dashboard/connections/${connection.id}`}>
@@ -320,33 +247,15 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
         </CardContent>
       </Card>
 
-      {/* Delete Confirmation Modal */}
-      <AlertDialog open={showDeleteModal} onOpenChange={setShowDeleteModal}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle className="flex items-center">
-              <AlertTriangle className="w-5 h-5 text-red-600 dark:text-red-400 mr-2" />
-              Delete Connection
-            </AlertDialogTitle>
-            <AlertDialogDescription>
-              Are you sure you want to delete the connection{" "}
-              <strong>{connection.name}</strong>? This action cannot be undone
-              and will remove all associated health checks and monitoring data.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel onClick={() => setShowDeleteModal(false)}>
-              Cancel
-            </AlertDialogCancel>
-            <AlertDialogAction
-              onClick={() => void handleDelete()}
-              className="bg-red-600 hover:bg-red-700"
-            >
-              Delete
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <ConfirmationDialog
+        isOpen={deleteDialog.isOpen}
+        onClose={deleteDialog.closeDialog}
+        onConfirm={handleConfirmDelete}
+        title={deleteDialog.options.title}
+        description={deleteDialog.options.description}
+        confirmText={deleteDialog.options.confirmText}
+        variant={deleteDialog.options.variant}
+      />
     </>
   );
 }
