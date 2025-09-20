@@ -29,11 +29,13 @@ import { createConnection } from "@/actions/connection-actions";
 import type { ConnectionCreateResult } from "@/lib/shared/types";
 import { ZodError } from "@/components/ui/zod-error";
 import { API_PROVIDERS } from "@/components/utils/constants";
+import { redirect } from "next/navigation";
 
 // Initial state for useActionState
 const initialState: ConnectionCreateResult = {
   success: false,
   message: "",
+  zodError: undefined,
 };
 
 interface ConnectionFormProps {
@@ -74,7 +76,10 @@ export default function ConnectionForm({
 
   // Use useActionState for form submission
   const [state, formAction, isPending] = useActionState(
-    async (prevState: ConnectionCreateResult, formData: FormData) => {
+    async (
+      prevState: ConnectionCreateResult,
+      formData: FormData
+    ): Promise<ConnectionCreateResult> => {
       const data = {
         name: formData.get("name") as string,
         provider: formData.get("provider") as string,
@@ -86,8 +91,8 @@ export default function ConnectionForm({
         token: (formData.get("token") as string) || undefined,
       };
 
-      const result = await createConnection(data);
-      return result;
+      await createConnection(data);
+      redirect("/dashboard/connections");
     },
     initialState
   );

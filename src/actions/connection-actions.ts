@@ -2,7 +2,6 @@
 
 import { getConnectionService } from "@/lib/infrastructure/di";
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { handleActionError } from "@/lib/shared/errors/error-handler";
 import { connectionSchemas } from "@/lib/shared/schemas";
 import type {
@@ -42,7 +41,6 @@ export async function createConnection(
     if (result.success) {
       revalidatePath("/dashboard");
       revalidatePath("/dashboard/connections");
-      redirect("/dashboard/connections");
     }
 
     return result;
