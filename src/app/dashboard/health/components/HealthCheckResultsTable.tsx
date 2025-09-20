@@ -40,29 +40,33 @@ export default function HealthCheckResultsTable({
   const getStatusColor = (status: string) => {
     switch (status) {
       case "SUCCESS":
-        return "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-300";
+        return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950 dark:text-emerald-300 dark:border-emerald-700";
       case "FAILURE":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+        return "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-700";
       case "TIMEOUT":
-        return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-300";
+        return "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-700";
       case "ERROR":
-        return "bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-300";
+        return "bg-red-50 text-red-700 border-red-200 dark:bg-red-950 dark:text-red-300 dark:border-red-700";
       default:
-        return "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300";
+        return "bg-slate-50 text-slate-700 border-slate-200 dark:bg-slate-950 dark:text-slate-300 dark:border-slate-700";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "SUCCESS":
-        return <CheckCircle className="w-4 h-4" />;
+        return (
+          <CheckCircle className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+        );
       case "FAILURE":
       case "ERROR":
-        return <XCircle className="w-4 h-4" />;
+        return <XCircle className="w-4 h-4 text-red-600 dark:text-red-400" />;
       case "TIMEOUT":
-        return <Clock className="w-4 h-4" />;
+        return <Clock className="w-4 h-4 text-amber-600 dark:text-amber-400" />;
       default:
-        return <AlertTriangle className="w-4 h-4" />;
+        return (
+          <AlertTriangle className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+        );
     }
   };
 
@@ -137,20 +141,20 @@ export default function HealthCheckResultsTable({
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-6">
       {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
+      <div className="flex flex-col sm:flex-row gap-4 p-4 bg-muted/30 rounded-lg border">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
           <Input
-            placeholder="Search results..."
+            placeholder="Search by status, status code, or error message..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
+            className="pl-10 bg-background"
           />
         </div>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
-          <SelectTrigger className="w-full sm:w-48">
+          <SelectTrigger className="w-full sm:w-48 bg-background">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
           <SelectContent>
@@ -164,54 +168,54 @@ export default function HealthCheckResultsTable({
       </div>
 
       {/* Table */}
-      <div className="border rounded-lg">
+      <div className="border rounded-lg overflow-hidden shadow-sm">
         <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>
+          <TableHeader className="bg-muted/50">
+            <TableRow className="hover:bg-muted/50">
+              <TableHead className="font-semibold">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleSort("status")}
-                  className="h-auto p-0 font-semibold"
+                  className="h-auto p-0 font-semibold hover:bg-transparent"
                 >
                   Status {getSortIcon("status")}
                 </Button>
               </TableHead>
               {results.some((r) => r.healthCheck) && (
-                <TableHead>Endpoint</TableHead>
+                <TableHead className="font-semibold">Endpoint</TableHead>
               )}
-              <TableHead>
+              <TableHead className="font-semibold">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleSort("statusCode")}
-                  className="h-auto p-0 font-semibold"
+                  className="h-auto p-0 font-semibold hover:bg-transparent"
                 >
                   Status Code {getSortIcon("statusCode")}
                 </Button>
               </TableHead>
-              <TableHead>
+              <TableHead className="font-semibold">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleSort("responseTime")}
-                  className="h-auto p-0 font-semibold"
+                  className="h-auto p-0 font-semibold hover:bg-transparent"
                 >
                   Response Time {getSortIcon("responseTime")}
                 </Button>
               </TableHead>
-              <TableHead>
+              <TableHead className="font-semibold">
                 <Button
                   variant="ghost"
                   size="sm"
                   onClick={() => handleSort("timestamp")}
-                  className="h-auto p-0 font-semibold"
+                  className="h-auto p-0 font-semibold hover:bg-transparent"
                 >
                   Timestamp {getSortIcon("timestamp")}
                 </Button>
               </TableHead>
-              <TableHead>Error Message</TableHead>
+              <TableHead className="font-semibold">Error Message</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -232,28 +236,43 @@ export default function HealthCheckResultsTable({
               </TableRow>
             ) : (
               filteredAndSortedResults.map((result) => (
-                <TableRow key={result.id}>
-                  <TableCell>
-                    <div className="flex items-center space-x-2">
-                      {getStatusIcon(result.status)}
-                      <Badge className={getStatusColor(result.status)}>
+                <TableRow
+                  key={result.id}
+                  className="hover:bg-muted/30 transition-colors"
+                >
+                  <TableCell className="py-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="flex-shrink-0">
+                        {getStatusIcon(result.status)}
+                      </div>
+                      <Badge
+                        className={`${getStatusColor(
+                          result.status
+                        )} font-medium`}
+                      >
                         {result.status}
                       </Badge>
                     </div>
                   </TableCell>
                   {results.some((r) => r.healthCheck) && (
-                    <TableCell>
+                    <TableCell className="py-4">
                       {result.healthCheck ? (
-                        <div>
-                          <p className="font-medium text-foreground">
-                            {result.healthCheck.method}{" "}
-                            {result.healthCheck.endpoint}
-                          </p>
-                          <p className="text-sm text-muted-foreground">
+                        <div className="space-y-1">
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              variant="outline"
+                              className="text-xs font-mono"
+                            >
+                              {result.healthCheck.method}
+                            </Badge>
+                            <span className="font-medium text-foreground truncate">
+                              {result.healthCheck.endpoint}
+                            </span>
+                          </div>
+                          <p className="text-sm text-muted-foreground truncate">
                             {result.healthCheck.apiConnection.name}
                             {result.healthCheck.apiConnection.provider && (
-                              <span>
-                                {" "}
+                              <span className="ml-1 text-xs">
                                 ({result.healthCheck.apiConnection.provider})
                               </span>
                             )}
@@ -264,28 +283,42 @@ export default function HealthCheckResultsTable({
                       )}
                     </TableCell>
                   )}
-                  <TableCell>
-                    <span className="font-mono">
+                  <TableCell className="py-4">
+                    <Badge
+                      variant={
+                        result.statusCode &&
+                        result.statusCode >= 200 &&
+                        result.statusCode < 300
+                          ? "default"
+                          : "destructive"
+                      }
+                      className="font-mono text-xs"
+                    >
                       {result.statusCode ?? "N/A"}
-                    </span>
+                    </Badge>
                   </TableCell>
-                  <TableCell>
-                    <span className="font-mono">
-                      {formatResponseTime(result.responseTime)}
-                    </span>
+                  <TableCell className="py-4">
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-3 h-3 text-muted-foreground" />
+                      <span className="font-mono text-sm">
+                        {formatResponseTime(result.responseTime)}
+                      </span>
+                    </div>
                   </TableCell>
-                  <TableCell>
-                    <span className="text-sm">
+                  <TableCell className="py-4">
+                    <span className="text-sm text-muted-foreground">
                       {formatTimestamp(result.timestamp)}
                     </span>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="py-4">
                     {result.errorMessage ? (
-                      <span className="text-sm text-destructive max-w-xs truncate block">
-                        {result.errorMessage}
-                      </span>
+                      <div className="max-w-xs">
+                        <span className="text-xs text-red-700 bg-red-50 border border-red-200 px-2 py-1 rounded-md block truncate dark:text-red-300 dark:bg-red-950 dark:border-red-700">
+                          {result.errorMessage}
+                        </span>
+                      </div>
                     ) : (
-                      <span className="text-muted-foreground">—</span>
+                      <span className="text-muted-foreground text-sm">—</span>
                     )}
                   </TableCell>
                 </TableRow>
@@ -296,8 +329,21 @@ export default function HealthCheckResultsTable({
       </div>
 
       {/* Results count */}
-      <div className="text-sm text-muted-foreground">
-        Showing {filteredAndSortedResults.length} of {results.length} results
+      <div className="flex items-center justify-between pt-4 border-t">
+        <div className="text-sm text-muted-foreground">
+          Showing{" "}
+          <span className="font-medium text-foreground">
+            {filteredAndSortedResults.length}
+          </span>{" "}
+          of{" "}
+          <span className="font-medium text-foreground">{results.length}</span>{" "}
+          results
+        </div>
+        {filteredAndSortedResults.length !== results.length && (
+          <div className="text-xs text-muted-foreground">
+            {results.length - filteredAndSortedResults.length} hidden by filters
+          </div>
+        )}
       </div>
     </div>
   );
