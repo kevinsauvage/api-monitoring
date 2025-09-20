@@ -1,11 +1,12 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { redirect } from "next/navigation";
 import { getHealthCheckService } from "@/lib/infrastructure/di";
 import { handleActionError } from "@/lib/shared/errors/error-handler";
 import { healthCheckSchemas } from "@/lib/shared/schemas";
 import type { HealthCheckCreateInput } from "@/lib/shared/types";
+
+const healthCheckService = getHealthCheckService();
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export async function refreshHealthData() {
@@ -22,13 +23,6 @@ export async function refreshHealthData() {
     };
   }
 }
-
-export async function refreshHealthDataAndRedirect() {
-  await refreshHealthData();
-  redirect("/dashboard/health");
-}
-
-const healthCheckService = getHealthCheckService();
 
 export async function deleteHealthCheck(healthCheckId: string) {
   try {

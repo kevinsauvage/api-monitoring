@@ -1,6 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect, useCallback } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowUpDown, Filter, Search } from "lucide-react";
 import {
   Table,
@@ -27,15 +28,83 @@ import type { SerializedCheckResultWithDetails } from "@/lib/core/serializers";
 
 export interface HealthCheckResultsTableProps {
   results: SerializedCheckResultWithDetails[];
+  currentPage?: number;
+  totalPages?: number;
+  totalCount?: number;
+  itemsPerPage?: number;
+  statusFilter?: string;
+  searchTerm?: string;
+  searchParameters?: {
+    page?: string;
+    status?: string;
+    search?: string;
+  };
 }
 
 export default function HealthCheckResultsTable({
   results,
+  currentPage: _currentPage = 1,
+  totalPages: _totalPages = 1,
+  totalCount: _totalCount = 0,
+  itemsPerPage: _itemsPerPage = 20,
+  statusFilter: initialStatusFilter = "all",
+  searchTerm: initialSearchTerm = "",
+  searchParameters: _searchParameters = {},
 }: HealthCheckResultsTableProps) {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [statusFilter, setStatusFilter] = useState<string>("all");
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
+  const [statusFilter, setStatusFilter] = useState<string>(initialStatusFilter);
   const [sortField, setSortField] = useState<SortField>("timestamp");
   const [sortDirection, setSortDirection] = useState<SortDirection>("desc");
+
+  useEffect(() => {
+    setSearchTerm(initialSearchTerm);
+    setStatusFilter(initialStatusFilter);
+  }, [initialSearchTerm, initialStatusFilter]);
+
+  const updateFilters = useCallback(
+    (newSearchTerm: string, newStatusFilter: string) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      params.delete("page");
+
+      if (newSearchTerm) {
+        params.set("search", newSearchTerm);
+      } else {
+        params.delete("search");
+      }
+
+      if (newStatusFilter !== "all") {
+        params.set("status", newStatusFilter);
+      } else {
+        params.delete("status");
+      }
+
+      router.push(`/dashboard/health?${params.toString()}`, {
+        scroll: false,
+      });
+    },
+    [searchParams, router]
+  );
+
+  const handleSearchChange = (value: string) => {
+    setSearchTerm(value);
+  };
+
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      updateFilters(searchTerm, statusFilter);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [searchTerm, statusFilter, updateFilters]);
+
+  const handleStatusFilterChange = (value: string) => {
+    setStatusFilter(value);
+    updateFilters(searchTerm, value);
+  };
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -70,26 +139,9 @@ export default function HealthCheckResultsTable({
     }
   };
 
-  const filteredAndSortedResults = useMemo(() => {
-    let filtered = results;
-
-    if (searchTerm) {
-      filtered = filtered.filter(
-        (result) =>
-          result.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          (result.statusCode?.toString().includes(searchTerm) ?? false) ||
-          (result.errorMessage
-            ?.toLowerCase()
-            .includes(searchTerm.toLowerCase()) ??
-            false)
-      );
-    }
-
-    if (statusFilter !== "all") {
-      filtered = filtered.filter((result) => result.status === statusFilter);
-    }
-
-    filtered.sort((a, b) => {
+  // Since filtering is now done server-side, we just need to sort the results
+  const sortedResults = useMemo(() => {
+    return [...results].sort((a, b) => {
       let aValue: string | number;
       let bValue: string | number;
 
@@ -118,9 +170,7 @@ export default function HealthCheckResultsTable({
       if (aValue > bValue) return sortDirection === "asc" ? 1 : -1;
       return 0;
     });
-
-    return filtered;
-  }, [results, searchTerm, statusFilter, sortField, sortDirection]);
+  }, [results, sortField, sortDirection]);
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -149,11 +199,11 @@ export default function HealthCheckResultsTable({
           <Input
             placeholder="Search by status, status code, or error message..."
             value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
+            onChange={(e) => handleSearchChange(e.target.value)}
             className="pl-10 bg-background"
           />
         </div>
-        <Select value={statusFilter} onValueChange={setStatusFilter}>
+        <Select value={statusFilter} onValueChange={handleStatusFilterChange}>
           <SelectTrigger className="w-full sm:w-48 bg-background">
             <SelectValue placeholder="Filter by status" />
           </SelectTrigger>
@@ -219,7 +269,7 @@ export default function HealthCheckResultsTable({
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredAndSortedResults.length === 0 ? (
+            {sortedResults.length === 0 ? (
               <TableRow>
                 <TableCell
                   colSpan={results.some((r) => r.healthCheck) ? 6 : 5}
@@ -235,7 +285,7 @@ export default function HealthCheckResultsTable({
                 </TableCell>
               </TableRow>
             ) : (
-              filteredAndSortedResults.map((result) => (
+              sortedResults.map((result) => (
                 <TableRow
                   key={result.id}
                   className="hover:bg-muted/30 transition-colors"
@@ -328,23 +378,7 @@ export default function HealthCheckResultsTable({
         </Table>
       </div>
 
-      {/* Results count */}
-      <div className="flex items-center justify-between pt-4 border-t">
-        <div className="text-sm text-muted-foreground">
-          Showing{" "}
-          <span className="font-medium text-foreground">
-            {filteredAndSortedResults.length}
-          </span>{" "}
-          of{" "}
-          <span className="font-medium text-foreground">{results.length}</span>{" "}
-          results
-        </div>
-        {filteredAndSortedResults.length !== results.length && (
-          <div className="text-xs text-muted-foreground">
-            {results.length - filteredAndSortedResults.length} hidden by filters
-          </div>
-        )}
-      </div>
+      {/* Results count - now handled by PaginationInfo component */}
     </div>
   );
 }
