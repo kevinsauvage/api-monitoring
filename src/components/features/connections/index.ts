@@ -12,5 +12,6 @@ export { default as ConnectionsOverview } from "./ConnectionsOverview";
 export { default as ConnectionSuccessRateChart } from "./ConnectionSuccessRateChart";
 export { default as ConnectionUptimeChart } from "./ConnectionUptimeChart";
 export { default as NewConnectionHeader } from "./NewConnectionHeader";
+export { default as NewConnectionClient } from "./NewConnectionClient";
 export { default as PlanLimitsCard } from "./PlanLimitsCard";
 export { default as ProviderSelection } from "./ProviderSelection";
