@@ -1,7 +1,7 @@
 import crypto from "crypto";
 
 const algorithm = "aes-256-gcm";
-const envKey = process.env.ENCRYPTION_KEY;
+const envKey = process.env["ENCRYPTION_KEY"];
 
 if (!envKey || envKey.length !== 32) {
   throw new Error("ENCRYPTION_KEY must be exactly 32 characters long");

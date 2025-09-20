@@ -11,15 +11,15 @@ import { log } from "@/lib/shared/utils/logger";
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   debug: process.env.NODE_ENV === "development",
-  secret: process.env.NEXTAUTH_SECRET,
+  secret: process.env.NEXTAUTH_SECRET as string,
   providers: [
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
+      clientId: process.env["GOOGLE_CLIENT_ID"] as string,
+      clientSecret: process.env["GOOGLE_CLIENT_SECRET"] as string,
     }),
     GitHubProvider({
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
+      clientId: process.env["GITHUB_CLIENT_ID"] as string,
+      clientSecret: process.env["GITHUB_CLIENT_SECRET"] as string,
     }),
     CredentialsProvider({
       name: "credentials",
@@ -28,7 +28,7 @@ export const authOptions: NextAuthOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password || !credentials) {
+        if (!credentials?.email || !credentials.password) {
           return null;
         }
 
@@ -70,9 +70,10 @@ export const authOptions: NextAuthOptions = {
   callbacks: {
     jwt({ token, user }) {
       try {
-        if (user && token && user.id) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (user) {
           token.id = user.id;
-          token.subscription = user.subscription;
+          token.subscription = user.subscription ?? "HOBBY";
         }
         return token;
       } catch (error) {
@@ -84,7 +85,8 @@ export const authOptions: NextAuthOptions = {
     },
     session({ session, token }) {
       try {
-        if (token && session.user && token.id) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+        if (token && session.user) {
           session.user.id = token.id;
           session.user.subscription = token.subscription as string;
         }

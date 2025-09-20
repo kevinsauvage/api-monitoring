@@ -33,11 +33,18 @@ import {
   getStatusColor,
 } from "@/lib/shared/utils";
 import { useAsyncAction, useConfirmationDialog } from "@/lib/shared/hooks";
+import {
+  getSuccessRate,
+  getAverageResponseTime,
+} from "@/lib/shared/utils/check-result-utils";
 
 import type { SerializedConnectionWithHealthChecks } from "@/lib/core/serializers";
+import type { CheckResultWithDetails } from "@/lib/core/repositories";
 
 interface ConnectionCardProps {
-  connection: SerializedConnectionWithHealthChecks;
+  connection: SerializedConnectionWithHealthChecks & {
+    recentResults?: CheckResultWithDetails[];
+  };
 }
 
 export default function ConnectionCard({ connection }: ConnectionCardProps) {
@@ -74,27 +81,28 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
     void executeDelete(async () => deleteConnection(connection.id));
   };
 
-  const totalHealthChecks = connection.healthChecks?.length || 0;
-  const activeHealthChecks =
-    connection.healthChecks?.filter((hc) => hc.isActive).length || 0;
+  const totalHealthChecks = connection.healthChecks.length;
+  const activeHealthChecks = connection.healthChecks.filter(
+    (hc) => hc.isActive
+  ).length;
 
-  const healthChecksWithResults = connection.healthChecks?.filter(
-    (hc) => hc.lastExecutedAt
-  );
-  const totalResults = healthChecksWithResults.length;
-  const successRate = totalResults > 0 ? 100 : 0;
+  const recentResults = connection.recentResults ?? [];
+  const totalResults = recentResults.length;
+  const successRate = getSuccessRate(recentResults);
+  const averageResponseTime = getAverageResponseTime(recentResults);
 
-  const averageResponseTime = 0;
-
-  const lastExecutedHealthCheck = healthChecksWithResults
+  const lastExecutedHealthCheck = connection.healthChecks
     .filter((hc) => hc.lastExecutedAt)
-    .sort(
-      (a, b) =>
-        new Date(b.lastExecutedAt!).getTime() -
-        new Date(a.lastExecutedAt!).getTime()
-    )[0];
+    .sort((a, b) => {
+      const aTime = a.lastExecutedAt ? new Date(a.lastExecutedAt).getTime() : 0;
+      const bTime = b.lastExecutedAt ? new Date(b.lastExecutedAt).getTime() : 0;
+      return bTime - aTime;
+    })[0];
 
-  const lastStatus = lastExecutedHealthCheck ? "SUCCESS" : "UNKNOWN";
+  const lastResult = recentResults.sort(
+    (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
+  )[0];
+  const lastStatus = lastResult.status;
 
   return (
     <>
@@ -208,7 +216,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
               </div>
             </div>
 
-            {lastExecutedHealthCheck?.lastExecutedAt && (
+            {lastExecutedHealthCheck.lastExecutedAt && (
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center space-x-2">
                   <div className={getStatusColor(lastStatus)}>
@@ -219,7 +227,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
                   </span>
                 </div>
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                  <span>N/A</span>
+                  <span>{lastResult.responseTime}ms</span>
                   <span>
                     {formatTime(lastExecutedHealthCheck.lastExecutedAt)}
                   </span>
@@ -253,8 +261,8 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
         onConfirm={handleConfirmDelete}
         title={deleteDialog.options.title}
         description={deleteDialog.options.description}
-        confirmText={deleteDialog.options.confirmText}
-        variant={deleteDialog.options.variant}
+        confirmText={deleteDialog.options.confirmText ?? "Delete"}
+        variant={deleteDialog.options.variant ?? "default"}
       />
     </>
   );

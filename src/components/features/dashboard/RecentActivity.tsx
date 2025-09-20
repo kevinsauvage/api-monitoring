@@ -80,9 +80,7 @@ export default function RecentActivity({ recentResults }: RecentActivityProps) {
               >
                 <div className="flex items-center space-x-3">
                   <span className="text-lg">
-                    {getProviderIcon(
-                      result.healthCheck?.apiConnection?.provider ?? "unknown"
-                    )}
+                    {getProviderIcon(result.healthCheck.apiConnection.provider)}
                   </span>
                   <div>
                     <div className="flex items-center space-x-2">
@@ -98,8 +96,7 @@ export default function RecentActivity({ recentResults }: RecentActivityProps) {
                         <span className="ml-1">{result.status}</span>
                       </Badge>
                       <span className="text-sm font-medium text-slate-900 dark:text-white">
-                        {result.healthCheck?.apiConnection?.name ??
-                          "Unknown Connection"}
+                        {result.healthCheck.apiConnection.name}
                       </span>
                     </div>
                     <div className="flex items-center space-x-2 mt-1">

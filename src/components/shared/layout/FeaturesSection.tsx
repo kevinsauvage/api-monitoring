@@ -6,6 +6,7 @@ import {
   BarChart3,
   Bell,
 } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function FeaturesSection() {
   const features = [
@@ -75,20 +76,21 @@ export default function FeaturesSection() {
           {features.map((feature, index) => {
             const IconComponent = feature.icon;
             return (
-              <div
-                key={index}
-                className="p-6 rounded-xl border border-border bg-card hover:shadow-lg transition-shadow"
-              >
-                <div
-                  className={`w-12 h-12 ${feature.iconBg} rounded-lg flex items-center justify-center mb-4`}
-                >
-                  <IconComponent className={`w-6 h-6 ${feature.iconColor}`} />
-                </div>
-                <h3 className="text-xl font-semibold text-card-foreground mb-2">
-                  {feature.title}
-                </h3>
-                <p className="text-muted-foreground">{feature.description}</p>
-              </div>
+              <Card key={index} className="hover:shadow-lg transition-shadow">
+                <CardHeader>
+                  <div
+                    className={`w-12 h-12 ${feature.iconBg} rounded-lg flex items-center justify-center mb-4`}
+                  >
+                    <IconComponent className={`w-6 h-6 ${feature.iconColor}`} />
+                  </div>
+                  <CardTitle className="text-xl font-semibold">
+                    {feature.title}
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <p className="text-muted-foreground">{feature.description}</p>
+                </CardContent>
+              </Card>
             );
           })}
         </div>

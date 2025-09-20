@@ -98,6 +98,9 @@ export default function UptimeChart({ data }: UptimeChartProps) {
               <Tooltip
                 content={({ active, payload, label }) => {
                   if (active && payload?.length) {
+                    const payloadData = payload[0].payload as {
+                      checks: number;
+                    };
                     return (
                       <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
                         <p className="text-sm font-medium">{label}</p>
@@ -107,7 +110,7 @@ export default function UptimeChart({ data }: UptimeChartProps) {
                         </p>
                         <p className="text-sm">
                           <span className="text-blue-600">Checks: </span>
-                          {payload[0].payload.checks}
+                          {payloadData.checks}
                         </p>
                       </div>
                     );

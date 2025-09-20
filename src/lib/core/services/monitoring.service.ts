@@ -44,11 +44,11 @@ export class MonitoringService extends BaseService {
       expectedStatus: input.expectedStatus ?? 200,
       timeout: input.timeout ?? 30,
       interval: input.interval ?? 300,
-      headers: input.headers,
-      body: input.body,
-      queryParams: input.queryParams,
+      headers: input.headers ?? {},
+      body: input.body ?? null,
+      queryParams: input.queryParams ?? {},
       isActive: true,
-      lastExecutedAt: input.lastExecutedAt,
+      lastExecutedAt: input.lastExecutedAt ?? null,
     });
   }
 
@@ -112,11 +112,9 @@ export class MonitoringService extends BaseService {
         method: healthCheck.method,
         expectedStatus: healthCheck.expectedStatus,
         timeout: healthCheck.timeout,
-        headers: healthCheck.headers as Record<string, string> | undefined,
-        body: healthCheck.body ?? undefined,
-        queryParams: healthCheck.queryParams as
-          | Record<string, string>
-          | undefined,
+        headers: healthCheck.headers as Record<string, string>,
+        body: healthCheck.body ?? "",
+        queryParams: healthCheck.queryParams as Record<string, string>,
       },
       connectionWithCredentials
     );

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo, useEffect, useCallback } from "react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
 import { ArrowUpDown, Filter, Search } from "lucide-react";
 import {
   Table,
@@ -21,14 +21,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CheckCircle, XCircle, AlertTriangle, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
 import { StatusBadge, MethodBadge } from "@/components/shared";
-import {
-  getStatusColor,
-  getStatusIcon,
-  getMethodColor,
-} from "@/lib/shared/utils";
+import { getStatusIcon } from "@/lib/shared/utils";
 import type { SortField, SortDirection } from "@/lib/shared/types";
 import type { SerializedCheckResultWithDetails } from "@/lib/core/serializers";
 
@@ -59,6 +55,7 @@ export default function HealthCheckResultsTable({
 }: HealthCheckResultsTableProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const pathname = usePathname();
 
   const [searchTerm, setSearchTerm] = useState(initialSearchTerm);
   const [statusFilter, setStatusFilter] = useState<string>(initialStatusFilter);
@@ -88,11 +85,11 @@ export default function HealthCheckResultsTable({
         params.delete("status");
       }
 
-      router.push(`/dashboard/health?${params.toString()}`, {
+      router.push(`${pathname}?${params.toString()}`, {
         scroll: false,
       });
     },
-    [searchParams, router]
+    [searchParams, router, pathname]
   );
 
   const handleSearchChange = (value: string) => {
@@ -112,9 +109,6 @@ export default function HealthCheckResultsTable({
     updateFilters(searchTerm, value);
   };
 
-  // Status utility functions are now imported from shared utils
-
-  // Since filtering is now done server-side, we just need to sort the results
   const sortedResults = useMemo(() => {
     return [...results].sort((a, b) => {
       let aValue: string | number;
@@ -167,7 +161,6 @@ export default function HealthCheckResultsTable({
 
   return (
     <div className="space-y-6">
-      {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-4 p-4 bg-muted/30 rounded-lg border">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -192,7 +185,6 @@ export default function HealthCheckResultsTable({
         </Select>
       </div>
 
-      {/* Table */}
       <div className="border rounded-lg overflow-hidden shadow-sm">
         <Table>
           <TableHeader className="bg-muted/50">
@@ -207,7 +199,7 @@ export default function HealthCheckResultsTable({
                   Status {getSortIcon("status")}
                 </Button>
               </TableHead>
-              {results.some((r) => r.healthCheck) && (
+              {results.length > 0 && (
                 <TableHead className="font-semibold">Endpoint</TableHead>
               )}
               <TableHead className="font-semibold">
@@ -247,7 +239,7 @@ export default function HealthCheckResultsTable({
             {sortedResults.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={results.some((r) => r.healthCheck) ? 6 : 5}
+                  colSpan={results.length > 0 ? 6 : 5}
                   className="text-center py-8"
                 >
                   <div className="flex flex-col items-center space-y-2">
@@ -273,31 +265,27 @@ export default function HealthCheckResultsTable({
                       <StatusBadge status={result.status} variant="extended" />
                     </div>
                   </TableCell>
-                  {results.some((r) => r.healthCheck) && (
+                  {results.length > 0 && (
                     <TableCell className="py-4">
-                      {result.healthCheck ? (
-                        <div className="space-y-1">
-                          <div className="flex items-center gap-2">
-                            <MethodBadge
-                              method={result.healthCheck.method}
-                              className="text-xs font-mono"
-                            />
-                            <span className="font-medium text-foreground truncate">
-                              {result.healthCheck.endpoint}
-                            </span>
-                          </div>
-                          <p className="text-sm text-muted-foreground truncate">
-                            {result.healthCheck.apiConnection.name}
-                            {result.healthCheck.apiConnection.provider && (
-                              <span className="ml-1 text-xs">
-                                ({result.healthCheck.apiConnection.provider})
-                              </span>
-                            )}
-                          </p>
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <MethodBadge
+                            method={result.healthCheck.method}
+                            className="text-xs font-mono"
+                          />
+                          <span className="font-medium text-foreground truncate">
+                            {result.healthCheck.endpoint}
+                          </span>
                         </div>
-                      ) : (
-                        <span className="text-muted-foreground">—</span>
-                      )}
+                        <p className="text-sm text-muted-foreground truncate">
+                          {result.healthCheck.apiConnection.name}
+                          {result.healthCheck.apiConnection.provider && (
+                            <span className="ml-1 text-xs">
+                              ({result.healthCheck.apiConnection.provider})
+                            </span>
+                          )}
+                        </p>
+                      </div>
                     </TableCell>
                   )}
                   <TableCell className="py-4">
@@ -344,8 +332,6 @@ export default function HealthCheckResultsTable({
           </TableBody>
         </Table>
       </div>
-
-      {/* Results count - now handled by PaginationInfo component */}
     </div>
   );
 }

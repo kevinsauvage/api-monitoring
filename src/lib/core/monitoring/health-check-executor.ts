@@ -12,9 +12,7 @@ export class HealthCheckExecutor {
   private static instance: HealthCheckExecutor;
 
   public static getInstance(): HealthCheckExecutor {
-    if (!HealthCheckExecutor.instance) {
-      HealthCheckExecutor.instance = new HealthCheckExecutor();
-    }
+    HealthCheckExecutor.instance = new HealthCheckExecutor();
     return HealthCheckExecutor.instance;
   }
 
@@ -77,9 +75,7 @@ export class HealthCheckExecutor {
         responseTime,
         statusCode: response.status,
         errorMessage:
-          status !== "SUCCESS"
-            ? this.getErrorMessage(response, status)
-            : undefined,
+          status !== "SUCCESS" ? this.getErrorMessage(response, status) : null,
         metadata: {
           url: fullUrl,
           method: config.method,
@@ -150,11 +146,11 @@ export class HealthCheckExecutor {
     connection: Record<string, unknown>
   ): Record<string, string> {
     const credentials = {
-      apiKey: connection.apiKey as string,
-      secretKey: connection.secretKey as string,
+      apiKey: connection["apiKey"] as string,
+      secretKey: connection["secretKey"] as string,
     };
 
-    return getAuthHeaders(connection.provider as string, credentials);
+    return getAuthHeaders(connection["provider"] as string, credentials);
   }
 
   /**

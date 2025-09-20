@@ -8,7 +8,7 @@ export class AppError extends Error {
   public readonly code: string;
   public readonly statusCode: number;
   public readonly isOperational: boolean;
-  public readonly cause?: Error;
+  public override readonly cause?: Error;
 
   constructor(
     message: string,
@@ -22,7 +22,7 @@ export class AppError extends Error {
     this.code = code;
     this.statusCode = statusCode;
     this.isOperational = isOperational;
-    this.cause = cause;
+    this.cause = cause ?? new Error("unknown error");
 
     Error.captureStackTrace(this, this.constructor);
   }

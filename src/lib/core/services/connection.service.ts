@@ -118,18 +118,18 @@ export class ConnectionService extends BaseService {
 
     const validationInput = {
       ...input,
-      secretKey: input.secretKey,
-      apiKey: input.apiKey,
-      accountSid: input.accountSid,
-      authToken: input.authToken,
-      token: input.token,
+      secretKey: input.secretKey ?? "",
+      apiKey: input.apiKey ?? "",
+      accountSid: input.accountSid ?? "",
+      authToken: input.authToken ?? "",
+      token: input.token ?? "",
     };
     const validationResult = await validateApiConnection(validationInput);
 
     return {
       success: validationResult.success,
       message: validationResult.message,
-      data: validationResult.data,
+      data: validationResult.data ?? {},
     };
   }
 
@@ -163,20 +163,20 @@ export class ConnectionService extends BaseService {
 
     const encryptedData: Record<string, string> = {};
 
-    if (input.apiKey) {
-      encryptedData.apiKey = encrypt(input.apiKey);
+    if (input["apiKey"]) {
+      encryptedData["apiKey"] = encrypt(input["apiKey"]);
     }
-    if (input.secretKey) {
-      encryptedData.secretKey = encrypt(input.secretKey);
+    if (input["secretKey"]) {
+      encryptedData["secretKey"] = encrypt(input["secretKey"]);
     }
-    if (input.accountSid) {
-      encryptedData.accountSid = encrypt(input.accountSid);
+    if (input["accountSid"]) {
+      encryptedData["accountSid"] = encrypt(input["accountSid"]);
     }
-    if (input.authToken) {
-      encryptedData.authToken = encrypt(input.authToken);
+    if (input["authToken"]) {
+      encryptedData["authToken"] = encrypt(input["authToken"]);
     }
-    if (input.token) {
-      encryptedData.token = encrypt(input.token);
+    if (input["token"]) {
+      encryptedData["token"] = encrypt(input["token"]);
     }
 
     const connection = await this.connectionRepository.create({
@@ -186,13 +186,15 @@ export class ConnectionService extends BaseService {
       user: {
         connect: { id: user.id },
       },
-      apiKey: encryptedData.apiKey, // Required field
-      secretKey: encryptedData.secretKey,
-      ...(encryptedData.accountSid && {
-        accountSid: encryptedData.accountSid,
+      apiKey: encryptedData["apiKey"], // Required field
+      secretKey: encryptedData["secretKey"],
+      ...(encryptedData["accountSid"] && {
+        accountSid: encryptedData["accountSid"],
       }),
-      ...(encryptedData.authToken && { authToken: encryptedData.authToken }),
-      ...(encryptedData.token && { token: encryptedData.token }),
+      ...(encryptedData["authToken"] && {
+        authToken: encryptedData["authToken"],
+      }),
+      ...(encryptedData["token"] && { token: encryptedData["token"] }),
     });
 
     return {

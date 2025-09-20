@@ -87,8 +87,9 @@ export default function SuccessRateChart({ data }: SuccessRateChartProps) {
               </Pie>
               <Tooltip
                 content={({ active, payload }) => {
-                  if (active && payload?.length) {
+                  if (active && payload && payload.length > 0) {
                     const data = payload[0];
+                    const payloadData = data.payload as { percentage: number };
                     return (
                       <div className="bg-background border border-border rounded-lg p-3 shadow-lg">
                         <p className="text-sm font-medium">{data.name}</p>
@@ -98,7 +99,7 @@ export default function SuccessRateChart({ data }: SuccessRateChartProps) {
                         </p>
                         <p className="text-sm">
                           <span className="text-blue-600">Percentage: </span>
-                          {data.payload.percentage.toFixed(1)}%
+                          {payloadData.percentage.toFixed(1)}%
                         </p>
                       </div>
                     );

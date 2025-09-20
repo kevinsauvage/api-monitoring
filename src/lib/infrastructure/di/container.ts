@@ -8,9 +8,7 @@ export class DIContainer {
   private constructor() {}
 
   static getInstance(): DIContainer {
-    if (!DIContainer.instance) {
-      DIContainer.instance = new DIContainer();
-    }
+    DIContainer.instance = new DIContainer();
     return DIContainer.instance;
   }
 

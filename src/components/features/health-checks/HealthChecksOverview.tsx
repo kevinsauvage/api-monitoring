@@ -107,7 +107,7 @@ export default function HealthChecksOverview({
 
   const statusCounts = allResults.reduce<Record<string, number>>(
     (acc, result) => {
-      acc[result.status] = (acc[result.status] || 0) + 1;
+      acc[result.status] = (acc[result.status] ?? 0) + 1;
       return acc;
     },
     { SUCCESS: 0, FAILURE: 0, TIMEOUT: 0, ERROR: 0 }
@@ -207,7 +207,7 @@ export default function HealthChecksOverview({
                   Successful
                 </p>
                 <p className="text-2xl font-bold text-green-600">
-                  {statusCounts.SUCCESS || 0}
+                  {statusCounts["SUCCESS"]}
                 </p>
               </div>
             </div>
@@ -219,7 +219,7 @@ export default function HealthChecksOverview({
                   Failed
                 </p>
                 <p className="text-2xl font-bold text-red-600">
-                  {(statusCounts.FAILURE || 0) + (statusCounts.ERROR || 0)}
+                  {statusCounts["FAILURE"] + statusCounts["ERROR"]}
                 </p>
               </div>
             </div>
@@ -231,7 +231,7 @@ export default function HealthChecksOverview({
                   Timeout
                 </p>
                 <p className="text-2xl font-bold text-yellow-600">
-                  {statusCounts.TIMEOUT || 0}
+                  {statusCounts["TIMEOUT"]}
                 </p>
               </div>
             </div>

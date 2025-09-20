@@ -26,7 +26,6 @@ export async function validateConnection(
     return {
       success: false,
       message: result.message,
-      data: undefined,
     };
   }
 }
@@ -81,7 +80,7 @@ export async function toggleConnectionActive(
       success: false,
       message: result.message,
       error: result.message,
-      zodError: result.zodError,
+      zodError: result.zodError ?? [],
     };
   }
 }
@@ -111,7 +110,7 @@ export async function deleteConnection(
       success: false,
       message: result.message,
       error: result.message,
-      zodError: result.zodError,
+      zodError: result.zodError ?? [],
     };
   }
 }

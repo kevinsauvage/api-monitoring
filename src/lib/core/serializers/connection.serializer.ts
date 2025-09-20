@@ -1,4 +1,5 @@
 import type { ApiConnection } from "@prisma/client";
+import type { CheckResultWithDetails } from "@/lib/core/repositories";
 
 /**
  * Serialized connection data for API responses
@@ -25,6 +26,14 @@ export interface SerializedConnectionWithHealthChecks
     isActive: boolean;
     lastExecutedAt: string | null;
   }>;
+}
+
+/**
+ * Serialized connection with health checks and recent results
+ */
+export interface SerializedConnectionWithHealthChecksAndResults
+  extends SerializedConnectionWithHealthChecks {
+  recentResults?: CheckResultWithDetails[];
 }
 
 /**
@@ -86,5 +95,26 @@ export function serializeConnectionWithHealthChecks(
           : healthCheck.lastExecutedAt
         : null,
     })),
+  };
+}
+
+/**
+ * Serialize connection with health checks and recent results
+ */
+export function serializeConnectionWithHealthChecksAndResults(
+  connection: ApiConnection & {
+    healthChecks: Array<{
+      id: string;
+      endpoint: string;
+      method: string;
+      isActive: boolean;
+      lastExecutedAt: Date | string | null;
+    }>;
+    recentResults?: CheckResultWithDetails[];
+  }
+): SerializedConnectionWithHealthChecksAndResults {
+  return {
+    ...serializeConnectionWithHealthChecks(connection),
+    recentResults: connection.recentResults ?? [],
   };
 }

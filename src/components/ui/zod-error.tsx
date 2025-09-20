@@ -114,7 +114,7 @@ export function FormFieldWithError({
   return (
     <div className={cn("space-y-1", className)}>
       {children}
-      <ZodError errors={errors} fieldName={fieldName} />
+      <ZodError errors={errors ?? []} fieldName={fieldName} />
     </div>
   );
 }

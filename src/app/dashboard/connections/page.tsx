@@ -1,17 +1,21 @@
 import ConnectionsHeader from "@/components/features/connections/ConnectionsHeader";
 import ConnectionsOverview from "@/components/features/connections/ConnectionsOverview";
 import ConnectionsList from "@/components/features/connections/ConnectionsList";
-import { getConnectionService } from "@/lib/infrastructure/di";
-import { serializeConnectionWithHealthChecks } from "@/lib/core/serializers";
+import {
+  getConnectionService,
+  getCheckResultRepository,
+} from "@/lib/infrastructure/di";
+import { serializeConnectionWithHealthChecksAndResults } from "@/lib/core/serializers";
 
 export const revalidate = 600; // 10 minutes
 
 export default async function ConnectionsPage() {
   const connectionService = getConnectionService();
+  const checkResultRepository = getCheckResultRepository();
   const data = await connectionService.getConnections();
   const { connections, user, limits } = data;
 
-  if (!user || !limits) {
+  if (!user) {
     return (
       <div className="space-y-6">
         <div className="text-center py-8">
@@ -23,8 +27,22 @@ export default async function ConnectionsPage() {
     );
   }
 
-  const serializedConnections = connections.map(
-    serializeConnectionWithHealthChecks
+  // Fetch recent results for each connection to calculate metrics
+  const connectionsWithResults = await Promise.all(
+    connections.map(async (connection) => {
+      const recentResults = await checkResultRepository.findByConnectionId(
+        connection.id,
+        10 // Get last 10 results for metrics calculation
+      );
+      return {
+        ...connection,
+        recentResults,
+      };
+    })
+  );
+
+  const serializedConnections = connectionsWithResults.map(
+    serializeConnectionWithHealthChecksAndResults
   );
 
   return (

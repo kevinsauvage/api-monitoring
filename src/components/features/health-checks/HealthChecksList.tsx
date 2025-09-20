@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Search, Filter, Grid, List } from "lucide-react";
+import { Plus, Search, Filter, Grid, List, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,6 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import HealthCheckCard from "./HealthCheckCard";
 import type { HealthCheckWithResults } from "@/lib/core/services/health-check.service";
 
@@ -66,22 +67,21 @@ export default function HealthChecksList({
               checks
             </p>
           </div>
-          <div className="flex items-center space-x-2">
-            <Button
-              variant={viewMode === "grid" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setViewMode("grid")}
-            >
+          <ToggleGroup
+            type="single"
+            value={viewMode}
+            onValueChange={(value) =>
+              value && setViewMode(value as "grid" | "list")
+            }
+            variant="outline"
+          >
+            <ToggleGroupItem value="grid" aria-label="Grid view">
               <Grid className="w-4 h-4" />
-            </Button>
-            <Button
-              variant={viewMode === "list" ? "default" : "outline"}
-              size="sm"
-              onClick={() => setViewMode("list")}
-            >
+            </ToggleGroupItem>
+            <ToggleGroupItem value="list" aria-label="List view">
               <List className="w-4 h-4" />
-            </Button>
-          </div>
+            </ToggleGroupItem>
+          </ToggleGroup>
         </div>
       </CardHeader>
 
@@ -155,43 +155,31 @@ export default function HealthChecksList({
                 {searchTerm && (
                   <Badge
                     variant="secondary"
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1 cursor-pointer hover:bg-secondary/80"
+                    onClick={() => setSearchTerm("")}
                   >
                     Search: {searchTerm}
-                    <button
-                      onClick={() => setSearchTerm("")}
-                      className="ml-1 hover:bg-muted-foreground/20 rounded-full p-0.5"
-                    >
-                      ×
-                    </button>
+                    <X className="w-3 h-3" />
                   </Badge>
                 )}
                 {statusFilter !== "all" && (
                   <Badge
                     variant="secondary"
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1 cursor-pointer hover:bg-secondary/80"
+                    onClick={() => setStatusFilter("all")}
                   >
                     Status: {statusFilter}
-                    <button
-                      onClick={() => setStatusFilter("all")}
-                      className="ml-1 hover:bg-muted-foreground/20 rounded-full p-0.5"
-                    >
-                      ×
-                    </button>
+                    <X className="w-3 h-3" />
                   </Badge>
                 )}
                 {methodFilter !== "all" && (
                   <Badge
                     variant="secondary"
-                    className="flex items-center gap-1"
+                    className="flex items-center gap-1 cursor-pointer hover:bg-secondary/80"
+                    onClick={() => setMethodFilter("all")}
                   >
                     Method: {methodFilter}
-                    <button
-                      onClick={() => setMethodFilter("all")}
-                      className="ml-1 hover:bg-muted-foreground/20 rounded-full p-0.5"
-                    >
-                      ×
-                    </button>
+                    <X className="w-3 h-3" />
                   </Badge>
                 )}
               </div>

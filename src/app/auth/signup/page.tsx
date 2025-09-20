@@ -19,7 +19,7 @@ export default function SignUp() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const [state, formAction, isPending] = useActionState(
-    async (prevState: RegistrationResult, formData: FormData) => {
+    async (_prevState: RegistrationResult, formData: FormData) => {
       const data = {
         name: formData.get("name") as string,
         email: formData.get("email") as string,

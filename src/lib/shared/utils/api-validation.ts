@@ -147,13 +147,18 @@ async function validateTwilioConnection(
       return { success: false, message: "No data returned from Twilio API" };
     }
 
+    const responseData = response.data as {
+      sid: string;
+      friendly_name: string;
+      status: string;
+    };
     return {
       success: true,
       message: "Twilio connection validated successfully",
       data: {
-        accountSid: response.data.sid,
-        accountName: response.data.friendly_name,
-        status: response.data.status,
+        accountSid: responseData.sid,
+        accountName: responseData.friendly_name,
+        status: responseData.status,
       },
     };
   } catch (error: unknown) {
@@ -177,12 +182,16 @@ async function validateSendGridConnection(
       timeout: 10000,
     });
 
+    const responseData = response.data as {
+      type: string;
+      reputation: number;
+    };
     return {
       success: true,
       message: "SendGrid connection validated successfully",
       data: {
-        accountType: response.data.type,
-        reputation: response.data.reputation,
+        accountType: responseData.type,
+        reputation: responseData.reputation,
       },
     };
   } catch (error: unknown) {
@@ -207,13 +216,18 @@ async function validateGitHubConnection(
       timeout: 10000,
     });
 
+    const responseData = response.data as {
+      login: string;
+      name: string;
+      public_repos: number;
+    };
     return {
       success: true,
       message: "GitHub connection validated successfully",
       data: {
-        username: response.data.login,
-        name: response.data.name,
-        publicRepos: response.data.public_repos,
+        username: responseData.login,
+        name: responseData.name,
+        publicRepos: responseData.public_repos,
       },
     };
   } catch (error: unknown) {
@@ -237,13 +251,18 @@ async function validateSlackConnection(
       timeout: 10000,
     });
 
+    const responseData = response.data as {
+      team: string;
+      user: string;
+      url: string;
+    };
     return {
       success: true,
       message: "Slack connection validated successfully",
       data: {
-        team: response.data.team,
-        user: response.data.user,
-        url: response.data.url,
+        team: responseData.team,
+        user: responseData.user,
+        url: responseData.url,
       },
     };
   } catch (error: unknown) {
@@ -307,30 +326,32 @@ export function getAuthHeaders(
   switch (provider.toLowerCase()) {
     case "stripe":
       return {
-        Authorization: `Bearer ${credentials.apiKey}`,
+        Authorization: `Bearer ${credentials["apiKey"]}`,
       };
     case "twilio":
       return {
         Authorization: `Basic ${Buffer.from(
-          `${credentials.accountSid}:${credentials.authToken}`
+          `${credentials["accountSid"]}:${credentials["authToken"]}`
         ).toString("base64")}`,
       };
     case "sendgrid":
       return {
-        Authorization: `Bearer ${credentials.apiKey}`,
+        Authorization: `Bearer ${credentials["apiKey"]}`,
       };
     case "github":
       return {
-        Authorization: `Bearer ${credentials.token}`,
+        Authorization: `Bearer ${credentials["token"]}`,
         Accept: "application/vnd.github.v3+json",
       };
     case "slack":
       return {
-        Authorization: `Bearer ${credentials.token}`,
+        Authorization: `Bearer ${credentials["token"]}`,
       };
     default:
       return {
-        Authorization: `Bearer ${credentials.apiKey ?? credentials.token}`,
+        Authorization: `Bearer ${
+          credentials["apiKey"] ?? credentials["token"]
+        }`,
       };
   }
 }

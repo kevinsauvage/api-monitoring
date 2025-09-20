@@ -36,8 +36,7 @@ export default function CreateHealthCheckForm({
   const router = useRouter();
   const { data: session } = useSession();
 
-  const subscription =
-    (session?.user.subscription as Subscription) ?? "BUSINESS";
+  const subscription = session?.user.subscription as Subscription;
   const intervalOptions = getIntervalOptions(subscription);
   const defaultInterval = getDefaultInterval(subscription);
 
@@ -45,7 +44,6 @@ export default function CreateHealthCheckForm({
     try {
       setIsSubmitting(true);
 
-      // Parse JSON fields
       const headers = formData.get("headers") as string;
       const queryParams = formData.get("queryParams") as string;
 
@@ -77,9 +75,9 @@ export default function CreateHealthCheckForm({
         expectedStatus: parseInt(formData.get("expectedStatus") as string, 10),
         timeout: parseInt(formData.get("timeout") as string, 10),
         interval: parseInt(formData.get("interval") as string, 10),
-        headers: parsedHeaders,
+        headers: parsedHeaders ?? {},
         body: formData.get("body") as string,
-        queryParams: parsedQueryParams,
+        queryParams: parsedQueryParams ?? {},
       });
 
       if (result.success) {

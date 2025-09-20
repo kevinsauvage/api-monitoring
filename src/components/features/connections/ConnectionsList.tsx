@@ -17,9 +17,12 @@ import { Badge } from "@/components/ui/badge";
 import ConnectionCard from "./ConnectionCard";
 
 import type { SerializedConnectionWithHealthChecks } from "@/lib/core/serializers";
+import type { CheckResultWithDetails } from "@/lib/core/repositories";
 
 interface ConnectionsListProps {
-  connections: SerializedConnectionWithHealthChecks[];
+  connections: (SerializedConnectionWithHealthChecks & {
+    recentResults?: CheckResultWithDetails[];
+  })[];
 }
 
 export default function ConnectionsList({ connections }: ConnectionsListProps) {

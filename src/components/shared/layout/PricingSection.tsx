@@ -1,5 +1,8 @@
 import Link from "next/link";
 import { CheckCircle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 export default function PricingSection() {
   const plans = [
@@ -65,46 +68,47 @@ export default function PricingSection() {
 
         <div className="grid md:grid-cols-3 gap-8">
           {plans.map((plan, index) => (
-            <div
+            <Card
               key={index}
-              className={`p-8 rounded-xl border ${
-                plan.popular ? "border-2 border-primary" : "border-border"
-              } bg-card relative`}
+              className={`relative ${
+                plan.popular ? "border-2 border-primary" : ""
+              }`}
             >
               {plan.popular && (
                 <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-                  <span className="bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-semibold">
+                  <Badge className="bg-primary text-primary-foreground px-4 py-1 text-sm font-semibold">
                     Most Popular
-                  </span>
+                  </Badge>
                 </div>
               )}
 
-              <div className="text-center mb-8">
-                <h3 className="text-2xl font-bold text-card-foreground mb-2">
+              <CardHeader className="text-center">
+                <CardTitle className="text-2xl font-bold mb-2">
                   {plan.name}
-                </h3>
-                <div className="text-4xl font-bold text-card-foreground mb-2">
-                  {plan.price}
-                </div>
+                </CardTitle>
+                <div className="text-4xl font-bold mb-2">{plan.price}</div>
                 <p className="text-muted-foreground">{plan.description}</p>
-              </div>
+              </CardHeader>
 
-              <ul className="space-y-4 mb-8">
-                {plan.features.map((feature, featureIndex) => (
-                  <li key={featureIndex} className="flex items-center">
-                    <CheckCircle className="w-5 h-5 text-chart-2 mr-3" />
-                    <span className="text-muted-foreground">{feature}</span>
-                  </li>
-                ))}
-              </ul>
+              <CardContent className="space-y-4">
+                <ul className="space-y-4">
+                  {plan.features.map((feature, featureIndex) => (
+                    <li key={featureIndex} className="flex items-center">
+                      <CheckCircle className="w-5 h-5 text-chart-2 mr-3" />
+                      <span className="text-muted-foreground">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
 
-              <Link
-                href="/auth/signup"
-                className={`w-full ${plan.buttonStyle} py-3 rounded-lg font-semibold text-center block transition-colors`}
-              >
-                {plan.buttonText}
-              </Link>
-            </div>
+                <Button
+                  asChild
+                  variant={plan.popular ? "default" : "outline"}
+                  className="w-full"
+                >
+                  <Link href="/auth/signup">{plan.buttonText}</Link>
+                </Button>
+              </CardContent>
+            </Card>
           ))}
         </div>
       </div>

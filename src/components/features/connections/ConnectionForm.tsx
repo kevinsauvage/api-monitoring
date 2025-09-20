@@ -31,11 +31,10 @@ import { ZodError } from "@/components/ui/zod-error";
 import { API_PROVIDERS } from "@/components/utils/constants";
 import { redirect } from "next/navigation";
 
-// Initial state for useActionState
 const initialState: ConnectionCreateResult = {
   success: false,
   message: "",
-  zodError: undefined,
+  zodError: [],
 };
 
 interface ConnectionFormProps {
@@ -74,10 +73,9 @@ export default function ConnectionForm({
     (p) => p.id === selectedProvider
   );
 
-  // Use useActionState for form submission
   const [state, formAction, isPending] = useActionState(
     async (
-      prevState: ConnectionCreateResult,
+      _prevState: ConnectionCreateResult,
       formData: FormData
     ): Promise<ConnectionCreateResult> => {
       const data = {
@@ -135,10 +133,8 @@ export default function ConnectionForm({
         )}
 
         <form action={formAction} className="space-y-8">
-          {/* Hidden provider field */}
           <input type="hidden" name="provider" value={selectedProvider} />
 
-          {/* Basic Information */}
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
@@ -160,7 +156,7 @@ export default function ConnectionForm({
                     required
                     className="h-11"
                   />
-                  <ZodError errors={state.zodError} fieldName="name" />
+                  <ZodError errors={state.zodError ?? []} fieldName="name" />
                 </div>
 
                 <div className="space-y-2">
@@ -177,12 +173,11 @@ export default function ConnectionForm({
                     required
                     className="h-11"
                   />
-                  <ZodError errors={state.zodError} fieldName="baseUrl" />
+                  <ZodError errors={state.zodError ?? []} fieldName="baseUrl" />
                 </div>
               </div>
             </div>
 
-            {/* API Credentials */}
             <div>
               <h3 className="text-lg font-semibold mb-4 flex items-center space-x-2">
                 <Lock className="h-5 w-5" />
@@ -232,14 +227,16 @@ export default function ConnectionForm({
                         </Button>
                       )}
                     </div>
-                    <ZodError errors={state.zodError} fieldName={field.name} />
+                    <ZodError
+                      errors={state.zodError ?? []}
+                      fieldName={field.name}
+                    />
                   </div>
                 ))}
               </div>
             </div>
           </div>
 
-          {/* Security Notice */}
           <Alert>
             <Shield className="h-4 w-4" />
             <AlertDescription>
@@ -249,7 +246,6 @@ export default function ConnectionForm({
             </AlertDescription>
           </Alert>
 
-          {/* Validation */}
           {isFormValid() && (
             <div className="space-y-4">
               <Button
@@ -289,7 +285,6 @@ export default function ConnectionForm({
             </div>
           )}
 
-          {/* Submit Button */}
           <div className="flex justify-end space-x-4 pt-6">
             <Button variant="outline" asChild className="h-11 px-8">
               <Link href="/dashboard/connections">Cancel</Link>

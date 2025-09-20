@@ -128,11 +128,11 @@ export default function ConnectionResponseTimeChart({
                         <p className="text-sm font-medium">{label}</p>
                         <p className="text-sm">
                           <span className="text-blue-600">Response Time: </span>
-                          {data?.value}ms
+                          {data.value}ms
                         </p>
                         <p className="text-sm">
                           <span className="text-green-600">Status: </span>
-                          {data?.payload?.status}
+                          {data.payload.status}
                         </p>
                       </div>
                     );

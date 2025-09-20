@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+
 import { ConfirmationDialog, MethodBadge } from "@/components/shared";
 import {
   deleteHealthCheck,
@@ -77,8 +78,8 @@ export default function HealthCheckCard({ healthCheck }: HealthCheckCardProps) {
       : 0;
 
   const lastResult = healthCheck.recentResults[0];
-  const lastStatus = lastResult?.status || "UNKNOWN";
-  const lastResponseTime = lastResult?.responseTime || 0;
+  const lastStatus = lastResult.status;
+  const lastResponseTime = lastResult.responseTime;
 
   return (
     <>
@@ -162,7 +163,7 @@ export default function HealthCheckCard({ healthCheck }: HealthCheckCardProps) {
               </div>
             </div>
 
-            {lastResult?.status && (
+            {
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center space-x-2">
                   <div className={getStatusColor(lastStatus)}>
@@ -177,7 +178,7 @@ export default function HealthCheckCard({ healthCheck }: HealthCheckCardProps) {
                   <span>{formatTime(lastResult.timestamp)}</span>
                 </div>
               </div>
-            )}
+            }
           </div>
         </CardContent>
       </Card>
@@ -188,8 +189,8 @@ export default function HealthCheckCard({ healthCheck }: HealthCheckCardProps) {
         onConfirm={handleConfirmDelete}
         title={deleteDialog.options.title}
         description={deleteDialog.options.description}
-        confirmText={deleteDialog.options.confirmText}
-        variant={deleteDialog.options.variant}
+        confirmText={deleteDialog.options.confirmText ?? "Delete"}
+        variant={deleteDialog.options.variant ?? "default"}
       />
     </>
   );

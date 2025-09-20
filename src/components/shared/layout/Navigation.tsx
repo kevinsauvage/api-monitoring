@@ -12,6 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Navigation() {
   const { data: session, status } = useSession();
@@ -45,9 +46,15 @@ export default function Navigation() {
                       variant="ghost"
                       className="relative h-8 w-8 rounded-full"
                     >
-                      <div className="w-8 h-8 aspect-square bg-primary rounded-full flex items-center justify-center">
-                        <User className="w-4 h-4 aspect-square text-primary-foreground" />
-                      </div>
+                      <Avatar className="h-8 w-8">
+                        <AvatarImage
+                          src={session.user.image ?? undefined}
+                          alt={session.user.name ?? "User"}
+                        />
+                        <AvatarFallback>
+                          <User className="w-4 h-4" />
+                        </AvatarFallback>
+                      </Avatar>
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end" forceMount>

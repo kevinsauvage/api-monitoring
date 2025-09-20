@@ -2,7 +2,7 @@ import type { CheckResultWithDetails } from "@/lib/core/repositories";
 
 export function getStatusCounts(recentResults: CheckResultWithDetails[]) {
   return recentResults.reduce<Record<string, number>>((acc, result) => {
-    acc[result.status] = (acc[result.status] || 0) + 1;
+    acc[result.status] = (acc[result.status] ?? 0) + 1;
     return acc;
   }, {});
 }
