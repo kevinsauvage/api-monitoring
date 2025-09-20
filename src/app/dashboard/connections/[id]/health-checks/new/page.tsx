@@ -1,6 +1,9 @@
 import { getConnectionService } from "@/lib/infrastructure/di";
 import CreateHealthCheckForm from "@/components/features/health-checks/CreateHealthCheckForm";
 
+// Enable route-level caching for new health check page
+export const revalidate = 600; // 10 minutes
+
 export default async function NewHealthCheckPage({
   params,
 }: {

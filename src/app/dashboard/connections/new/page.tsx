@@ -30,8 +30,7 @@ export default function NewConnectionPage() {
     message: string;
   } | null>(null);
 
-  const subscription =
-    (session?.user?.subscription as Subscription) ?? "BUSINESS";
+  const subscription = session?.user.subscription as Subscription;
 
   const selectedProviderData = API_PROVIDERS.find(
     (p) => p.id === selectedProvider

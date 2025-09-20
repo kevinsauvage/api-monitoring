@@ -13,6 +13,8 @@ import { authOptions } from "@/lib/infrastructure/auth";
 import { getServerSession } from "next-auth";
 import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 
+export const revalidate = 300; // 5 minutes
+
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
   if (!session?.user) {

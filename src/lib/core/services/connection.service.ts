@@ -52,10 +52,11 @@ export class ConnectionService extends BaseService {
 
   async getConnections(): Promise<ConnectionData> {
     const user = await this.requireAuth();
+    return this.getConnectionsForUser(user.id);
+  }
 
-    const userData = await this.userRepository.findByIdWithSubscription(
-      user.id
-    );
+  async getConnectionsForUser(userId: string): Promise<ConnectionData> {
+    const userData = await this.userRepository.findByIdWithSubscription(userId);
 
     if (!userData) {
       return {
@@ -73,13 +74,11 @@ export class ConnectionService extends BaseService {
     }
 
     const connections =
-      await this.connectionRepository.findByUserIdWithHealthChecks(user.id);
+      await this.connectionRepository.findByUserIdWithHealthChecks(userId);
     const planLimits = getPlanLimits(userData.subscription);
 
-    const formattedConnections = connections;
-
     return {
-      connections: formattedConnections,
+      connections,
       user: userData as UserWithPassword,
       limits: {
         maxConnections: planLimits.maxConnections,

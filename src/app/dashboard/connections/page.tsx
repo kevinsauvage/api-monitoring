@@ -4,6 +4,8 @@ import ConnectionsList from "@/components/features/connections/ConnectionsList";
 import { getConnectionService } from "@/lib/infrastructure/di";
 import { serializeConnectionWithHealthChecks } from "@/lib/core/serializers";
 
+export const revalidate = 600; // 10 minutes
+
 export default async function ConnectionsPage() {
   const connectionService = getConnectionService();
   const data = await connectionService.getConnections();

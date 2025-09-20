@@ -6,6 +6,9 @@ import HealthChecksHeader from "@/components/features/health-checks/HealthChecks
 import HealthChecksOverview from "@/components/features/health-checks/HealthChecksOverview";
 import HealthChecksList from "@/components/features/health-checks/HealthChecksList";
 
+// Enable route-level caching for connection health checks
+export const revalidate = 300; // 5 minutes
+
 export default async function ConnectionHealthChecksPage({
   params,
 }: {

@@ -39,8 +39,14 @@ export function serializeConnection(
     provider: connection.provider,
     baseUrl: connection.baseUrl,
     isActive: connection.isActive,
-    createdAt: connection.createdAt.toISOString(),
-    updatedAt: connection.updatedAt.toISOString(),
+    createdAt:
+      connection.createdAt instanceof Date
+        ? connection.createdAt.toISOString()
+        : connection.createdAt,
+    updatedAt:
+      connection.updatedAt instanceof Date
+        ? connection.updatedAt.toISOString()
+        : connection.updatedAt,
   };
 }
 
@@ -63,7 +69,7 @@ export function serializeConnectionWithHealthChecks(
       endpoint: string;
       method: string;
       isActive: boolean;
-      lastExecutedAt: Date | null;
+      lastExecutedAt: Date | string | null;
     }>;
   }
 ): SerializedConnectionWithHealthChecks {
@@ -74,7 +80,11 @@ export function serializeConnectionWithHealthChecks(
       endpoint: healthCheck.endpoint,
       method: healthCheck.method,
       isActive: healthCheck.isActive,
-      lastExecutedAt: healthCheck.lastExecutedAt?.toISOString() ?? null,
+      lastExecutedAt: healthCheck.lastExecutedAt
+        ? healthCheck.lastExecutedAt instanceof Date
+          ? healthCheck.lastExecutedAt.toISOString()
+          : healthCheck.lastExecutedAt
+        : null,
     })),
   };
 }

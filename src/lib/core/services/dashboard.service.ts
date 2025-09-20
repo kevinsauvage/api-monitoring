@@ -36,6 +36,10 @@ export class DashboardService extends BaseService {
   }
 
   async getDashboardStats(userId: string) {
+    return this.getDashboardStatsForUser(userId);
+  }
+
+  async getDashboardStatsForUser(userId: string) {
     // Get basic connection stats
     const totalConnections = await this.connectionRepository.countByUserId(
       userId

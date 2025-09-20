@@ -3,6 +3,9 @@ import { authOptions } from "@/lib/infrastructure/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
 
+// Enable route-level caching for performance page
+export const revalidate = 120; // 2 minutes
+
 export default async function PerformancePage() {
   const session = await getServerSession(authOptions);
 

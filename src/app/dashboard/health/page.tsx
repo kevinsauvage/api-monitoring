@@ -13,6 +13,10 @@ import {
 import HealthCheckResultsTable from "./components/HealthCheckResultsTable";
 import RefreshHealthButton from "@/components/features/health-checks/RefreshHealthButton";
 import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
+import { CheckResultRepository } from "@/lib/core/repositories";
+
+// Enable route-level caching for health page
+export const revalidate = 180; // 3 minutes
 
 export default async function HealthPage() {
   const session = await getServerSession(authOptions);
@@ -21,7 +25,6 @@ export default async function HealthPage() {
     return null;
   }
 
-  const { CheckResultRepository } = await import("@/lib/core/repositories");
   const checkResultRepository = new CheckResultRepository();
 
   const recentResults = await checkResultRepository.findByUserIdWithDetails(

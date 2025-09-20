@@ -45,7 +45,10 @@ export function serializeCheckResult(
     statusCode: checkResult.statusCode,
     errorMessage: checkResult.errorMessage,
     metadata: checkResult.metadata as Record<string, unknown> | null,
-    timestamp: checkResult.timestamp.toISOString(),
+    timestamp:
+      checkResult.timestamp instanceof Date
+        ? checkResult.timestamp.toISOString()
+        : checkResult.timestamp,
   };
 }
 

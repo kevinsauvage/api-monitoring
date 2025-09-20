@@ -15,8 +15,14 @@ export function serializeUser(user: User): SerializedUser {
     name: user.name,
     email: user.email,
     subscription: user.subscription,
-    createdAt: user.createdAt.toISOString(),
-    updatedAt: user.updatedAt.toISOString(),
+    createdAt:
+      user.createdAt instanceof Date
+        ? user.createdAt.toISOString()
+        : user.createdAt,
+    updatedAt:
+      user.updatedAt instanceof Date
+        ? user.updatedAt.toISOString()
+        : user.updatedAt,
   };
 }
 

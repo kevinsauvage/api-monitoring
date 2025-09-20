@@ -40,6 +40,7 @@ export async function createConnection(
     const result = await connectionService.createConnection(validatedInput);
 
     if (result.success) {
+      revalidatePath("/dashboard");
       revalidatePath("/dashboard/connections");
       redirect("/dashboard/connections");
     }
@@ -71,6 +72,7 @@ export async function toggleConnectionActive(
     );
 
     if (result.success) {
+      revalidatePath("/dashboard");
       revalidatePath("/dashboard/connections");
     }
 
@@ -100,6 +102,7 @@ export async function deleteConnection(
     );
 
     if (result.success) {
+      revalidatePath("/dashboard");
       revalidatePath("/dashboard/connections");
     }
 

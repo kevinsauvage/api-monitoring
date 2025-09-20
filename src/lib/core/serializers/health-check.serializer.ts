@@ -50,9 +50,19 @@ export function serializeHealthCheck(
     body: healthCheck.body,
     queryParams: healthCheck.queryParams as Record<string, string> | null,
     isActive: healthCheck.isActive,
-    lastExecutedAt: healthCheck.lastExecutedAt?.toISOString() ?? null,
-    createdAt: healthCheck.createdAt.toISOString(),
-    updatedAt: healthCheck.updatedAt.toISOString(),
+    lastExecutedAt: healthCheck.lastExecutedAt
+      ? healthCheck.lastExecutedAt instanceof Date
+        ? healthCheck.lastExecutedAt.toISOString()
+        : healthCheck.lastExecutedAt
+      : null,
+    createdAt:
+      healthCheck.createdAt instanceof Date
+        ? healthCheck.createdAt.toISOString()
+        : healthCheck.createdAt,
+    updatedAt:
+      healthCheck.updatedAt instanceof Date
+        ? healthCheck.updatedAt.toISOString()
+        : healthCheck.updatedAt,
   };
 }
 

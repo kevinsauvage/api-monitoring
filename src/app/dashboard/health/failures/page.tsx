@@ -1,21 +1,19 @@
+import type { Session } from "next-auth";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/infrastructure/auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
 import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
+import { CheckResultRepository } from "@/lib/core/repositories";
+
+// Enable route-level caching for failures page
+export const revalidate = 120; // 2 minutes
 
 export default async function FailuresPage() {
-  const session = await getServerSession(authOptions);
+  const session = (await getServerSession(authOptions)) as Session;
 
-  if (!session?.user.id) {
-    return null;
-  }
-
-  // Get recent results
-  const { CheckResultRepository } = await import("@/lib/core/repositories");
   const checkResultRepository = new CheckResultRepository();
-
   const recentResults = await checkResultRepository.findByUserIdWithDetails(
     session.user.id,
     50

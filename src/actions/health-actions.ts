@@ -11,7 +11,11 @@ const healthCheckService = getHealthCheckService();
 // eslint-disable-next-line @typescript-eslint/require-await
 export async function refreshHealthData() {
   try {
+    // Revalidate all dashboard pages
+    revalidatePath("/dashboard");
     revalidatePath("/dashboard/health");
+    revalidatePath("/dashboard/health/failures");
+    revalidatePath("/dashboard/health/performance");
 
     return { success: true };
   } catch (error) {
@@ -35,7 +39,9 @@ export async function deleteHealthCheck(healthCheckId: string) {
     );
 
     if (result.success) {
+      revalidatePath("/dashboard");
       revalidatePath("/dashboard/connections");
+      revalidatePath("/dashboard/health");
     }
 
     return result;
@@ -66,7 +72,9 @@ export async function toggleHealthCheckActive(
     );
 
     if (result.success) {
+      revalidatePath("/dashboard");
       revalidatePath("/dashboard/connections");
+      revalidatePath("/dashboard/health");
     }
 
     return result;
@@ -92,7 +100,9 @@ export async function triggerHealthCheck(healthCheckId: string) {
     );
 
     if (result.success) {
+      revalidatePath("/dashboard");
       revalidatePath("/dashboard/connections");
+      revalidatePath("/dashboard/health");
     }
 
     return result;
@@ -111,6 +121,9 @@ export async function createHealthCheck(input: HealthCheckCreateInput) {
     const result = await healthCheckService.createHealthCheck(input);
 
     if (result.success) {
+      revalidatePath("/dashboard");
+      revalidatePath("/dashboard/connections");
+      revalidatePath("/dashboard/health");
       revalidatePath(
         `/dashboard/connections/${input.apiConnectionId}/health-checks`
       );
