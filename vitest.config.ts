@@ -21,6 +21,15 @@ export default defineConfig({
         "**/.next/**",
         "**/prisma/**",
         "**/migrations/**",
+        "**/*.tsx",
+        "src/app/**",
+        "src/actions/**",
+        "src/components/**",
+        "src/hooks/**",
+        "src/lib/shared/types/**",
+        "src/lib/shared/hooks/**",
+        "src/lib/shared/errors/**",
+        "src/lib/shared/schemas/**",
       ],
       thresholds: {
         global: {
@@ -38,5 +47,3 @@ export default defineConfig({
     },
   },
 });
-
-

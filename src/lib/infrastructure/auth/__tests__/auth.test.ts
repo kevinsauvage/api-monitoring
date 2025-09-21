@@ -142,6 +142,42 @@ describe("Auth Configuration", () => {
         subscription: "HOBBY",
       });
     });
+
+    it("should handle user with undefined subscription", async () => {
+      const { authOptions } = await import("../auth");
+
+      const mockUser = {
+        id: "user-123",
+        subscription: undefined,
+      };
+      const mockToken = {};
+
+      const result = authOptions.callbacks?.jwt?.({
+        token: mockToken,
+        user: mockUser,
+      });
+
+      expect(result).toEqual({
+        id: "user-123",
+        subscription: "HOBBY",
+      });
+    });
+
+    it("should handle token without user", async () => {
+      const { authOptions } = await import("../auth");
+
+      const mockToken = {
+        id: "existing-id",
+        subscription: "EXISTING_SUBSCRIPTION",
+      };
+
+      const result = authOptions.callbacks?.jwt?.({
+        token: mockToken,
+        user: undefined,
+      });
+
+      expect(result).toBe(mockToken);
+    });
   });
 
   describe("Session callback", () => {
