@@ -15,7 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import HealthCheckCard from "./HealthCheckCard";
-import type { HealthCheckWithResults } from "@/lib/core/services/health-check.service";
+import type { HealthCheckWithResults } from "@/lib/core/services";
 
 interface HealthChecksListProps {
   healthChecks: HealthCheckWithResults[];

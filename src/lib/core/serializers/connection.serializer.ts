@@ -1,5 +1,6 @@
 import type { ApiConnection } from "@prisma/client";
 import type { CheckResultWithDetails } from "@/lib/core/repositories";
+import { serializeDate } from "@/lib/shared/utils/date-serializer";
 
 /**
  * Serialized connection data for API responses
@@ -49,13 +50,9 @@ export function serializeConnection(
     baseUrl: connection.baseUrl,
     isActive: connection.isActive,
     createdAt:
-      connection.createdAt instanceof Date
-        ? connection.createdAt.toISOString()
-        : connection.createdAt,
+      serializeDate(connection.createdAt) ?? connection.createdAt.toString(),
     updatedAt:
-      connection.updatedAt instanceof Date
-        ? connection.updatedAt.toISOString()
-        : connection.updatedAt,
+      serializeDate(connection.updatedAt) ?? connection.updatedAt.toString(),
   };
 }
 
@@ -89,11 +86,7 @@ export function serializeConnectionWithHealthChecks(
       endpoint: healthCheck.endpoint,
       method: healthCheck.method,
       isActive: healthCheck.isActive,
-      lastExecutedAt: healthCheck.lastExecutedAt
-        ? healthCheck.lastExecutedAt instanceof Date
-          ? healthCheck.lastExecutedAt.toISOString()
-          : healthCheck.lastExecutedAt
-        : null,
+      lastExecutedAt: serializeDate(healthCheck.lastExecutedAt),
     })),
   };
 }

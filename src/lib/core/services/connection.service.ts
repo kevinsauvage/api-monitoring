@@ -1,9 +1,5 @@
 import { BaseService } from "./base.service";
 import type { ConnectionWithHealthChecks } from "@/lib/core/repositories";
-import type {
-  ConnectionRepository,
-  UserRepository,
-} from "@/lib/core/repositories";
 import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
 import { encrypt } from "@/lib/infrastructure/encryption";
 import { validateApiConnection } from "@/lib/shared/utils/api-validation";
@@ -12,7 +8,6 @@ import type {
   ConnectionValidationInput,
   ConnectionCreateInput,
 } from "@/lib/shared/types";
-import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
 
 export type ConnectionData = {
   connections: ConnectionWithHealthChecks[];
@@ -40,16 +35,6 @@ export interface ConnectionCreateResult {
 }
 
 export class ConnectionService extends BaseService {
-  private get connectionRepository(): ConnectionRepository {
-    return this.resolve<ConnectionRepository>(
-      SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY
-    );
-  }
-
-  private get userRepository(): UserRepository {
-    return this.resolve<UserRepository>(SERVICE_IDENTIFIERS.USER_REPOSITORY);
-  }
-
   async getConnections(): Promise<ConnectionData> {
     const user = await this.requireAuth();
     return this.getConnectionsForUser(user.id);
@@ -204,7 +189,7 @@ export class ConnectionService extends BaseService {
     };
   }
 
-  async toggleConnectionActive(connectionId: string, isActive: boolean) {
+  async updateConnection(connectionId: string, data: Record<string, unknown>) {
     const user = await this.requireAuth();
 
     await this.connectionRepository.updateMany(
@@ -212,17 +197,17 @@ export class ConnectionService extends BaseService {
         id: connectionId,
         userId: user.id, // Ensure user owns the connection
       },
-      {
-        isActive: !isActive,
-      }
+      data
     );
 
     return {
       success: true,
-      message: `Connection ${
-        !isActive ? "activated" : "deactivated"
-      } successfully`,
+      message: "Connection updated successfully",
     };
+  }
+
+  async toggleConnectionActive(connectionId: string, isActive: boolean) {
+    return this.updateConnection(connectionId, { isActive: !isActive });
   }
 
   async deleteConnection(connectionId: string) {

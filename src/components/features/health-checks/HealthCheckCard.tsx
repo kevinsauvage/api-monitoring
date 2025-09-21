@@ -26,7 +26,7 @@ import {
 } from "@/lib/shared/utils";
 import { useAsyncAction, useConfirmationDialog } from "@/lib/shared/hooks";
 
-import type { HealthCheckWithResults } from "@/lib/core/services/health-check.service";
+import type { HealthCheckWithResults } from "@/lib/core/services";
 
 interface HealthCheckCardProps {
   healthCheck: HealthCheckWithResults;
@@ -52,7 +52,9 @@ export default function HealthCheckCard({ healthCheck }: HealthCheckCardProps) {
   });
 
   const handleTrigger = () => {
-    void executeTrigger(async () => triggerHealthCheck(healthCheck.id));
+    void executeTrigger(async () =>
+      triggerHealthCheck({ healthCheckId: healthCheck.id })
+    );
   };
 
   const handleDelete = () => {
@@ -60,7 +62,9 @@ export default function HealthCheckCard({ healthCheck }: HealthCheckCardProps) {
   };
 
   const handleConfirmDelete = () => {
-    void executeDelete(async () => deleteHealthCheck(healthCheck.id));
+    void executeDelete(async () =>
+      deleteHealthCheck({ healthCheckId: healthCheck.id })
+    );
   };
 
   // Calculate metrics from recent results

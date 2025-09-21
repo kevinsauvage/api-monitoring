@@ -1,24 +1,26 @@
 // Auth actions
 export { registerUser } from "./auth-actions";
-export type { RegistrationResult } from "./auth-actions";
 
+// Connection actions
 export {
   validateConnection,
   createConnection,
-  toggleConnectionActive,
+  updateConnection,
   deleteConnection,
 } from "./connection-actions";
 
+// Health check actions
+export {
+  refreshHealthData,
+  deleteHealthCheck,
+  updateHealthCheck,
+  triggerHealthCheck,
+  createHealthCheck,
+} from "./health-actions";
+
+// Shared types
 export type {
   ConnectionValidationResult,
   ConnectionCreateResult,
   ConnectionActionResult,
 } from "@/lib/shared/types";
-
-export {
-  refreshHealthData,
-  deleteHealthCheck,
-  toggleHealthCheckActive,
-  triggerHealthCheck,
-  createHealthCheck,
-} from "./health-actions";

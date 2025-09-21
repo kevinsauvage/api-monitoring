@@ -1,7 +1,7 @@
 import type { CheckResult, CheckStatus, HealthCheck } from "@prisma/client";
 import type { UserWithPassword } from "@/lib/shared/types/prisma";
-import type { CheckResultWithDetails } from "@/lib/core/repositories/check-result.repository";
-import type { ConnectionWithHealthChecks } from "@/lib/core/repositories/connection.repository";
+import type { CheckResultWithDetails } from "@/lib/core/repositories";
+import type { ConnectionWithHealthChecks } from "@/lib/core/repositories";
 
 // Connection types
 export type ConnectionWithCredentials = {

@@ -9,16 +9,6 @@ import type {
 } from "@/lib/shared/types";
 
 export class HealthCheckExecutor {
-  private static instance: HealthCheckExecutor;
-
-  public static getInstance(): HealthCheckExecutor {
-    HealthCheckExecutor.instance = new HealthCheckExecutor();
-    return HealthCheckExecutor.instance;
-  }
-
-  /**
-   * Execute a single health check
-   */
   async executeHealthCheck(
     config: HealthCheckConfig,
     connection: ConnectionWithCredentials
@@ -198,4 +188,4 @@ export class HealthCheckExecutor {
   }
 }
 
-export const healthCheckExecutor = HealthCheckExecutor.getInstance();
+export const healthCheckExecutor = new HealthCheckExecutor();

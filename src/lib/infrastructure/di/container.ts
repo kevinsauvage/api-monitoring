@@ -8,7 +8,10 @@ export class DIContainer {
   private constructor() {}
 
   static getInstance(): DIContainer {
-    DIContainer.instance = new DIContainer();
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+    if (!DIContainer.instance) {
+      DIContainer.instance = new DIContainer();
+    }
     return DIContainer.instance;
   }
 

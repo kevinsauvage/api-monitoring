@@ -1,13 +1,13 @@
 import type { Session } from "next-auth";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/infrastructure/auth";
-import { getMonitoringService } from "@/lib/infrastructure/di";
 import HealthLayoutHeader from "@/components/features/health-checks/HealthLayoutHeader";
 import HealthMetricsCards from "@/components/features/health-checks/HealthMetricsCards";
 import HealthNavigation from "@/components/features/health-checks/HealthNavigation";
 import {
   CheckResultRepository,
   HealthCheckRepository,
+  MonitoringRepository,
 } from "@/lib/core/repositories";
 
 export default async function HealthLayout({
@@ -17,13 +17,13 @@ export default async function HealthLayout({
 }) {
   const session = (await getServerSession(authOptions)) as Session;
 
-  const monitoringService = getMonitoringService();
-  const monitoringStats = await monitoringService.getDashboardData(
-    session.user.id
-  );
-
+  const monitoringRepository = new MonitoringRepository();
   const healthCheckRepository = new HealthCheckRepository();
   const checkResultRepository = new CheckResultRepository();
+
+  const monitoringStats = await monitoringRepository.getDashboardStats(
+    session.user.id
+  );
 
   const totalHealthChecks = await healthCheckRepository.countByUserId(
     session.user.id

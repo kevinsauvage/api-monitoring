@@ -16,7 +16,7 @@ import {
 import { toast } from "sonner";
 import {
   deleteHealthCheck,
-  toggleHealthCheckActive,
+  updateHealthCheck,
   triggerHealthCheck,
 } from "@/actions/health-actions";
 import { log } from "@/lib/shared/utils/logger";
@@ -38,13 +38,17 @@ export default function HealthCheckActions({
   const handleDelete = async () => {
     try {
       setIsDeleting(true);
-      const result = await deleteHealthCheck(healthCheckId);
+      const result = await deleteHealthCheck({ healthCheckId });
 
       if (result.success) {
         toast.success("Health check deleted successfully");
         setShowDeleteDialog(false);
       } else {
-        toast.error(result.error ?? "Failed to delete health check");
+        toast.error(
+          typeof result.error === "string"
+            ? result.error
+            : "Failed to delete health check"
+        );
       }
     } catch (error) {
       log.error("Failed to delete health check", {
@@ -59,14 +63,21 @@ export default function HealthCheckActions({
   const handleToggleActive = async () => {
     try {
       setIsToggling(true);
-      const result = await toggleHealthCheckActive(healthCheckId, isActive);
+      const result = await updateHealthCheck({
+        healthCheckId,
+        data: { isActive: !isActive },
+      });
 
       if (result.success) {
         toast.success(
           `Health check ${!isActive ? "activated" : "deactivated"}`
         );
       } else {
-        toast.error(result.error ?? "Failed to toggle health check");
+        toast.error(
+          typeof result.error === "string"
+            ? result.error
+            : "Failed to toggle health check"
+        );
       }
     } catch (error) {
       log.error("Failed to toggle health check", {
@@ -81,12 +92,16 @@ export default function HealthCheckActions({
   const handleTrigger = async () => {
     try {
       setIsTriggering(true);
-      const result = await triggerHealthCheck(healthCheckId);
+      const result = await triggerHealthCheck({ healthCheckId });
 
       if (result.success) {
         toast.success("Health check triggered successfully");
       } else {
-        toast.error(result.error ?? "Failed to trigger health check");
+        toast.error(
+          typeof result.error === "string"
+            ? result.error
+            : "Failed to trigger health check"
+        );
       }
     } catch (error) {
       log.error("Failed to trigger health check", {

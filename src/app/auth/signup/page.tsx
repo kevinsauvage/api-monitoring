@@ -5,8 +5,18 @@ import { signIn } from "next-auth/react";
 import Link from "next/link";
 import { Zap, Eye, EyeOff, AlertTriangle } from "lucide-react";
 import { registerUser } from "@/actions/auth-actions";
-import type { RegistrationResult } from "@/actions/auth-actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+
+// Type for registration result
+type RegistrationResult = {
+  success: boolean;
+  message: string;
+  zodError?: Array<{
+    field: string;
+    message: string;
+    code: string;
+  }>;
+};
 
 // Initial state for useActionState
 const initialState: RegistrationResult = {
@@ -44,7 +54,6 @@ export default function SignUp() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-primary/5 flex items-center justify-center p-4">
       <div className="max-w-md w-full">
-        {/* Logo */}
         <div className="text-center mb-8">
           <Link href="/" className="inline-flex items-center space-x-2">
             <div className="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
@@ -55,8 +64,6 @@ export default function SignUp() {
             </span>
           </Link>
         </div>
-
-        {/* Sign Up Form */}
         <div className="bg-card rounded-xl shadow-lg p-8">
           <div className="text-center mb-6">
             <h1 className="text-2xl font-bold text-card-foreground mb-2">

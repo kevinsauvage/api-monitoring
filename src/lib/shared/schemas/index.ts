@@ -77,9 +77,19 @@ export const connectionSchemas = {
     token: z.string().optional(),
   }),
   // ID-based operations
-  toggle: z.object({
+  update: z.object({
     connectionId: commonSchemas.connectionId,
-    isActive: commonSchemas.boolean,
+    data: z.object({
+      name: z.string().min(1, "Connection name is required").optional(),
+      provider: z.string().min(1, "Provider is required").optional(),
+      baseUrl: commonSchemas.url.optional(),
+      apiKey: z.string().optional(),
+      secretKey: z.string().optional(),
+      accountSid: z.string().optional(),
+      authToken: z.string().optional(),
+      token: z.string().optional(),
+      isActive: commonSchemas.boolean.optional(),
+    }),
   }),
   delete: z.object({
     connectionId: commonSchemas.connectionId,
@@ -118,9 +128,19 @@ export const healthCheckSchemas = {
   delete: z.object({
     healthCheckId: commonSchemas.healthCheckId,
   }),
-  toggle: z.object({
+  update: z.object({
     healthCheckId: commonSchemas.healthCheckId,
-    isActive: commonSchemas.boolean,
+    data: z.object({
+      endpoint: commonSchemas.endpoint.optional(),
+      method: commonSchemas.httpMethod.optional(),
+      expectedStatus: commonSchemas.statusCode.optional(),
+      timeout: commonSchemas.timeout.optional(),
+      interval: commonSchemas.interval.optional(),
+      headers: z.record(z.string()).optional(),
+      body: z.string().optional(),
+      queryParams: z.record(z.string()).optional(),
+      isActive: commonSchemas.boolean.optional(),
+    }),
   }),
   trigger: z.object({
     healthCheckId: commonSchemas.healthCheckId,
@@ -132,12 +152,12 @@ export type ConnectionValidationInput = z.infer<
   typeof connectionSchemas.validation
 >;
 export type ConnectionCreateInput = z.infer<typeof connectionSchemas.create>;
-export type ConnectionToggleInput = z.infer<typeof connectionSchemas.toggle>;
+export type ConnectionUpdateInput = z.infer<typeof connectionSchemas.update>;
 export type ConnectionDeleteInput = z.infer<typeof connectionSchemas.delete>;
 export type RegistrationInput = z.infer<typeof authSchemas.registration>;
 export type HealthCheckCreateInput = z.infer<typeof healthCheckSchemas.create>;
 export type HealthCheckDeleteInput = z.infer<typeof healthCheckSchemas.delete>;
-export type HealthCheckToggleInput = z.infer<typeof healthCheckSchemas.toggle>;
+export type HealthCheckUpdateInput = z.infer<typeof healthCheckSchemas.update>;
 export type HealthCheckTriggerInput = z.infer<
   typeof healthCheckSchemas.trigger
 >;

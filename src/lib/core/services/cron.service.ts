@@ -2,30 +2,8 @@ import { BaseService } from "./base.service";
 import { NotFoundError } from "@/lib/shared/errors";
 import { healthCheckExecutor } from "@/lib/core/monitoring/health-check-executor";
 import { decrypt } from "@/lib/infrastructure/encryption";
-import type { HealthCheckRepository } from "@/lib/core/repositories/health-check.repository";
-import type { ConnectionRepository } from "@/lib/core/repositories/connection.repository";
-import type { MonitoringRepository } from "@/lib/core/repositories/monitoring.repository";
-import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
 
 export class CronService extends BaseService {
-  private get healthCheckRepository(): HealthCheckRepository {
-    return this.resolve<HealthCheckRepository>(
-      SERVICE_IDENTIFIERS.HEALTH_CHECK_REPOSITORY
-    );
-  }
-
-  private get connectionRepository(): ConnectionRepository {
-    return this.resolve<ConnectionRepository>(
-      SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY
-    );
-  }
-
-  private get monitoringRepository(): MonitoringRepository {
-    return this.resolve<MonitoringRepository>(
-      SERVICE_IDENTIFIERS.MONITORING_REPOSITORY
-    );
-  }
-
   async getHealthChecksDueForExecution(): Promise<
     Array<{
       id: string;
@@ -44,35 +22,7 @@ export class CronService extends BaseService {
   > {
     const now = new Date();
 
-    return this.healthCheckRepository.prisma.healthCheck.findMany({
-      where: {
-        isActive: true,
-        OR: [
-          { lastExecutedAt: null }, // Never executed
-          {
-            lastExecutedAt: {
-              lte: new Date(now.getTime() - 30_000), // At least 30 seconds ago
-            },
-          },
-        ],
-      },
-      select: {
-        id: true,
-        apiConnectionId: true,
-        endpoint: true,
-        method: true,
-        expectedStatus: true,
-        timeout: true,
-        interval: true,
-        lastExecutedAt: true,
-        apiConnection: {
-          select: {
-            id: true,
-            isActive: true,
-          },
-        },
-      },
-    });
+    return this.healthCheckRepository.findDueForExecution(now);
   }
 
   async executeHealthCheck(healthCheck: {
@@ -123,9 +73,8 @@ export class CronService extends BaseService {
     });
 
     // Update last executed timestamp
-    await this.healthCheckRepository.prisma.healthCheck.update({
-      where: { id: healthCheck.id },
-      data: { lastExecutedAt: new Date() },
+    await this.healthCheckRepository.update(healthCheck.id, {
+      lastExecutedAt: new Date(),
     });
   }
 }

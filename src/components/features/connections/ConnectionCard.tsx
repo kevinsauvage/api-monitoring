@@ -22,7 +22,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/shared";
 import {
-  toggleConnectionActive,
+  updateConnection,
   deleteConnection,
 } from "@/actions/connection-actions";
 import { formatTime } from "@/lib/shared/utils/utils";
@@ -69,7 +69,10 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
 
   const handleToggleActive = () => {
     void executeToggle(async () =>
-      toggleConnectionActive(connection.id, connection.isActive)
+      updateConnection({
+        connectionId: connection.id,
+        data: { isActive: !connection.isActive },
+      })
     );
   };
 
@@ -78,7 +81,9 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
   };
 
   const handleConfirmDelete = () => {
-    void executeDelete(async () => deleteConnection(connection.id));
+    void executeDelete(async () =>
+      deleteConnection({ connectionId: connection.id })
+    );
   };
 
   const totalHealthChecks = connection.healthChecks.length;

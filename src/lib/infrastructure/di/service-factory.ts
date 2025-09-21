@@ -1,11 +1,11 @@
 import { container, SERVICE_IDENTIFIERS } from "./index";
 import { initializeDI } from "./init";
-import type { ConnectionService } from "@/lib/core/services/connection.service";
-import type { HealthCheckService } from "@/lib/core/services/health-check.service";
-import type { DashboardService } from "@/lib/core/services/dashboard.service";
-import type { MonitoringService } from "@/lib/core/services/monitoring.service";
-import type { CronService } from "@/lib/core/services/cron.service";
-import type { CheckResultRepository } from "@/lib/core/repositories/check-result.repository";
+import type { ConnectionService } from "@/lib/core/services";
+import type { HealthCheckService } from "@/lib/core/services";
+import type { DashboardService } from "@/lib/core/services";
+import type { MonitoringService } from "@/lib/core/services";
+import type { CronService } from "@/lib/core/services";
+import type { CheckResultRepository } from "@/lib/core/repositories";
 
 initializeDI();
 

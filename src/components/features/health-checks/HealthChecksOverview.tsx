@@ -58,7 +58,9 @@ export default function HealthChecksOverview({
       }
 
       const results = await Promise.allSettled(
-        activeHealthCheckIds.map(async (id) => triggerHealthCheck(id))
+        activeHealthCheckIds.map(async (id) =>
+          triggerHealthCheck({ healthCheckId: id })
+        )
       );
 
       const successful = results.filter(

@@ -1,18 +1,14 @@
-/**
- * Service Registry - Registers all services with the DI container
- */
-
 import { container, SERVICE_IDENTIFIERS } from "./index";
-import { UserRepository } from "@/lib/core/repositories/user.repository";
-import { ConnectionRepository } from "@/lib/core/repositories/connection.repository";
-import { HealthCheckRepository } from "@/lib/core/repositories/health-check.repository";
-import { CheckResultRepository } from "@/lib/core/repositories/check-result.repository";
-import { MonitoringRepository } from "@/lib/core/repositories/monitoring.repository";
-import { ConnectionService } from "@/lib/core/services/connection.service";
-import { HealthCheckService } from "@/lib/core/services/health-check.service";
-import { DashboardService } from "@/lib/core/services/dashboard.service";
-import { MonitoringService } from "@/lib/core/services/monitoring.service";
-import { CronService } from "@/lib/core/services/cron.service";
+import { UserRepository } from "@/lib/core/repositories";
+import { ConnectionRepository } from "@/lib/core/repositories";
+import { HealthCheckRepository } from "@/lib/core/repositories";
+import { CheckResultRepository } from "@/lib/core/repositories";
+import { MonitoringRepository } from "@/lib/core/repositories";
+import { ConnectionService } from "@/lib/core/services";
+import { HealthCheckService } from "@/lib/core/services";
+import { DashboardService } from "@/lib/core/services";
+import { MonitoringService } from "@/lib/core/services";
+import { CronService } from "@/lib/core/services";
 
 /**
  * Register all repositories as singletons

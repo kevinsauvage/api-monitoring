@@ -1,10 +1,4 @@
 import { BaseService } from "./base.service";
-import type {
-  HealthCheckRepository,
-  CheckResultRepository,
-  UserRepository,
-  ConnectionRepository,
-} from "@/lib/core/repositories";
 import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
 import type { HealthCheckCreateInput } from "@/lib/shared/types";
 import { healthCheckSchemas } from "@/lib/shared/schemas";
@@ -55,28 +49,6 @@ export interface HealthCheckCreateResult {
 }
 
 export class HealthCheckService extends BaseService {
-  private get healthCheckRepository(): HealthCheckRepository {
-    return this.resolve<HealthCheckRepository>(
-      SERVICE_IDENTIFIERS.HEALTH_CHECK_REPOSITORY
-    );
-  }
-
-  private get checkResultRepository(): CheckResultRepository {
-    return this.resolve<CheckResultRepository>(
-      SERVICE_IDENTIFIERS.CHECK_RESULT_REPOSITORY
-    );
-  }
-
-  private get userRepository(): UserRepository {
-    return this.resolve<UserRepository>(SERVICE_IDENTIFIERS.USER_REPOSITORY);
-  }
-
-  private get connectionRepository(): ConnectionRepository {
-    return this.resolve<ConnectionRepository>(
-      SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY
-    );
-  }
-
   private get monitoringService(): MonitoringService {
     return this.resolve<MonitoringService>(
       SERVICE_IDENTIFIERS.MONITORING_SERVICE
@@ -283,7 +255,10 @@ export class HealthCheckService extends BaseService {
     };
   }
 
-  async toggleHealthCheckActive(healthCheckId: string, isActive: boolean) {
+  async updateHealthCheck(
+    healthCheckId: string,
+    data: Record<string, unknown>
+  ) {
     const user = await this.requireAuth();
 
     const healthCheck = await this.healthCheckRepository.findFirstByUserAndId(
@@ -298,9 +273,7 @@ export class HealthCheckService extends BaseService {
       };
     }
 
-    await this.healthCheckRepository.update(healthCheckId, {
-      isActive: !isActive,
-    });
+    await this.healthCheckRepository.update(healthCheckId, data);
 
     return {
       success: true,

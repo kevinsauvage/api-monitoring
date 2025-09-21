@@ -17,7 +17,7 @@ import {
 import { toast } from "sonner";
 import { log } from "@/lib/shared/utils/logger";
 import {
-  toggleConnectionActive,
+  updateConnection,
   deleteConnection,
 } from "@/actions/connection-actions";
 
@@ -39,16 +39,16 @@ export default function ConnectionActions({
   const handleToggleActive = async () => {
     try {
       setIsLoading(true);
-      const result = await toggleConnectionActive(
-        connection.id,
-        connection.isActive
-      );
+      const result = await updateConnection({
+        connectionId: connection.id,
+        data: { isActive: !connection.isActive },
+      });
 
       if (result.success) {
-        toast.success(result.message);
+        toast.success("Connection updated successfully");
         // Data will be automatically refreshed by revalidatePath in the server action
       } else {
-        toast.error(result.message);
+        toast.error("Failed to update connection");
       }
     } catch (error) {
       log.error(
@@ -64,7 +64,7 @@ export default function ConnectionActions({
   const handleDelete = async () => {
     try {
       setIsLoading(true);
-      const result = await deleteConnection(connection.id);
+      const result = await deleteConnection({ connectionId: connection.id });
 
       if (result.success) {
         toast.success(result.message);

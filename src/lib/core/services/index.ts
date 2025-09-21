@@ -14,6 +14,7 @@ export type {
 export type {
   HealthCheckData,
   HealthCheckCreateResult,
+  HealthCheckWithResults,
 } from "./health-check.service";
 export type {
   HealthCheckCreateInput,

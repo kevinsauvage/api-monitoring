@@ -3,10 +3,6 @@ import { NotFoundError } from "@/lib/shared/errors";
 import { healthCheckExecutor } from "@/lib/core/monitoring/health-check-executor";
 import { decrypt } from "@/lib/infrastructure/encryption";
 import type { HealthCheck } from "@prisma/client";
-import type { MonitoringRepository } from "@/lib/core/repositories/monitoring.repository";
-import type { HealthCheckRepository } from "@/lib/core/repositories/health-check.repository";
-import type { ConnectionRepository } from "@/lib/core/repositories/connection.repository";
-import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
 import type {
   HealthCheckCreateInput,
   HealthCheckUpdateInput,
@@ -14,24 +10,6 @@ import type {
 import { serializeHealthCheck } from "@/lib/core/serializers";
 
 export class MonitoringService extends BaseService {
-  private get monitoringRepository(): MonitoringRepository {
-    return this.resolve<MonitoringRepository>(
-      SERVICE_IDENTIFIERS.MONITORING_REPOSITORY
-    );
-  }
-
-  private get healthCheckRepository(): HealthCheckRepository {
-    return this.resolve<HealthCheckRepository>(
-      SERVICE_IDENTIFIERS.HEALTH_CHECK_REPOSITORY
-    );
-  }
-
-  private get connectionRepository(): ConnectionRepository {
-    return this.resolve<ConnectionRepository>(
-      SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY
-    );
-  }
-
   async createHealthCheck(input: HealthCheckCreateInput): Promise<HealthCheck> {
     await this.requireAuth();
 
@@ -74,10 +52,6 @@ export class MonitoringService extends BaseService {
       await this.monitoringRepository.getHealthChecksWithStats(connectionId);
 
     return healthChecks.map(serializeHealthCheck);
-  }
-
-  async getDashboardData(userId: string) {
-    return this.monitoringRepository.getDashboardStats(userId);
   }
 
   async triggerHealthCheck(healthCheckId: string): Promise<void> {

@@ -10,10 +10,46 @@ import {
 import { container } from "@/lib/infrastructure/di";
 import { log } from "@/lib/shared/utils/logger";
 import type { ServiceIdentifier } from "@/lib/infrastructure/di";
+import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
+import type {
+  ConnectionRepository,
+  HealthCheckRepository,
+  CheckResultRepository,
+  UserRepository,
+  MonitoringRepository,
+} from "@/lib/core/repositories";
 
 export abstract class BaseService {
   protected resolve<T>(identifier: ServiceIdentifier): T {
     return container.resolve<T>(identifier);
+  }
+
+  protected get connectionRepository(): ConnectionRepository {
+    return this.resolve<ConnectionRepository>(
+      SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY
+    );
+  }
+
+  protected get healthCheckRepository(): HealthCheckRepository {
+    return this.resolve<HealthCheckRepository>(
+      SERVICE_IDENTIFIERS.HEALTH_CHECK_REPOSITORY
+    );
+  }
+
+  protected get checkResultRepository(): CheckResultRepository {
+    return this.resolve<CheckResultRepository>(
+      SERVICE_IDENTIFIERS.CHECK_RESULT_REPOSITORY
+    );
+  }
+
+  protected get userRepository(): UserRepository {
+    return this.resolve<UserRepository>(SERVICE_IDENTIFIERS.USER_REPOSITORY);
+  }
+
+  protected get monitoringRepository(): MonitoringRepository {
+    return this.resolve<MonitoringRepository>(
+      SERVICE_IDENTIFIERS.MONITORING_REPOSITORY
+    );
   }
 
   protected async getCurrentUser() {
@@ -58,16 +94,5 @@ export abstract class BaseService {
     context: string
   ): T {
     return withSyncErrorHandling(operation, context);
-  }
-
-  protected validateOwnership(
-    resourceUserId: string,
-    currentUserId: string
-  ): void {
-    if (resourceUserId !== currentUserId) {
-      throw new UnauthorizedError(
-        "You don't have permission to access this resource"
-      );
-    }
   }
 }
