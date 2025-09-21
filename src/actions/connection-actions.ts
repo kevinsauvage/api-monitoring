@@ -31,7 +31,10 @@ export const createConnection = createDataAction(
 export const updateConnection = createUpdateAction(
   connectionSchemas.update,
   async (input: ConnectionUpdateInput) =>
-    connectionService.updateConnection(input.connectionId, input.data),
+    connectionService.updateConnection(
+      input.connectionId,
+      input.data as Parameters<typeof connectionService.updateConnection>[1]
+    ),
   ["/dashboard", "/dashboard/connections"]
 );
 

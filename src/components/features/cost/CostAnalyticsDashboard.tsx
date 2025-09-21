@@ -9,6 +9,7 @@ import CostByPeriodChart from "./CostByPeriodChart";
 import RecentCostMetrics from "./RecentCostMetrics";
 import CostTrackingButton from "./CostTrackingButton";
 import CostSummaryCards from "./CostSummaryCards";
+import type { JsonValue } from "@prisma/client/runtime/library";
 
 interface CostAnalyticsDashboardProps {
   costAnalytics: {
@@ -28,7 +29,7 @@ interface CostAnalyticsDashboardProps {
     currency: string;
     period: string;
     timestamp: Date;
-    metadata: unknown;
+    metadata: JsonValue;
     apiConnection: {
       name: string;
       provider: string;

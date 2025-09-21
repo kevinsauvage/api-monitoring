@@ -1,28 +1,13 @@
 import type { HealthCheck } from "@prisma/client";
+import {
+  serializeEntityTimestamps,
+  serializeHeaders,
+  serializeQueryParams,
+} from "@/lib/core/utils/serializer-utils";
+import type { SerializedHealthCheck } from "@/lib/core/types";
 
-/**
- * Serialized health check data for API responses
- */
-export interface SerializedHealthCheck {
-  id: string;
-  apiConnectionId: string;
-  endpoint: string;
-  method: string;
-  expectedStatus: number;
-  timeout: number;
-  interval: number;
-  headers: Record<string, string> | null;
-  body: string | null;
-  queryParams: Record<string, string> | null;
-  isActive: boolean;
-  lastExecutedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
+export type SerializedHealthCheckData = SerializedHealthCheck;
 
-/**
- * Serialized health check with connection info
- */
 export interface SerializedHealthCheckWithConnection
   extends SerializedHealthCheck {
   connection: {
@@ -32,9 +17,6 @@ export interface SerializedHealthCheckWithConnection
   };
 }
 
-/**
- * Serialized health check with stats
- */
 export interface SerializedHealthCheckWithStats extends SerializedHealthCheck {
   stats?: {
     totalChecks: number;
@@ -44,12 +26,9 @@ export interface SerializedHealthCheckWithStats extends SerializedHealthCheck {
   };
 }
 
-/**
- * Serialize a HealthCheck model for API responses
- */
 export function serializeHealthCheck(
   healthCheck: HealthCheck
-): SerializedHealthCheck {
+): SerializedHealthCheckData {
   return {
     id: healthCheck.id,
     apiConnectionId: healthCheck.apiConnectionId,
@@ -58,38 +37,20 @@ export function serializeHealthCheck(
     expectedStatus: healthCheck.expectedStatus,
     timeout: healthCheck.timeout,
     interval: healthCheck.interval,
-    headers: healthCheck.headers as Record<string, string> | null,
+    headers: serializeHeaders(healthCheck.headers),
     body: healthCheck.body,
-    queryParams: healthCheck.queryParams as Record<string, string> | null,
+    queryParams: serializeQueryParams(healthCheck.queryParams),
     isActive: healthCheck.isActive,
-    lastExecutedAt: healthCheck.lastExecutedAt
-      ? healthCheck.lastExecutedAt instanceof Date
-        ? healthCheck.lastExecutedAt.toISOString()
-        : healthCheck.lastExecutedAt
-      : null,
-    createdAt:
-      healthCheck.createdAt instanceof Date
-        ? healthCheck.createdAt.toISOString()
-        : healthCheck.createdAt,
-    updatedAt:
-      healthCheck.updatedAt instanceof Date
-        ? healthCheck.updatedAt.toISOString()
-        : healthCheck.updatedAt,
+    ...serializeEntityTimestamps(healthCheck),
   };
 }
 
-/**
- * Serialize multiple HealthCheck models
- */
 export function serializeHealthChecks(
   healthChecks: HealthCheck[]
 ): SerializedHealthCheck[] {
   return healthChecks.map(serializeHealthCheck);
 }
 
-/**
- * Serialize health check with connection info
- */
 export function serializeHealthCheckWithConnection(
   healthCheck: HealthCheck & {
     apiConnection: {
@@ -109,9 +70,6 @@ export function serializeHealthCheckWithConnection(
   };
 }
 
-/**
- * Serialize a HealthCheck with stats for API responses
- */
 export function serializeHealthCheckWithStats(
   healthCheck: HealthCheck & {
     stats?: {

@@ -189,21 +189,60 @@ export class ConnectionService extends BaseService {
     };
   }
 
-  async updateConnection(connectionId: string, data: Record<string, unknown>) {
+  async updateConnection(
+    connectionId: string,
+    data: Partial<{
+      name: string;
+      baseUrl: string;
+      isActive: boolean;
+      apiKey: string;
+      secretKey: string;
+      accountSid: string;
+      authToken: string;
+      token: string;
+    }>
+  ) {
     const user = await this.requireAuth();
+
+    // Validate that the connection exists and belongs to the user
+    await this.validateResourceOwnership(
+      connectionId,
+      user.id,
+      this.connectionRepository,
+      "Connection"
+    );
+
+    // Encrypt sensitive data if provided
+    const encryptedData: Partial<typeof data> = { ...data };
+    if (data.apiKey) {
+      encryptedData.apiKey = encrypt(data.apiKey);
+    }
+    if (data.secretKey) {
+      encryptedData.secretKey = encrypt(data.secretKey);
+    }
+    if (data.accountSid) {
+      encryptedData.accountSid = encrypt(data.accountSid);
+    }
+    if (data.authToken) {
+      encryptedData.authToken = encrypt(data.authToken);
+    }
+    if (data.token) {
+      encryptedData.token = encrypt(data.token);
+    }
 
     await this.connectionRepository.updateMany(
       {
         id: connectionId,
-        userId: user.id, // Ensure user owns the connection
+        userId: user.id,
       },
-      data
+      encryptedData
     );
 
-    return {
-      success: true,
-      message: "Connection updated successfully",
-    };
+    return this.createServiceResponse(
+      true,
+      undefined,
+      "Connection updated successfully"
+    );
   }
 
   async toggleConnectionActive(connectionId: string, isActive: boolean) {
@@ -213,14 +252,23 @@ export class ConnectionService extends BaseService {
   async deleteConnection(connectionId: string) {
     const user = await this.requireAuth();
 
+    // Validate that the connection exists and belongs to the user
+    await this.validateResourceOwnership(
+      connectionId,
+      user.id,
+      this.connectionRepository,
+      "Connection"
+    );
+
     await this.connectionRepository.deleteMany({
       id: connectionId,
-      userId: user.id, // Ensure user owns the connection
+      userId: user.id,
     });
 
-    return {
-      success: true,
-      message: "Connection deleted successfully",
-    };
+    return this.createServiceResponse(
+      true,
+      undefined,
+      "Connection deleted successfully"
+    );
   }
 }

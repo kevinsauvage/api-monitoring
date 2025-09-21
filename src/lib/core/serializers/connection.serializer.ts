@@ -1,23 +1,13 @@
 import type { ApiConnection } from "@prisma/client";
 import type { CheckResultWithDetails } from "@/lib/core/repositories";
-import { serializeDate } from "@/lib/shared/utils/date-serializer";
+import {
+  serializeEntityTimestamps,
+  serializeTimestamp,
+} from "@/lib/core/utils/serializer-utils";
+import type { SerializedApiConnection } from "@/lib/core/types";
 
-/**
- * Serialized connection data for API responses
- */
-export interface SerializedConnection {
-  id: string;
-  name: string;
-  provider: string;
-  baseUrl: string;
-  isActive: boolean;
-  createdAt: string;
-  updatedAt: string;
-}
+export type SerializedConnection = SerializedApiConnection;
 
-/**
- * Serialized connection with health checks
- */
 export interface SerializedConnectionWithHealthChecks
   extends SerializedConnection {
   healthChecks: Array<{
@@ -29,17 +19,11 @@ export interface SerializedConnectionWithHealthChecks
   }>;
 }
 
-/**
- * Serialized connection with health checks and recent results
- */
 export interface SerializedConnectionWithHealthChecksAndResults
   extends SerializedConnectionWithHealthChecks {
   recentResults?: CheckResultWithDetails[];
 }
 
-/**
- * Serialize an ApiConnection model for API responses
- */
 export function serializeConnection(
   connection: ApiConnection
 ): SerializedConnection {
@@ -49,25 +33,16 @@ export function serializeConnection(
     provider: connection.provider,
     baseUrl: connection.baseUrl,
     isActive: connection.isActive,
-    createdAt:
-      serializeDate(connection.createdAt) ?? connection.createdAt.toString(),
-    updatedAt:
-      serializeDate(connection.updatedAt) ?? connection.updatedAt.toString(),
+    ...serializeEntityTimestamps(connection),
   };
 }
 
-/**
- * Serialize multiple ApiConnection models
- */
 export function serializeConnections(
   connections: ApiConnection[]
 ): SerializedConnection[] {
   return connections.map(serializeConnection);
 }
 
-/**
- * Serialize connection with health checks
- */
 export function serializeConnectionWithHealthChecks(
   connection: ApiConnection & {
     healthChecks: Array<{
@@ -86,14 +61,11 @@ export function serializeConnectionWithHealthChecks(
       endpoint: healthCheck.endpoint,
       method: healthCheck.method,
       isActive: healthCheck.isActive,
-      lastExecutedAt: serializeDate(healthCheck.lastExecutedAt),
+      lastExecutedAt: serializeTimestamp(healthCheck.lastExecutedAt),
     })),
   };
 }
 
-/**
- * Serialize connection with health checks and recent results
- */
 export function serializeConnectionWithHealthChecksAndResults(
   connection: ApiConnection & {
     healthChecks: Array<{

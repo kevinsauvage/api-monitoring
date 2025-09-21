@@ -9,6 +9,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import type { JsonValue } from "@prisma/client/runtime/library";
 import { formatDistanceToNow } from "date-fns";
 
 interface RecentCostMetricsProps {
@@ -18,7 +19,7 @@ interface RecentCostMetricsProps {
     currency: string;
     period: string;
     timestamp: Date;
-    metadata: unknown;
+    metadata: JsonValue;
     apiConnection: {
       name: string;
       provider: string;

@@ -1,23 +1,13 @@
-import type { CheckResult, CheckStatus } from "@prisma/client";
+import type { CheckResult } from "@prisma/client";
 import type { CheckResultWithDetails } from "../repositories";
+import {
+  serializeMetadata,
+  serializeTimestamp,
+} from "@/lib/core/utils/serializer-utils";
+import type { SerializedCheckResult } from "@/lib/core/types";
 
-/**
- * Serialized check result data for API responses
- */
-export interface SerializedCheckResult {
-  id: string;
-  healthCheckId: string;
-  status: CheckStatus;
-  responseTime: number;
-  statusCode: number | null;
-  errorMessage: string | null;
-  metadata: Record<string, unknown> | null;
-  timestamp: string;
-}
+export type SerializedCheckResultData = SerializedCheckResult;
 
-/**
- * Serialized check result with health check details
- */
 export interface SerializedCheckResultWithDetails
   extends SerializedCheckResult {
   healthCheck: {
@@ -31,12 +21,9 @@ export interface SerializedCheckResultWithDetails
   };
 }
 
-/**
- * Serialize a CheckResult model for API responses
- */
 export function serializeCheckResult(
   checkResult: CheckResult
-): SerializedCheckResult {
+): SerializedCheckResultData {
   return {
     id: checkResult.id,
     healthCheckId: checkResult.healthCheckId,
@@ -44,26 +31,17 @@ export function serializeCheckResult(
     responseTime: checkResult.responseTime,
     statusCode: checkResult.statusCode,
     errorMessage: checkResult.errorMessage,
-    metadata: checkResult.metadata as Record<string, unknown> | null,
-    timestamp:
-      checkResult.timestamp instanceof Date
-        ? checkResult.timestamp.toISOString()
-        : checkResult.timestamp,
+    metadata: serializeMetadata(checkResult.metadata),
+    timestamp: serializeTimestamp(checkResult.timestamp) ?? "",
   };
 }
 
-/**
- * Serialize multiple CheckResult models
- */
 export function serializeCheckResults(
   checkResults: CheckResult[]
 ): SerializedCheckResult[] {
   return checkResults.map(serializeCheckResult);
 }
 
-/**
- * Serialize check result with health check details
- */
 export function serializeCheckResultWithDetails(
   checkResult: CheckResultWithDetails
 ): SerializedCheckResultWithDetails {
@@ -81,9 +59,6 @@ export function serializeCheckResultWithDetails(
   };
 }
 
-/**
- * Serialize multiple check results with details
- */
 export function serializeCheckResultsWithDetails(
   checkResults: Array<
     CheckResult & {

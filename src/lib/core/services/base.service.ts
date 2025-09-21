@@ -6,6 +6,7 @@ import {
   withErrorHandling,
   withSyncErrorHandling,
   logError,
+  NotFoundError,
 } from "@/lib/shared/errors";
 import { container } from "@/lib/infrastructure/di";
 import { log } from "@/lib/shared/utils/logger";
@@ -58,17 +59,27 @@ export abstract class BaseService {
     );
   }
 
-  protected async getCurrentUser() {
+  protected async getCurrentUser(): Promise<{
+    id: string;
+    email?: string | null;
+    name?: string | null;
+    image?: string | null;
+  } | null> {
     try {
       const session = await getServerSession(authOptions);
-      return session?.user;
+      return session?.user ?? null;
     } catch (error) {
       logError(error as Error, { context: "getCurrentUser" });
       return null;
     }
   }
 
-  protected async requireAuth() {
+  protected async requireAuth(): Promise<{
+    id: string;
+    email?: string | null;
+    name?: string | null;
+    image?: string | null;
+  }> {
     try {
       const user = await this.getCurrentUser();
       if (!user?.id) {
@@ -76,6 +87,9 @@ export abstract class BaseService {
       }
       return user;
     } catch (error) {
+      if (error instanceof UnauthorizedError) {
+        throw error;
+      }
       log.error("Authentication error", {
         error: error instanceof Error ? error.message : String(error),
       });
@@ -100,5 +114,40 @@ export abstract class BaseService {
     context: string
   ): T {
     return withSyncErrorHandling(operation, context);
+  }
+
+  /**
+   * Validates that a resource exists and belongs to the user
+   */
+  protected async validateResourceOwnership<T>(
+    resourceId: string,
+    userId: string,
+    repository: {
+      findFirstByUserAndId: (id: string, userId: string) => Promise<T | null>;
+    },
+    resourceName: string
+  ): Promise<T> {
+    const resource = await repository.findFirstByUserAndId(resourceId, userId);
+    if (!resource) {
+      throw new NotFoundError(resourceName, resourceId);
+    }
+    return resource;
+  }
+
+  /**
+   * Creates a standardized service response
+   */
+  protected createServiceResponse<T>(
+    success: boolean,
+    data?: T,
+    message?: string,
+    error?: string
+  ) {
+    return {
+      success,
+      ...(data && { data }),
+      ...(message && { message }),
+      ...(error && { error }),
+    };
   }
 }

@@ -104,11 +104,12 @@ export class HealthCheckService extends BaseService {
       };
     }
 
+    // Get health checks for the connection
     const healthChecks = await this.healthCheckRepository.findByConnectionId(
       connectionId
     );
 
-    // Get recent results for each health check
+    // Get recent results for each health check in parallel
     const healthChecksWithResults = await Promise.all(
       healthChecks.map(async (healthCheck) => {
         const recentResults =
@@ -236,64 +237,66 @@ export class HealthCheckService extends BaseService {
   async deleteHealthCheck(healthCheckId: string) {
     const user = await this.requireAuth();
 
-    const healthCheck = await this.healthCheckRepository.findFirstByUserAndId(
+    // Validate that the health check exists and belongs to the user
+    await this.validateResourceOwnership(
       healthCheckId,
-      user.id
+      user.id,
+      this.healthCheckRepository,
+      "Health check"
     );
-
-    if (!healthCheck) {
-      return {
-        success: false,
-        error: "Health check not found or unauthorized",
-      };
-    }
 
     await this.healthCheckRepository.delete(healthCheckId);
 
-    return {
-      success: true,
-    };
+    return this.createServiceResponse(
+      true,
+      undefined,
+      "Health check deleted successfully"
+    );
   }
 
   async updateHealthCheck(
     healthCheckId: string,
-    data: Record<string, unknown>
+    data: Partial<{
+      endpoint: string;
+      method: string;
+      expectedStatus: number;
+      timeout: number;
+      interval: number;
+      headers: Record<string, string>;
+      body: string | null;
+      queryParams: Record<string, string>;
+      isActive: boolean;
+    }>
   ) {
     const user = await this.requireAuth();
 
-    const healthCheck = await this.healthCheckRepository.findFirstByUserAndId(
+    // Validate that the health check exists and belongs to the user
+    await this.validateResourceOwnership(
       healthCheckId,
-      user.id
+      user.id,
+      this.healthCheckRepository,
+      "Health check"
     );
-
-    if (!healthCheck) {
-      return {
-        success: false,
-        error: "Health check not found or unauthorized",
-      };
-    }
 
     await this.healthCheckRepository.update(healthCheckId, data);
 
-    return {
-      success: true,
-    };
+    return this.createServiceResponse(
+      true,
+      undefined,
+      "Health check updated successfully"
+    );
   }
 
   async triggerHealthCheck(healthCheckId: string) {
     const user = await this.requireAuth();
 
-    const healthCheck = await this.healthCheckRepository.findFirstByUserAndId(
+    // Validate that the health check exists and belongs to the user
+    await this.validateResourceOwnership(
       healthCheckId,
-      user.id
+      user.id,
+      this.healthCheckRepository,
+      "Health check"
     );
-
-    if (!healthCheck) {
-      return {
-        success: false,
-        error: "Health check not found or unauthorized",
-      };
-    }
 
     await this.monitoringService.triggerHealthCheck(healthCheckId);
 
@@ -301,8 +304,10 @@ export class HealthCheckService extends BaseService {
       lastExecutedAt: new Date(),
     });
 
-    return {
-      success: true,
-    };
+    return this.createServiceResponse(
+      true,
+      undefined,
+      "Health check triggered successfully"
+    );
   }
 }

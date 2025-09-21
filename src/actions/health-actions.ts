@@ -60,7 +60,10 @@ export const createHealthCheck = createDataAction(
 export const updateHealthCheck = createUpdateAction(
   healthCheckSchemas.update,
   async (input: HealthCheckUpdateInput) =>
-    healthCheckService.updateHealthCheck(input.healthCheckId, input.data),
+    healthCheckService.updateHealthCheck(
+      input.healthCheckId,
+      input.data as Parameters<typeof healthCheckService.updateHealthCheck>[1]
+    ),
   ["/dashboard", "/dashboard/connections", "/dashboard/health"]
 );
 

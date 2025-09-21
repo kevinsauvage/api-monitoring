@@ -4,7 +4,7 @@ export { HealthCheckService } from "./health-check.service";
 export { DashboardService } from "./dashboard.service";
 export { MonitoringService } from "./monitoring.service";
 export { CronService } from "./cron.service";
-export { CostTrackingService } from "./cost-tracking.service";
+export { CostTrackingService } from "./cost-tracking-strategy.service";
 
 // Export types
 export type {
@@ -17,6 +17,7 @@ export type {
   HealthCheckCreateResult,
   HealthCheckWithResults,
 } from "./health-check.service";
+export type { DashboardStats } from "./dashboard.service";
 export type {
   HealthCheckCreateInput,
   HealthCheckUpdateInput,
