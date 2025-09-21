@@ -60,7 +60,7 @@ export class HealthCheckService extends BaseService {
   ): Promise<HealthCheckData> {
     const user = await this.requireAuth();
 
-    const connection = await this.connectionRepository.findByIdAndUserId(
+    const connection = await this.connectionRepository.findFirstByUserAndId(
       connectionId,
       user.id
     );
@@ -93,7 +93,7 @@ export class HealthCheckService extends BaseService {
   ): Promise<HealthCheckDataWithResults> {
     const user = await this.requireAuth();
 
-    const connection = await this.connectionRepository.findByIdAndUserId(
+    const connection = await this.connectionRepository.findFirstByUserAndId(
       connectionId,
       user.id
     );
@@ -142,7 +142,7 @@ export class HealthCheckService extends BaseService {
   async getConnectionHistory(connectionId: string, limit = 100) {
     const user = await this.requireAuth();
 
-    const connection = await this.connectionRepository.findByIdAndUserId(
+    const connection = await this.connectionRepository.findFirstByUserAndId(
       connectionId,
       user.id
     );

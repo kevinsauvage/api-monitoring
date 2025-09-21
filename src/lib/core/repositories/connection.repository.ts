@@ -229,20 +229,6 @@ export class ConnectionRepository extends BaseRepository {
   }
 
   /**
-   * Find a connection by ID and user ID (alias for findFirstByUserAndId)
-   *
-   * @param id - The connection's unique identifier
-   * @param userId - The user's unique identifier
-   * @returns Promise resolving to connection or null if not found
-   */
-  async findByIdAndUserId(
-    id: string,
-    userId: string
-  ): Promise<ApiConnection | null> {
-    return this.findFirstByUserAndId(id, userId);
-  }
-
-  /**
    * Update a connection by ID
    *
    * @param id - The connection's unique identifier
