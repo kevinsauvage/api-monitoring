@@ -25,6 +25,8 @@ export class ConnectionRepository extends BaseRepository {
   async findByUserIdWithHealthChecks(
     userId: string
   ): Promise<ConnectionWithHealthChecks[]> {
+    this.validateRequiredParams({ userId }, ["userId"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.apiConnection.findMany({
@@ -57,6 +59,8 @@ export class ConnectionRepository extends BaseRepository {
     id: string,
     userId: string
   ): Promise<ConnectionWithHealthChecks | null> {
+    this.validateRequiredParams({ id, userId }, ["id", "userId"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.apiConnection.findFirst({
@@ -91,6 +95,13 @@ export class ConnectionRepository extends BaseRepository {
    * @returns Promise resolving to the created connection
    */
   async create(data: Prisma.ApiConnectionCreateInput): Promise<ApiConnection> {
+    this.validateRequiredParams(data, [
+      "name",
+      "provider",
+      "baseUrl",
+      "userId",
+    ]);
+
     return this.executeQuery(
       async () =>
         this.prisma.apiConnection.create({
@@ -111,13 +122,15 @@ export class ConnectionRepository extends BaseRepository {
     where: Prisma.ApiConnectionWhereInput,
     data: Prisma.ApiConnectionUpdateInput
   ): Promise<{ count: number }> {
+    this.validateRequiredParams({ where, data }, ["where", "data"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.apiConnection.updateMany({
           where,
           data,
         }),
-      "update multiple connections"
+      this.buildErrorMessage("update", "multiple connections")
     );
   }
 
@@ -130,12 +143,14 @@ export class ConnectionRepository extends BaseRepository {
   async deleteMany(
     where: Prisma.ApiConnectionWhereInput
   ): Promise<{ count: number }> {
+    this.validateRequiredParams({ where }, ["where"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.apiConnection.deleteMany({
           where,
         }),
-      "delete multiple connections"
+      this.buildErrorMessage("delete", "multiple connections")
     );
   }
 
@@ -146,6 +161,8 @@ export class ConnectionRepository extends BaseRepository {
    * @returns Promise resolving to connection count
    */
   async countByUserId(userId: string): Promise<number> {
+    this.validateRequiredParams({ userId }, ["userId"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.apiConnection.count({
@@ -162,6 +179,8 @@ export class ConnectionRepository extends BaseRepository {
    * @returns Promise resolving to active connection count
    */
   async countActiveByUserId(userId: string): Promise<number> {
+    this.validateRequiredParams({ userId }, ["userId"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.apiConnection.count({
@@ -185,6 +204,8 @@ export class ConnectionRepository extends BaseRepository {
     id: string,
     userId: string
   ): Promise<ApiConnection | null> {
+    this.validateRequiredParams({ id, userId }, ["id", "userId"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.apiConnection.findFirst({
@@ -210,7 +231,12 @@ export class ConnectionRepository extends BaseRepository {
     baseUrl: string;
     apiKey: string;
     secretKey: string | null;
+    accountSid: string | null;
+    authToken: string | null;
+    token: string | null;
   } | null> {
+    this.validateRequiredParams({ id }, ["id"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.apiConnection.findUnique({
@@ -222,6 +248,9 @@ export class ConnectionRepository extends BaseRepository {
             baseUrl: true,
             apiKey: true,
             secretKey: true,
+            accountSid: true,
+            authToken: true,
+            token: true,
           },
         }),
       this.buildErrorMessage("find", "connection with credentials", id)
@@ -239,6 +268,8 @@ export class ConnectionRepository extends BaseRepository {
     id: string,
     data: Prisma.ApiConnectionUpdateInput
   ): Promise<ApiConnection> {
+    this.validateRequiredParams({ id, data }, ["id", "data"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.apiConnection.update({
@@ -256,6 +287,8 @@ export class ConnectionRepository extends BaseRepository {
    * @returns Promise resolving when deletion is complete
    */
   async delete(id: string): Promise<void> {
+    this.validateRequiredParams({ id }, ["id"]);
+
     await this.executeQuery(
       async () =>
         this.prisma.apiConnection.delete({

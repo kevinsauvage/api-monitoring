@@ -71,7 +71,12 @@ export default function CreateHealthCheckForm({
       const result = await createHealthCheck({
         apiConnectionId,
         endpoint: formData.get("endpoint") as string,
-        method: formData.get("method") as string,
+        method: formData.get("method") as
+          | "GET"
+          | "POST"
+          | "PUT"
+          | "PATCH"
+          | "DELETE",
         expectedStatus: parseInt(formData.get("expectedStatus") as string, 10),
         timeout: parseInt(formData.get("timeout") as string, 10),
         interval: parseInt(formData.get("interval") as string, 10),
@@ -88,7 +93,7 @@ export default function CreateHealthCheckForm({
         if (result.zodError && Array.isArray(result.zodError)) {
           setValidationErrors(result.zodError);
         } else {
-          toast.error(result.error ?? "Failed to create health check");
+          toast.error("Failed to create health check");
           setValidationErrors([]);
         }
       }

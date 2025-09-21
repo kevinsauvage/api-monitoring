@@ -7,7 +7,18 @@ export const API_PROVIDERS = [
     baseUrl: "https://api.stripe.com",
     authType: "bearer",
     fields: [
-      { name: "apiKey", label: "API Key", type: "password", required: true },
+      {
+        name: "apiKey",
+        label: "Publishable Key",
+        type: "password",
+        required: true,
+      },
+      {
+        name: "secretKey",
+        label: "Secret Key",
+        type: "password",
+        required: true,
+      },
     ],
   },
   {

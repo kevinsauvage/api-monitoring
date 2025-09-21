@@ -126,3 +126,78 @@ export function createToggleAction<TInput>(
     }
   };
 }
+
+/**
+ * Create an update action for modifying existing resources
+ */
+export function createUpdateAction<TInput, TOutput>(
+  schema: z.ZodSchema<TInput>,
+  serviceMethod: (input: TInput) => Promise<TOutput>,
+  revalidatePaths: string[]
+) {
+  return async (input: TInput): Promise<ActionResult<TOutput>> => {
+    try {
+      const validatedInput = schema.parse(input);
+      const result = await serviceMethod(validatedInput);
+
+      revalidatePaths.forEach((path) => revalidatePath(path));
+
+      return {
+        success: true,
+        data: result,
+        message: "Successfully updated",
+      };
+    } catch (error) {
+      const result = handleActionError(error);
+      return {
+        success: false,
+        message: result.message,
+        zodError: result.zodError ?? [],
+      };
+    }
+  };
+}
+
+/**
+ * Create an action with authentication check
+ */
+export function createAuthenticatedAction<TInput, TOutput>(
+  schema: z.ZodSchema<TInput>,
+  serviceMethod: (input: TInput, userId: string) => Promise<TOutput>,
+  revalidatePaths?: string[]
+) {
+  return async (input: TInput): Promise<ActionResult<TOutput>> => {
+    try {
+      const validatedInput = schema.parse(input);
+
+      // Get user session for authentication
+      const { getServerSession } = await import("next-auth");
+      const { authOptions } = await import("@/lib/infrastructure/auth");
+      const { redirect } = await import("next/navigation");
+
+      const session = await getServerSession(authOptions);
+      if (!session?.user?.id) {
+        redirect("/auth/signin");
+      }
+
+      const result = await serviceMethod(validatedInput, session!.user.id);
+
+      if (revalidatePaths) {
+        revalidatePaths.forEach((path) => revalidatePath(path));
+      }
+
+      return {
+        success: true,
+        data: result,
+        message: "Action completed successfully",
+      };
+    } catch (error) {
+      const result = handleActionError(error);
+      return {
+        success: false,
+        message: result.message,
+        zodError: result.zodError ?? [],
+      };
+    }
+  };
+}

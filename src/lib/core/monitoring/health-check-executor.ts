@@ -45,6 +45,7 @@ export class HealthCheckExecutor {
       }
 
       const response: AxiosResponse = await axios(requestConfig);
+
       log.debug("Health check response", {
         statusCode: response.status,
         responseTime: Date.now() - startTime,

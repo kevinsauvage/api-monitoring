@@ -5,19 +5,20 @@ import { connectionSchemas } from "@/lib/shared/schemas";
 import {
   createDataAction,
   createDeleteAction,
+  createUpdateAction,
 } from "@/lib/shared/utils/action-factory";
 import type {
   ConnectionValidationInput,
   ConnectionCreateInput,
 } from "@/lib/shared/types";
+import type { ConnectionUpdateInput } from "@/lib/shared/schemas";
 
 const connectionService = getConnectionService();
 
 export const validateConnection = createDataAction(
   connectionSchemas.validation,
   async (input: ConnectionValidationInput) =>
-    connectionService.validateConnection(input),
-  undefined
+    connectionService.validateConnection(input)
 );
 
 export const createConnection = createDataAction(
@@ -27,36 +28,12 @@ export const createConnection = createDataAction(
   ["/dashboard", "/dashboard/connections"]
 );
 
-export async function updateConnection(input: {
-  connectionId: string;
-  data: Record<string, unknown>;
-}) {
-  try {
-    const result = await connectionService.updateConnection(
-      input.connectionId,
-      input.data
-    );
-
-    if (result.success) {
-      // Revalidate paths
-      const { revalidatePath } = await import("next/cache");
-      revalidatePath("/dashboard");
-      revalidatePath("/dashboard/connections");
-    }
-
-    return result;
-  } catch (error) {
-    const { handleActionError } = await import(
-      "@/lib/shared/errors/error-handler"
-    );
-    const result = handleActionError(error);
-    return {
-      success: false,
-      error: result.message,
-      zodError: result.zodError,
-    };
-  }
-}
+export const updateConnection = createUpdateAction(
+  connectionSchemas.update,
+  async (input: ConnectionUpdateInput) =>
+    connectionService.updateConnection(input.connectionId, input.data),
+  ["/dashboard", "/dashboard/connections"]
+);
 
 export const deleteConnection = createDeleteAction(
   connectionSchemas.delete,

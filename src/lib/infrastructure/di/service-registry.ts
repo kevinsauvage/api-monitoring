@@ -4,11 +4,13 @@ import { ConnectionRepository } from "@/lib/core/repositories";
 import { HealthCheckRepository } from "@/lib/core/repositories";
 import { CheckResultRepository } from "@/lib/core/repositories";
 import { MonitoringRepository } from "@/lib/core/repositories";
+import { CostMetricRepository } from "@/lib/core/repositories";
 import { ConnectionService } from "@/lib/core/services";
 import { HealthCheckService } from "@/lib/core/services";
 import { DashboardService } from "@/lib/core/services";
 import { MonitoringService } from "@/lib/core/services";
 import { CronService } from "@/lib/core/services";
+import { CostTrackingService } from "@/lib/core/services";
 
 /**
  * Register all repositories as singletons
@@ -37,6 +39,11 @@ export function registerRepositories(): void {
   container.registerSingleton(
     SERVICE_IDENTIFIERS.MONITORING_REPOSITORY,
     () => new MonitoringRepository()
+  );
+
+  container.registerSingleton(
+    SERVICE_IDENTIFIERS.COST_METRIC_REPOSITORY,
+    () => new CostMetricRepository()
   );
 }
 
@@ -67,6 +74,11 @@ export function registerServices(): void {
   container.registerSingleton(
     SERVICE_IDENTIFIERS.CRON_SERVICE,
     () => new CronService()
+  );
+
+  container.registerSingleton(
+    SERVICE_IDENTIFIERS.COST_TRACKING_SERVICE,
+    () => new CostTrackingService()
   );
 }
 

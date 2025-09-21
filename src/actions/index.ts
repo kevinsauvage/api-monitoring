@@ -12,11 +12,19 @@ export {
 // Health check actions
 export {
   refreshHealthData,
-  deleteHealthCheck,
-  updateHealthCheck,
-  triggerHealthCheck,
   createHealthCheck,
+  updateHealthCheck,
+  deleteHealthCheck,
+  triggerHealthCheck,
 } from "./health-actions";
+
+// Cost tracking actions
+export {
+  getCostAnalytics,
+  getCostMetrics,
+  trackAllCosts,
+  trackConnectionCosts,
+} from "./cost-actions";
 
 // Shared types
 export type {

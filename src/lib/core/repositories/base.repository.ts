@@ -148,4 +148,72 @@ export abstract class BaseRepository {
     const idPart = identifier ? ` with ID '${identifier}'` : "";
     return `Failed to ${operation} ${entity}${idPart}`;
   }
+
+  /**
+   * Validate required parameters for database operations
+   *
+   * @param params - Object containing parameters to validate
+   * @param requiredFields - Array of required field names
+   * @throws {Error} When required fields are missing or invalid
+   */
+  protected validateRequiredParams(
+    params: Record<string, unknown>,
+    requiredFields: string[]
+  ): void {
+    const missingFields = requiredFields.filter(
+      (field) =>
+        params[field] === undefined ||
+        params[field] === null ||
+        params[field] === ""
+    );
+
+    if (missingFields.length > 0) {
+      throw new Error(
+        `Missing required parameters: ${missingFields.join(", ")}`
+      );
+    }
+  }
+
+  /**
+   * Execute a database operation with pagination
+   *
+   * @param operation - The database operation to execute
+   * @param page - Page number (1-based)
+   * @param limit - Number of items per page
+   * @param context - Description of the operation for error messages
+   * @returns Promise resolving to paginated result
+   */
+  protected async executePaginated<T>(
+    operation: () => Promise<T[]>,
+    page: number,
+    limit: number,
+    context: string
+  ): Promise<{
+    data: T[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
+    const skip = (page - 1) * limit;
+
+    return this.executeQuery(async () => {
+      const [data, total] = await Promise.all([
+        operation().then((results) => results.slice(skip, skip + limit)),
+        operation().then((results) => results.length),
+      ]);
+
+      return {
+        data,
+        pagination: {
+          page,
+          limit,
+          total,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    }, `paginated ${context}`);
+  }
 }

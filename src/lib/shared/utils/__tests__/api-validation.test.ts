@@ -419,7 +419,7 @@ describe("API Validation", () => {
       expect(endpoints).toEqual([
         "/v1/charges",
         "/v1/customers",
-        "/v1/balance",
+        "/v1/balance_transactions",
       ]);
     });
 
@@ -456,7 +456,7 @@ describe("API Validation", () => {
       expect(endpoints).toEqual([
         "/v1/charges",
         "/v1/customers",
-        "/v1/balance",
+        "/v1/balance_transactions",
       ]);
     });
   });

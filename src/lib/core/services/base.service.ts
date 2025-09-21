@@ -17,6 +17,7 @@ import type {
   CheckResultRepository,
   UserRepository,
   MonitoringRepository,
+  CostMetricRepository,
 } from "@/lib/core/repositories";
 
 export abstract class BaseService {
@@ -49,6 +50,11 @@ export abstract class BaseService {
   protected get monitoringRepository(): MonitoringRepository {
     return this.resolve<MonitoringRepository>(
       SERVICE_IDENTIFIERS.MONITORING_REPOSITORY
+    );
+  }
+  protected get costMetricRepository(): CostMetricRepository {
+    return this.resolve<CostMetricRepository>(
+      SERVICE_IDENTIFIERS.COST_METRIC_REPOSITORY
     );
   }
 

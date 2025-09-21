@@ -19,4 +19,5 @@ export {
   getMonitoringService,
   getCronService,
   getCheckResultRepository,
+  getCostTrackingService,
 } from "./service-factory";

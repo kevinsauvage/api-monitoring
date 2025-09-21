@@ -20,7 +20,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
   { name: "API Connections", href: "/dashboard/connections", icon: Plus },
   { name: "Health Checks", href: "/dashboard/health", icon: Activity },
-  { name: "Cost Monitoring", href: "/dashboard/costs", icon: CreditCard },
+  { name: "Cost Analytics", href: "/dashboard/cost", icon: CreditCard },
   { name: "Alerts", href: "/dashboard/alerts", icon: Bell },
   { name: "Security", href: "/dashboard/security", icon: Shield },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },

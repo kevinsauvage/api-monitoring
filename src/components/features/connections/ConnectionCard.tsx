@@ -107,7 +107,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
   const lastResult = recentResults.sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   )[0];
-  const lastStatus = lastResult.status;
+  const lastStatus = lastResult?.status;
 
   return (
     <>
@@ -221,20 +221,20 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
               </div>
             </div>
 
-            {lastExecutedHealthCheck.lastExecutedAt && (
+            {lastExecutedHealthCheck?.lastExecutedAt && (
               <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center space-x-2">
                   <div className={getStatusColor(lastStatus)}>
                     {getStatusIcon(lastStatus)}
                   </div>
                   <span className="text-sm font-medium">
-                    Last check: {lastStatus}
+                    Last check: {lastStatus ?? "No data"}
                   </span>
                 </div>
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                  <span>{lastResult.responseTime}ms</span>
+                  <span>{lastResult?.responseTime ?? "N/A"}ms</span>
                   <span>
-                    {formatTime(lastExecutedHealthCheck.lastExecutedAt)}
+                    {formatTime(lastExecutedHealthCheck?.lastExecutedAt)}
                   </span>
                 </div>
               </div>

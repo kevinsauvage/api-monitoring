@@ -13,6 +13,8 @@ export class HealthCheckRepository extends BaseRepository {
    * @returns Promise resolving to array of health checks
    */
   async findByConnectionId(connectionId: string): Promise<HealthCheck[]> {
+    this.validateRequiredParams({ connectionId }, ["connectionId"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.healthCheck.findMany({
@@ -38,6 +40,8 @@ export class HealthCheckRepository extends BaseRepository {
     id: string,
     data: Prisma.HealthCheckUpdateInput
   ): Promise<HealthCheck> {
+    this.validateRequiredParams({ id, data }, ["id", "data"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.healthCheck.update({
@@ -55,6 +59,8 @@ export class HealthCheckRepository extends BaseRepository {
    * @returns Promise resolving to health check count
    */
   async countByUserId(userId: string): Promise<number> {
+    this.validateRequiredParams({ userId }, ["userId"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.healthCheck.count({
@@ -75,6 +81,8 @@ export class HealthCheckRepository extends BaseRepository {
    * @returns Promise resolving to active health check count
    */
   async countActiveByUserId(userId: string): Promise<number> {
+    this.validateRequiredParams({ userId }, ["userId"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.healthCheck.count({
@@ -100,6 +108,8 @@ export class HealthCheckRepository extends BaseRepository {
     id: string,
     userId: string
   ): Promise<HealthCheck | null> {
+    this.validateRequiredParams({ id, userId }, ["id", "userId"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.healthCheck.findFirst({
@@ -121,6 +131,8 @@ export class HealthCheckRepository extends BaseRepository {
    * @returns Promise resolving to the created health check
    */
   async create(data: Prisma.HealthCheckCreateInput): Promise<HealthCheck> {
+    this.validateRequiredParams(data, ["endpoint", "method", "apiConnection"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.healthCheck.create({
@@ -137,6 +149,8 @@ export class HealthCheckRepository extends BaseRepository {
    * @returns Promise resolving to health check or null if not found
    */
   async findById(id: string): Promise<HealthCheck | null> {
+    this.validateRequiredParams({ id }, ["id"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.healthCheck.findUnique({
@@ -153,6 +167,8 @@ export class HealthCheckRepository extends BaseRepository {
    * @returns Promise resolving when deletion is complete
    */
   async delete(id: string): Promise<void> {
+    this.validateRequiredParams({ id }, ["id"]);
+
     await this.executeQuery(
       async () =>
         this.prisma.healthCheck.delete({
@@ -184,6 +200,8 @@ export class HealthCheckRepository extends BaseRepository {
       };
     }>
   > {
+    this.validateRequiredParams({ currentTime }, ["currentTime"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.healthCheck.findMany({
@@ -216,7 +234,116 @@ export class HealthCheckRepository extends BaseRepository {
           },
           orderBy: { lastExecutedAt: "asc" },
         }),
-      "find health checks due for execution"
+      this.buildErrorMessage("find", "health checks due for execution")
+    );
+  }
+
+  /**
+   * Find all health checks for a user with pagination
+   *
+   * @param userId - The user's unique identifier
+   * @param page - Page number (1-based)
+   * @param limit - Number of items per page
+   * @returns Promise resolving to paginated health checks
+   */
+  async findByUserIdPaginated(
+    userId: string,
+    page: number = 1,
+    limit: number = 50
+  ): Promise<{
+    data: HealthCheck[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
+    this.validateRequiredParams({ userId, page, limit }, ["userId"]);
+
+    return this.executePaginated(
+      async () =>
+        this.prisma.healthCheck.findMany({
+          where: {
+            apiConnection: {
+              userId,
+            },
+          },
+          orderBy: { createdAt: "desc" },
+        }),
+      page,
+      limit,
+      this.buildErrorMessage("find", "health checks for user", userId)
+    );
+  }
+
+  /**
+   * Find active health checks for a user
+   *
+   * @param userId - The user's unique identifier
+   * @returns Promise resolving to array of active health checks
+   */
+  async findActiveByUserId(userId: string): Promise<HealthCheck[]> {
+    this.validateRequiredParams({ userId }, ["userId"]);
+
+    return this.executeQuery(
+      async () =>
+        this.prisma.healthCheck.findMany({
+          where: {
+            apiConnection: {
+              userId,
+            },
+            isActive: true,
+          },
+          orderBy: { createdAt: "desc" },
+        }),
+      this.buildErrorMessage("find", "active health checks for user", userId)
+    );
+  }
+
+  /**
+   * Update health check status (active/inactive)
+   *
+   * @param id - The health check's unique identifier
+   * @param isActive - Whether the health check should be active
+   * @returns Promise resolving to the updated health check
+   */
+  async updateStatus(id: string, isActive: boolean): Promise<HealthCheck> {
+    this.validateRequiredParams({ id, isActive }, ["id", "isActive"]);
+
+    return this.executeQuery(
+      async () =>
+        this.prisma.healthCheck.update({
+          where: { id },
+          data: { isActive },
+        }),
+      this.buildErrorMessage("update", "health check status", id)
+    );
+  }
+
+  /**
+   * Update last executed timestamp for a health check
+   *
+   * @param id - The health check's unique identifier
+   * @param lastExecutedAt - The timestamp of last execution
+   * @returns Promise resolving to the updated health check
+   */
+  async updateLastExecuted(
+    id: string,
+    lastExecutedAt: Date
+  ): Promise<HealthCheck> {
+    this.validateRequiredParams({ id, lastExecutedAt }, [
+      "id",
+      "lastExecutedAt",
+    ]);
+
+    return this.executeQuery(
+      async () =>
+        this.prisma.healthCheck.update({
+          where: { id },
+          data: { lastExecutedAt },
+        }),
+      this.buildErrorMessage("update", "health check last executed", id)
     );
   }
 }

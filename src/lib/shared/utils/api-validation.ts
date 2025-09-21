@@ -61,12 +61,13 @@ export interface ConnectionConfig {
 export async function validateApiConnection(
   config: ConnectionConfig
 ): Promise<ValidationResult> {
-  const { provider, baseUrl, apiKey, accountSid, authToken, token } = config;
+  const { provider, baseUrl, apiKey, secretKey, accountSid, authToken, token } =
+    config;
 
   try {
     switch (provider.toLowerCase()) {
       case "stripe":
-        return await validateStripeConnection(baseUrl, apiKey);
+        return await validateStripeConnection(baseUrl, apiKey, secretKey);
       case "twilio":
         return await validateTwilioConnection(baseUrl, accountSid, authToken);
       case "sendgrid":
@@ -92,16 +93,17 @@ export async function validateApiConnection(
 
 async function validateStripeConnection(
   baseUrl: string,
-  apiKey?: string
+  _apiKey?: string,
+  secretKey?: string
 ): Promise<ValidationResult> {
-  if (!apiKey) {
-    return { success: false, message: "API key is required for Stripe" };
+  if (!secretKey) {
+    return { success: false, message: "Secret key is required for Stripe" };
   }
 
   try {
     const response = await axios.get(`${baseUrl}/v1/charges?limit=1`, {
       headers: {
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${secretKey}`,
       },
       timeout: 10000,
     });
@@ -304,7 +306,7 @@ async function validateGenericConnection(
 export function getProviderEndpoints(provider: string): string[] {
   switch (provider.toLowerCase()) {
     case "stripe":
-      return ["/v1/charges", "/v1/customers", "/v1/balance"];
+      return ["/v1/charges", "/v1/customers", "/v1/balance_transactions"];
     case "twilio":
       return ["/2010-04-01/Accounts", "/2010-04-01/Account/Usage"];
     case "sendgrid":
@@ -326,7 +328,7 @@ export function getAuthHeaders(
   switch (provider.toLowerCase()) {
     case "stripe":
       return {
-        Authorization: `Bearer ${credentials["apiKey"]}`,
+        Authorization: `Bearer ${credentials["secretKey"]}`,
       };
     case "twilio":
       return {

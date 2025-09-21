@@ -24,6 +24,8 @@ export class MonitoringRepository extends BaseRepository {
       }
     >
   > {
+    this.validateRequiredParams({ connectionId }, ["connectionId"]);
+
     return this.executeQuery(async () => {
       const healthChecks = await this.prisma.healthCheck.findMany({
         where: { apiConnectionId: connectionId },
@@ -61,6 +63,8 @@ export class MonitoringRepository extends BaseRepository {
     averageResponseTime: number;
     recentFailures: number;
   }> {
+    this.validateRequiredParams({ healthCheckId, days }, ["healthCheckId"]);
+
     return this.executeQuery(async () => {
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - days);
@@ -110,6 +114,8 @@ export class MonitoringRepository extends BaseRepository {
     averageResponseTime: number;
     recentFailures: number;
   }> {
+    this.validateRequiredParams({ userId }, ["userId"]);
+
     return this.executeQuery(async () => {
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - 7);
@@ -165,6 +171,12 @@ export class MonitoringRepository extends BaseRepository {
     errorMessage: string | null | undefined;
     metadata: Record<string, unknown> | null | undefined;
   }) {
+    this.validateRequiredParams(data, [
+      "healthCheckId",
+      "status",
+      "responseTime",
+    ]);
+
     return this.executeQuery(
       async () =>
         this.prisma.checkResult.create({

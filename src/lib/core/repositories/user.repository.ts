@@ -13,6 +13,8 @@ export class UserRepository extends BaseRepository {
    * @returns Promise resolving to the user or null if not found
    */
   async findById(id: string): Promise<User | null> {
+    this.validateRequiredParams({ id }, ["id"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.user.findUnique({
@@ -29,6 +31,8 @@ export class UserRepository extends BaseRepository {
    * @returns Promise resolving to the user or null if not found
    */
   async findByEmail(email: string): Promise<User | null> {
+    this.validateRequiredParams({ email }, ["email"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.user.findUnique({
@@ -49,6 +53,8 @@ export class UserRepository extends BaseRepository {
     email: string;
     password: string;
   }): Promise<User> {
+    this.validateRequiredParams(data, ["name", "email", "password"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.user.create({
@@ -70,6 +76,8 @@ export class UserRepository extends BaseRepository {
     email: string;
     subscription: Subscription;
   } | null> {
+    this.validateRequiredParams({ id }, ["id"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.user.findUnique({
@@ -100,6 +108,8 @@ export class UserRepository extends BaseRepository {
       subscription: Subscription;
     }>
   ): Promise<User> {
+    this.validateRequiredParams({ id, data }, ["id", "data"]);
+
     return this.executeQuery(
       async () =>
         this.prisma.user.update({
@@ -117,6 +127,8 @@ export class UserRepository extends BaseRepository {
    * @returns Promise resolving when deletion is complete
    */
   async delete(id: string): Promise<void> {
+    this.validateRequiredParams({ id }, ["id"]);
+
     await this.executeQuery(
       async () =>
         this.prisma.user.delete({
@@ -133,6 +145,8 @@ export class UserRepository extends BaseRepository {
    * @returns Promise resolving to true if user exists, false otherwise
    */
   async existsByEmail(email: string): Promise<boolean> {
+    this.validateRequiredParams({ email }, ["email"]);
+
     const user = await this.findByEmail(email);
     return user !== null;
   }
@@ -145,7 +159,78 @@ export class UserRepository extends BaseRepository {
   async count(): Promise<number> {
     return this.executeQuery(
       async () => this.prisma.user.count(),
-      "count users"
+      this.buildErrorMessage("count", "users")
+    );
+  }
+
+  /**
+   * Find all users with pagination
+   *
+   * @param page - Page number (1-based)
+   * @param limit - Number of items per page
+   * @returns Promise resolving to paginated users
+   */
+  async findAllPaginated(
+    page: number = 1,
+    limit: number = 50
+  ): Promise<{
+    data: User[];
+    pagination: {
+      page: number;
+      limit: number;
+      total: number;
+      totalPages: number;
+    };
+  }> {
+    this.validateRequiredParams({ page, limit }, ["page", "limit"]);
+
+    return this.executePaginated(
+      async () => this.prisma.user.findMany({ orderBy: { createdAt: "desc" } }),
+      page,
+      limit,
+      this.buildErrorMessage("find", "users")
+    );
+  }
+
+  /**
+   * Find users by subscription type
+   *
+   * @param subscription - The subscription type to filter by
+   * @returns Promise resolving to array of users with the specified subscription
+   */
+  async findBySubscription(subscription: Subscription): Promise<User[]> {
+    this.validateRequiredParams({ subscription }, ["subscription"]);
+
+    return this.executeQuery(
+      async () =>
+        this.prisma.user.findMany({
+          where: { subscription },
+          orderBy: { createdAt: "desc" },
+        }),
+      this.buildErrorMessage("find", "users by subscription", subscription)
+    );
+  }
+
+  /**
+   * Update user subscription
+   *
+   * @param id - The user's unique identifier
+   * @param subscription - The new subscription type
+   * @returns Promise resolving to the updated user
+   */
+  async updateSubscription(
+    id: string,
+    subscription: Subscription
+  ): Promise<User> {
+    this.validateRequiredParams({ id, subscription }, ["id", "subscription"]);
+
+    return this.executeQuery(
+      async () =>
+        this.prisma.user.update({
+          where: { id },
+          data: { subscription },
+        }),
+      this.buildErrorMessage("update", "user subscription", id)
     );
   }
 }

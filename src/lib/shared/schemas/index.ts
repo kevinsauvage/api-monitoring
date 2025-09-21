@@ -147,6 +147,21 @@ export const healthCheckSchemas = {
   }),
 };
 
+// Cost schemas
+export const costSchemas = {
+  analytics: z.object({
+    startDate: z.date().optional(),
+    endDate: z.date().optional(),
+  }),
+  metrics: z.object({
+    startDate: z.date().optional(),
+    endDate: z.date().optional(),
+  }),
+  trackConnection: z.object({
+    connectionId: commonSchemas.connectionId,
+  }),
+};
+
 // Export type inference helpers
 export type ConnectionValidationInput = z.infer<
   typeof connectionSchemas.validation
@@ -160,4 +175,9 @@ export type HealthCheckDeleteInput = z.infer<typeof healthCheckSchemas.delete>;
 export type HealthCheckUpdateInput = z.infer<typeof healthCheckSchemas.update>;
 export type HealthCheckTriggerInput = z.infer<
   typeof healthCheckSchemas.trigger
+>;
+export type CostAnalyticsInput = z.infer<typeof costSchemas.analytics>;
+export type CostMetricsInput = z.infer<typeof costSchemas.metrics>;
+export type CostTrackConnectionInput = z.infer<
+  typeof costSchemas.trackConnection
 >;

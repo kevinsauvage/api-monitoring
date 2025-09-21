@@ -13,19 +13,41 @@ import {
   UPTIME_THRESHOLDS,
 } from "../constants";
 
-export function getStatusColor(status: CheckStatus | string): string {
-  return STATUS_COLORS[status as keyof typeof STATUS_COLORS];
+export function getStatusColor(
+  status: CheckStatus | string | undefined
+): string {
+  if (!status) {
+    return STATUS_COLORS.UNKNOWN;
+  }
+  return (
+    STATUS_COLORS[status as keyof typeof STATUS_COLORS] ||
+    STATUS_COLORS.UNKNOWN ||
+    "bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-gray-300"
+  );
 }
 
 export function getStatusColorExtended(status: CheckStatus | string): string {
   return STATUS_COLORS_EXTENDED[status as keyof typeof STATUS_COLORS_EXTENDED];
 }
 
-export function getStatusTextColor(status: CheckStatus | string): string {
-  return STATUS_TEXT_COLORS[status as keyof typeof STATUS_TEXT_COLORS];
+export function getStatusTextColor(
+  status: CheckStatus | string | undefined
+): string {
+  if (!status) {
+    return STATUS_TEXT_COLORS.UNKNOWN || "text-gray-600";
+  }
+  return (
+    STATUS_TEXT_COLORS[status as keyof typeof STATUS_TEXT_COLORS] ||
+    STATUS_TEXT_COLORS.UNKNOWN ||
+    "text-gray-600"
+  );
 }
 
-export function getStatusIcon(status: CheckStatus | string) {
+export function getStatusIcon(status: CheckStatus | string | undefined) {
+  if (!status) {
+    return <AlertTriangle className="w-4 h-4" />;
+  }
+
   switch (status) {
     case "SUCCESS":
       return <CheckCircle className="w-4 h-4" />;
@@ -39,7 +61,9 @@ export function getStatusIcon(status: CheckStatus | string) {
   }
 }
 
-export function getStatusIconWithColor(status: CheckStatus | string) {
+export function getStatusIconWithColor(
+  status: CheckStatus | string | undefined
+) {
   const icon = getStatusIcon(status);
   const colorClass = getStatusTextColor(status);
 

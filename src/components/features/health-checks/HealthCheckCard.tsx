@@ -82,8 +82,8 @@ export default function HealthCheckCard({ healthCheck }: HealthCheckCardProps) {
       : 0;
 
   const lastResult = healthCheck.recentResults[0];
-  const lastStatus = lastResult.status;
-  const lastResponseTime = lastResult.responseTime;
+  const lastStatus = lastResult?.status;
+  const lastResponseTime = lastResult?.responseTime;
 
   return (
     <>
@@ -179,7 +179,7 @@ export default function HealthCheckCard({ healthCheck }: HealthCheckCardProps) {
                 </div>
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                   <span>{lastResponseTime}ms</span>
-                  <span>{formatTime(lastResult.timestamp)}</span>
+                  <span>{formatTime(lastResult?.timestamp)}</span>
                 </div>
               </div>
             }
