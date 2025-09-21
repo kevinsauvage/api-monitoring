@@ -33,6 +33,18 @@ export interface SerializedHealthCheckWithConnection
 }
 
 /**
+ * Serialized health check with stats
+ */
+export interface SerializedHealthCheckWithStats extends SerializedHealthCheck {
+  stats?: {
+    totalChecks: number;
+    successRate: number;
+    averageResponseTime: number;
+    recentFailures: number;
+  };
+}
+
+/**
  * Serialize a HealthCheck model for API responses
  */
 export function serializeHealthCheck(
@@ -95,4 +107,29 @@ export function serializeHealthCheckWithConnection(
       provider: healthCheck.apiConnection.provider,
     },
   };
+}
+
+/**
+ * Serialize a HealthCheck with stats for API responses
+ */
+export function serializeHealthCheckWithStats(
+  healthCheck: HealthCheck & {
+    stats?: {
+      totalChecks: number;
+      successRate: number;
+      averageResponseTime: number;
+      recentFailures: number;
+    };
+  }
+): SerializedHealthCheckWithStats {
+  const result = serializeHealthCheck(healthCheck);
+
+  if (healthCheck.stats) {
+    return {
+      ...result,
+      stats: healthCheck.stats,
+    };
+  }
+
+  return result;
 }
