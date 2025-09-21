@@ -1,3 +1,4 @@
+import React from "react";
 import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
 import type { CheckStatus } from "@prisma/client";
 import {
