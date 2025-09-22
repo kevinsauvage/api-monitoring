@@ -1,10 +1,6 @@
 import type { HealthCheck, Prisma } from "@prisma/client";
 import { BaseRepository } from "./base.repository";
 
-/**
- * Repository for managing Health Check entities
- * Provides data access methods for health check operations with standardized error handling
- */
 export class HealthCheckRepository extends BaseRepository {
   /**
    * Find all health checks for a connection

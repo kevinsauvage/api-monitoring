@@ -1,3 +1,4 @@
+// Components
 export { default as ConnectionActions } from "./ConnectionActions";
 export { default as ConnectionCard } from "./ConnectionCard";
 export { default as ConnectionDetailsCard } from "./ConnectionDetailsCard";
@@ -15,3 +16,6 @@ export { default as NewConnectionHeader } from "./NewConnectionHeader";
 export { default as NewConnectionClient } from "./NewConnectionClient";
 export { default as PlanLimitsCard } from "./PlanLimitsCard";
 export { default as ProviderSelection } from "./ProviderSelection";
+
+// Types
+export type * from "./types";

@@ -1,10 +1,6 @@
 import type { User, Subscription } from "@prisma/client";
 import { BaseRepository } from "./base.repository";
 
-/**
- * Repository for managing User entities
- * Provides data access methods for user operations with standardized error handling
- */
 export class UserRepository extends BaseRepository {
   /**
    * Find a user by their unique ID

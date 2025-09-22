@@ -1,9 +1,5 @@
 import type { HealthCheck } from "@prisma/client";
-import {
-  serializeEntityTimestamps,
-  serializeHeaders,
-  serializeQueryParams,
-} from "@/lib/core/utils/serializer-utils";
+import { serializeEntityTimestamps } from "@/lib/core/utils/serializer-utils";
 import type { SerializedHealthCheck } from "@/lib/core/types";
 
 export type SerializedHealthCheckData = SerializedHealthCheck;
@@ -37,9 +33,9 @@ export function serializeHealthCheck(
     expectedStatus: healthCheck.expectedStatus,
     timeout: healthCheck.timeout,
     interval: healthCheck.interval,
-    headers: serializeHeaders(healthCheck.headers),
+    headers: healthCheck.headers as Record<string, string> | null,
     body: healthCheck.body,
-    queryParams: serializeQueryParams(healthCheck.queryParams),
+    queryParams: healthCheck.queryParams as Record<string, string> | null,
     isActive: healthCheck.isActive,
     ...serializeEntityTimestamps(healthCheck),
   };

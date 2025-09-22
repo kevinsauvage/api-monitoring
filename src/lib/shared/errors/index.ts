@@ -29,12 +29,15 @@ export class AppError extends Error {
 }
 
 export class ValidationError extends AppError {
+  public readonly field?: string | undefined;
+
   constructor(message: string, field?: string) {
     super(
       message,
       field ? `VALIDATION_${field.toUpperCase()}` : "VALIDATION_ERROR",
       400
     );
+    this.field = field;
   }
 }
 
