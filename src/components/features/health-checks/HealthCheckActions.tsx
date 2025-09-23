@@ -21,15 +21,13 @@ import {
 } from "@/actions/health-actions";
 import { log } from "@/lib/shared/utils/logger";
 
-interface HealthCheckActionsProps {
-  healthCheckId: string;
-  isActive: boolean;
-}
-
 export default function HealthCheckActions({
   healthCheckId,
   isActive,
-}: HealthCheckActionsProps) {
+}: {
+  healthCheckId: string;
+  isActive: boolean;
+}) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isToggling, setIsToggling] = useState(false);

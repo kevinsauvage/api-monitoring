@@ -20,11 +20,11 @@ import {
 import { TrendingUp, TrendingDown } from "lucide-react";
 import type { SerializedCheckResultWithDetails } from "@/lib/core/serializers";
 
-interface ResponseTimeChartProps {
+export default function ResponseTimeChart({
+  data,
+}: {
   data: SerializedCheckResultWithDetails[];
-}
-
-export default function ResponseTimeChart({ data }: ResponseTimeChartProps) {
+}) {
   // Process data for the last 24 hours
   const chartData = data
     .slice(0, 24) // Last 24 data points

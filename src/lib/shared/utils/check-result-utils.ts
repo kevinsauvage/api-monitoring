@@ -1,4 +1,4 @@
-import type { CheckResultWithDetails } from "@/lib/core/repositories";
+import type { CheckResultWithDetails } from "@/lib/core/types";
 
 export function getStatusCounts(recentResults: CheckResultWithDetails[]) {
   return recentResults.reduce<Record<string, number>>((acc, result) => {

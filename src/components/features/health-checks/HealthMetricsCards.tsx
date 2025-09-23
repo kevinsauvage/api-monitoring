@@ -8,15 +8,6 @@ import {
   TrendingUp,
 } from "lucide-react";
 
-interface HealthMetricsCardsProps {
-  totalHealthChecks: number;
-  activeHealthChecks: number;
-  successRate: number;
-  averageResponseTime: number;
-  totalChecks: number;
-  recentFailures: number;
-}
-
 export default function HealthMetricsCards({
   totalHealthChecks,
   activeHealthChecks,
@@ -24,7 +15,14 @@ export default function HealthMetricsCards({
   averageResponseTime,
   totalChecks,
   recentFailures,
-}: HealthMetricsCardsProps) {
+}: {
+  totalHealthChecks: number;
+  activeHealthChecks: number;
+  successRate: number;
+  averageResponseTime: number;
+  totalChecks: number;
+  recentFailures: number;
+}) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       {/* Total Health Checks */}

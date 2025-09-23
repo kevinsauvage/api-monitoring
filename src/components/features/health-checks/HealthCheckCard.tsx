@@ -26,14 +26,14 @@ import {
 } from "@/lib/shared/utils";
 import { useAsyncAction, useConfirmationDialog } from "@/lib/shared/hooks";
 
-import type { HealthCheckWithResults } from "@/lib/core/services";
+import type { HealthCheckWithResults } from "@/lib/core/types";
 
-interface HealthCheckCardProps {
+export default function HealthCheckCard({
+  healthCheck,
+}: {
   healthCheck: HealthCheckWithResults;
   connectionName: string;
-}
-
-export default function HealthCheckCard({ healthCheck }: HealthCheckCardProps) {
+}) {
   const { execute: executeTrigger, isLoading: isTriggering } = useAsyncAction({
     successMessage: "Health check triggered successfully",
     errorMessage: "Failed to trigger health check",

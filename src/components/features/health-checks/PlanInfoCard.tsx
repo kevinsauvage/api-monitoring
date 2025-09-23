@@ -4,11 +4,11 @@ import { Info, Crown, Star, Zap } from "lucide-react";
 import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
 import type { Subscription } from "@prisma/client";
 
-interface PlanInfoCardProps {
+export default function PlanInfoCard({
+  subscription,
+}: {
   subscription: Subscription;
-}
-
-export default function PlanInfoCard({ subscription }: PlanInfoCardProps) {
+}) {
   const planLimits = getPlanLimits(subscription);
 
   const getPlanIcon = (plan: Subscription) => {

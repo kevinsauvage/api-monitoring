@@ -1,8 +1,6 @@
-import type { HealthCheck } from "@prisma/client";
 import { serializeEntityTimestamps } from "@/lib/core/utils/serializer-utils";
+import type { HealthCheck } from "@prisma/client";
 import type { SerializedHealthCheck } from "@/lib/core/types";
-
-export type SerializedHealthCheckData = SerializedHealthCheck;
 
 export interface SerializedHealthCheckWithConnection
   extends SerializedHealthCheck {
@@ -24,7 +22,7 @@ export interface SerializedHealthCheckWithStats extends SerializedHealthCheck {
 
 export function serializeHealthCheck(
   healthCheck: HealthCheck
-): SerializedHealthCheckData {
+): SerializedHealthCheck {
   return {
     id: healthCheck.id,
     apiConnectionId: healthCheck.apiConnectionId,

@@ -6,15 +6,13 @@ import { getPlanIcon, getPlanColor } from "@/components/utils/planUtils";
 import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
 import type { Subscription } from "@prisma/client";
 
-interface ConnectionsHeaderProps {
-  userSubscription: Subscription;
-  canCreateConnection: boolean;
-}
-
 export default function ConnectionsHeader({
   userSubscription,
   canCreateConnection,
-}: ConnectionsHeaderProps) {
+}: {
+  userSubscription: Subscription;
+  canCreateConnection: boolean;
+}) {
   const planLimits = getPlanLimits(userSubscription);
 
   return (

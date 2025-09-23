@@ -11,15 +11,13 @@ import {
 import { Sparkles } from "lucide-react";
 import { API_PROVIDERS } from "@/components/utils/constants";
 
-interface ProviderSelectionProps {
-  selectedProvider: string;
-  onProviderSelect: (providerId: string) => void;
-}
-
 export default function ProviderSelection({
   selectedProvider,
   onProviderSelect,
-}: ProviderSelectionProps) {
+}: {
+  selectedProvider: string;
+  onProviderSelect: (providerId: string) => void;
+}) {
   return (
     <Card>
       <CardHeader>

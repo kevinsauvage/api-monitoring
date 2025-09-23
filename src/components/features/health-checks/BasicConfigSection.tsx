@@ -10,7 +10,11 @@ import {
 import { Globe } from "lucide-react";
 import { ZodError } from "@/components/ui/zod-error";
 
-interface BasicConfigSectionProps {
+export default function BasicConfigSection({
+  defaultInterval,
+  intervalOptions,
+  validationErrors = [],
+}: {
   defaultInterval: number;
   intervalOptions: Array<{ value: number; label: string }>;
   validationErrors?: Array<{
@@ -18,13 +22,7 @@ interface BasicConfigSectionProps {
     message: string;
     code: string;
   }>;
-}
-
-export default function BasicConfigSection({
-  defaultInterval,
-  intervalOptions,
-  validationErrors = [],
-}: BasicConfigSectionProps) {
+}) {
   return (
     <div className="space-y-6">
       <div>

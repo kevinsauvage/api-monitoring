@@ -2,15 +2,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Sparkles } from "lucide-react";
 
-interface FormActionsProps {
-  isSubmitting: boolean;
-  apiConnectionId: string;
-}
-
 export default function FormActions({
   isSubmitting,
   apiConnectionId,
-}: FormActionsProps) {
+}: {
+  isSubmitting: boolean;
+  apiConnectionId: string;
+}) {
   return (
     <div className="flex justify-end space-x-4 pt-6">
       <Button variant="outline" asChild className="h-11 px-8">

@@ -1,9 +1,10 @@
-/**
- * Shared types for the core module
- * Centralized type definitions to eliminate duplication
- */
-
-// Base result interfaces
+import type {
+  CheckResult,
+  HealthCheck,
+  Prisma,
+  Subscription,
+  User,
+} from "@prisma/client";
 export interface BaseResult {
   success: boolean;
   message?: string;
@@ -23,7 +24,6 @@ export interface ValidationResult extends BaseResult {
   }>;
 }
 
-// Common serialized types
 export interface SerializedEntity {
   id: string;
   createdAt: string;
@@ -34,7 +34,6 @@ export interface SerializedEntityWithTimestamps extends SerializedEntity {
   lastExecutedAt?: string | null;
 }
 
-// API Connection types
 export interface SerializedApiConnection extends SerializedEntity {
   name: string;
   provider: string;
@@ -42,7 +41,6 @@ export interface SerializedApiConnection extends SerializedEntity {
   isActive: boolean;
 }
 
-// Health Check types
 export interface SerializedHealthCheck extends SerializedEntityWithTimestamps {
   apiConnectionId: string;
   endpoint: string;
@@ -56,7 +54,6 @@ export interface SerializedHealthCheck extends SerializedEntityWithTimestamps {
   isActive: boolean;
 }
 
-// Check Result types
 export interface SerializedCheckResult {
   id: string;
   healthCheckId: string;
@@ -68,18 +65,6 @@ export interface SerializedCheckResult {
   timestamp: string;
 }
 
-// Cost tracking types
-export interface CostTrackingResult extends BaseResult {
-  costData?: {
-    provider: string;
-    amount: number;
-    currency: string;
-    period: string;
-    metadata?: unknown;
-  };
-}
-
-// Dashboard types
 export interface DashboardStats {
   totalConnections: number;
   activeConnections: number;
@@ -90,22 +75,9 @@ export interface DashboardStats {
     totalChecks: number;
     recentFailures: number;
   };
-  recentResults: Array<
-    SerializedCheckResult & {
-      healthCheck: {
-        id: string;
-        endpoint: string;
-        method: string;
-        apiConnection: {
-          provider: string;
-          name: string;
-        };
-      };
-    }
-  >;
+  recentResults: Array<CheckResultWithDetails>;
 }
 
-// Repository query options
 export interface QueryOptions {
   page?: number;
   limit?: number;
@@ -113,7 +85,6 @@ export interface QueryOptions {
   where?: Record<string, unknown>;
 }
 
-// Pagination result
 export interface PaginatedResult<T> {
   data: T[];
   pagination: {
@@ -123,3 +94,144 @@ export interface PaginatedResult<T> {
     totalPages: number;
   };
 }
+
+export type CheckResultWithDetails = Prisma.CheckResultGetPayload<{
+  include: {
+    healthCheck: {
+      select: {
+        id: true;
+        endpoint: true;
+        method: true;
+        apiConnection: {
+          select: {
+            name: true;
+            provider: true;
+          };
+        };
+      };
+    };
+  };
+}>;
+
+export type PaginationInfo = {
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+};
+
+export type Stats = {
+  totalChecks: number;
+  successRate: number;
+  averageResponseTime: number;
+  recentFailures: number;
+};
+
+export type ConnectionWithHealthChecks = Prisma.ApiConnectionGetPayload<{
+  include: {
+    healthChecks: {
+      select: {
+        id: true;
+        endpoint: true;
+        method: true;
+        isActive: true;
+        lastExecutedAt: true;
+      };
+    };
+  };
+}>;
+
+export type HealthCheckWithConnection = Prisma.HealthCheckGetPayload<{
+  select: {
+    id: true;
+    apiConnectionId: true;
+    endpoint: true;
+    method: true;
+    expectedStatus: true;
+    timeout: true;
+    interval: true;
+    lastExecutedAt: true;
+    apiConnection: {
+      select: {
+        id: true;
+        isActive: true;
+      };
+    };
+  };
+}>;
+
+export interface CostTrackingResult extends BaseResult {
+  costData?: {
+    provider: string;
+    amount: number;
+    currency: string;
+    period: string;
+    metadata?: unknown;
+  };
+}
+
+export interface CostTrackingStrategy {
+  trackCosts(credentials: Record<string, string>): Promise<CostTrackingResult>;
+}
+
+export interface SerializedUser {
+  id: string;
+  name: string | null;
+  email: string;
+  subscription: Subscription;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type ConnectionData = {
+  connections: ConnectionWithHealthChecks[];
+  user: User | null;
+  limits: ConnectionLimits;
+};
+
+export type HealthCheckWithResults = HealthCheck & {
+  recentResults: Array<CheckResult>;
+};
+
+export interface HealthCheckCreateResult {
+  success: boolean;
+  message?: string;
+  error?: string;
+  zodError?: Array<{
+    field: string;
+    message: string;
+    code: string;
+  }>;
+}
+
+export type ConnectionLimits = {
+  maxConnections: number;
+  maxHealthChecks: number;
+  currentConnections: number;
+  currentHealthChecks: number;
+  canCreateConnection: boolean;
+  canCreateHealthCheck: boolean;
+};
+
+export interface ConnectionCreateResult {
+  success: boolean;
+  message: string;
+  connectionId?: string;
+  zodError?: Array<{
+    field: string;
+    message: string;
+    code: string;
+  }>;
+}
+
+export type ConnectionWithCredentials = {
+  id: string;
+  name: string;
+  provider: string;
+  baseUrl: string;
+  apiKey?: string | null;
+  secretKey?: string | null;
+  accountSid?: string | null;
+  authToken?: string | null;
+  token?: string | null;
+};

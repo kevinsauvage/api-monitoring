@@ -16,11 +16,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
-import type { StatusData } from "@/lib/shared/types";
+import type { CheckStatus } from "@prisma/client";
 
-interface SuccessRateChartProps {
-  data: StatusData;
-}
+export type StatusData = {
+  status: CheckStatus;
+  count: number;
+  percentage: number;
+}[];
 
 const COLORS = {
   SUCCESS: "hsl(142, 76%, 36%)", // green-600
@@ -36,7 +38,7 @@ const STATUS_ICONS = {
   ERROR: AlertTriangle,
 };
 
-export default function SuccessRateChart({ data }: SuccessRateChartProps) {
+export default function SuccessRateChart({ data }: { data: StatusData }) {
   const chartData = data.map((item) => ({
     name: item.status,
     value: item.count,

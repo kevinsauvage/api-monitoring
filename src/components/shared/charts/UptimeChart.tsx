@@ -18,11 +18,7 @@ import {
 } from "@/components/ui/card";
 import type { UptimeData } from "@/lib/shared/types";
 
-interface UptimeChartProps {
-  data: UptimeData;
-}
-
-export default function UptimeChart({ data }: UptimeChartProps) {
+export default function UptimeChart({ data }: { data: UptimeData }) {
   // Process data for the last 7 days
   const chartData = data
     .slice(0, 7) // Last 7 data points

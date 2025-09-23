@@ -17,15 +17,15 @@ import { Badge } from "@/components/ui/badge";
 import ConnectionCard from "./ConnectionCard";
 
 import type { SerializedConnectionWithHealthChecks } from "@/lib/core/serializers";
-import type { CheckResultWithDetails } from "@/lib/core/repositories";
+import type { CheckResultWithDetails } from "@/lib/core/types";
 
-interface ConnectionsListProps {
+export default function ConnectionsList({
+  connections,
+}: {
   connections: (SerializedConnectionWithHealthChecks & {
     recentResults?: CheckResultWithDetails[];
   })[];
-}
-
-export default function ConnectionsList({ connections }: ConnectionsListProps) {
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [providerFilter, setProviderFilter] = useState<string>("all");

@@ -1,14 +1,12 @@
 import { Card, CardContent } from "@/components/ui/card";
 
-interface HealthLayoutHeaderProps {
-  title: string;
-  description: string;
-}
-
 export default function HealthLayoutHeader({
   title,
   description,
-}: HealthLayoutHeaderProps) {
+}: {
+  title: string;
+  description: string;
+}) {
   return (
     <Card className="border-0 shadow-none bg-transparent">
       <CardContent className="p-0">

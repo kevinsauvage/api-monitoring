@@ -6,6 +6,3 @@ export { default as CostByProviderChart } from "./CostByProviderChart";
 export { default as CostByPeriodChart } from "./CostByPeriodChart";
 export { default as RecentCostMetrics } from "./RecentCostMetrics";
 export { default as CostTrackingButton } from "./CostTrackingButton";
-
-// Types
-export type * from "./types";

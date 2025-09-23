@@ -4,13 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/shared/utils/utils";
 
-interface ConnectionNavigationProps {
-  connectionId: string;
-}
-
 export default function ConnectionNavigation({
   connectionId,
-}: ConnectionNavigationProps) {
+}: {
+  connectionId: string;
+}) {
   const pathname = usePathname();
 
   const navItems = [

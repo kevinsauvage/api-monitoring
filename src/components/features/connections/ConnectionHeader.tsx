@@ -1,19 +1,11 @@
+import type { ApiConnection } from "@prisma/client";
 import ConnectionActions from "./ConnectionActions";
-
-interface ConnectionHeaderProps {
-  connection: {
-    id: string;
-    name: string;
-    provider: string;
-    isActive: boolean;
-    createdAt: string | Date;
-    updatedAt: string | Date;
-  };
-}
 
 export default function ConnectionHeader({
   connection,
-}: ConnectionHeaderProps) {
+}: {
+  connection: ApiConnection;
+}) {
   return (
     <div className="flex items-center justify-between">
       <div>

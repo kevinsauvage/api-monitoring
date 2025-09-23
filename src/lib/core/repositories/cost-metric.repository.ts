@@ -3,13 +3,7 @@ import type { CostMetric, Prisma } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
 
 export class CostMetricRepository extends BaseRepository {
-  async create(data: {
-    apiConnectionId: string;
-    amount: number;
-    currency: string;
-    period: string;
-    metadata?: Prisma.InputJsonValue;
-  }): Promise<CostMetric> {
+  async create(data: Prisma.CostMetricCreateInput): Promise<CostMetric> {
     this.validateRequiredParams(data, [
       "apiConnectionId",
       "amount",
@@ -21,11 +15,11 @@ export class CostMetricRepository extends BaseRepository {
       async () =>
         this.prisma.costMetric.create({
           data: {
-            apiConnection: { connect: { id: data.apiConnectionId } },
-            amount: new Decimal(data.amount),
+            apiConnection: data.apiConnection,
+            amount: new Decimal(data.amount.toString()),
             currency: data.currency,
             period: data.period,
-            ...(data.metadata && { metadata: data.metadata }),
+            metadata: data.metadata,
           },
         }),
       this.buildErrorMessage("create", "cost metric")
@@ -252,16 +246,6 @@ export class CostMetricRepository extends BaseRepository {
     return result.count;
   }
 
-  /**
-   * Find cost metrics with pagination for a user
-   *
-   * @param userId - The user's unique identifier
-   * @param page - Page number (1-based)
-   * @param limit - Number of items per page
-   * @param startDate - Optional start date filter
-   * @param endDate - Optional end date filter
-   * @returns Promise resolving to paginated cost metrics
-   */
   async findByUserIdPaginated(
     userId: string,
     page: number = 1,
@@ -289,15 +273,6 @@ export class CostMetricRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Get cost metrics by provider for a user
-   *
-   * @param userId - The user's unique identifier
-   * @param provider - The provider to filter by
-   * @param startDate - Optional start date filter
-   * @param endDate - Optional end date filter
-   * @returns Promise resolving to cost metrics for the provider
-   */
   async findByProvider(
     userId: string,
     provider: string,
@@ -334,14 +309,6 @@ export class CostMetricRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Get total cost for a user within a date range
-   *
-   * @param userId - The user's unique identifier
-   * @param startDate - Start date for the range
-   * @param endDate - End date for the range
-   * @returns Promise resolving to total cost
-   */
   async getTotalCost(
     userId: string,
     startDate: Date,
@@ -375,12 +342,6 @@ export class CostMetricRepository extends BaseRepository {
     return metrics.reduce((total, metric) => total + Number(metric.amount), 0);
   }
 
-  /**
-   * Find cost metric by ID
-   *
-   * @param id - The cost metric's unique identifier
-   * @returns Promise resolving to cost metric or null if not found
-   */
   async findById(id: string): Promise<CostMetric | null> {
     this.validateRequiredParams({ id }, ["id"]);
 
@@ -393,13 +354,6 @@ export class CostMetricRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Update a cost metric
-   *
-   * @param id - The cost metric's unique identifier
-   * @param data - Data to update
-   * @returns Promise resolving to the updated cost metric
-   */
   async update(
     id: string,
     data: Prisma.CostMetricUpdateInput
@@ -416,12 +370,6 @@ export class CostMetricRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Delete a cost metric by ID
-   *
-   * @param id - The cost metric's unique identifier
-   * @returns Promise resolving when deletion is complete
-   */
   async delete(id: string): Promise<void> {
     this.validateRequiredParams({ id }, ["id"]);
 

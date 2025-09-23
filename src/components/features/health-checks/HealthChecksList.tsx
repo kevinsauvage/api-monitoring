@@ -15,19 +15,17 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import HealthCheckCard from "./HealthCheckCard";
-import type { HealthCheckWithResults } from "@/lib/core/services";
-
-interface HealthChecksListProps {
-  healthChecks: HealthCheckWithResults[];
-  connectionName: string;
-  connectionId: string;
-}
+import type { HealthCheckWithResults } from "@/lib/core/types";
 
 export default function HealthChecksList({
   healthChecks,
   connectionName,
   connectionId,
-}: HealthChecksListProps) {
+}: {
+  healthChecks: HealthCheckWithResults[];
+  connectionName: string;
+  connectionId: string;
+}) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [methodFilter, setMethodFilter] = useState<string>("all");

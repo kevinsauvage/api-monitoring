@@ -18,13 +18,11 @@ import BasicConfigSection from "./BasicConfigSection";
 import AdvancedConfigSection from "./AdvancedConfigSection";
 import FormActions from "./FormActions";
 
-interface CreateHealthCheckFormProps {
-  apiConnectionId: string;
-}
-
 export default function CreateHealthCheckForm({
   apiConnectionId,
-}: CreateHealthCheckFormProps) {
+}: {
+  apiConnectionId: string;
+}) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [validationErrors, setValidationErrors] = useState<
     Array<{

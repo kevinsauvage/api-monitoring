@@ -1,18 +1,12 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatTimestamp } from "@/lib/shared/utils/utils";
-
-interface ConnectionDetailsCardProps {
-  connection: {
-    provider: string;
-    baseUrl: string;
-    createdAt: string | Date;
-    updatedAt: string | Date;
-  };
-}
+import type { ApiConnection } from "@prisma/client";
 
 export default function ConnectionDetailsCard({
   connection,
-}: ConnectionDetailsCardProps) {
+}: {
+  connection: ApiConnection;
+}) {
   return (
     <Card>
       <CardHeader>

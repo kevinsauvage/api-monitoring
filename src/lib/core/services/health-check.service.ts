@@ -1,52 +1,14 @@
-import { BaseService } from "./base.service";
-import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
-import type { HealthCheckCreateInput } from "@/lib/shared/types";
-import { healthCheckSchemas } from "@/lib/shared/schemas";
 import { z } from "zod";
-import type { MonitoringService } from "./monitoring.service";
-import type { HealthCheck } from "@prisma/client";
+import type { HealthCheck, Prisma } from "@prisma/client";
+import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
+import { healthCheckSchemas } from "@/lib/shared/schemas";
 import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
-
-export type HealthCheckData = {
-  healthChecks: Array<
-    Omit<HealthCheck, "createdAt" | "updatedAt" | "lastExecutedAt"> & {
-      createdAt: string;
-      updatedAt: string;
-      lastExecutedAt: string | null;
-    }
-  >;
-};
-
-export type HealthCheckWithResults = Omit<
-  HealthCheck,
-  "createdAt" | "updatedAt" | "lastExecutedAt"
-> & {
-  createdAt: string;
-  updatedAt: string;
-  lastExecutedAt: string | null;
-  recentResults: Array<{
-    id: string;
-    status: "SUCCESS" | "FAILURE" | "TIMEOUT" | "ERROR";
-    responseTime: number;
-    timestamp: string;
-  }>;
-};
-
-export type HealthCheckDataWithResults = {
-  healthChecks: HealthCheckWithResults[];
-};
-
-export interface HealthCheckCreateResult {
-  success: boolean;
-  message?: string;
-  error?: string;
-  healthCheck?: HealthCheck;
-  zodError?: Array<{
-    field: string;
-    message: string;
-    code: string;
-  }>;
-}
+import { BaseService } from "./base.service";
+import type { MonitoringService } from "./monitoring.service";
+import type {
+  HealthCheckCreateResult,
+  HealthCheckWithResults,
+} from "@/lib/core/types";
 
 export class HealthCheckService extends BaseService {
   private get monitoringService(): MonitoringService {
@@ -57,7 +19,7 @@ export class HealthCheckService extends BaseService {
 
   async getHealthChecksForConnection(
     connectionId: string
-  ): Promise<HealthCheckData> {
+  ): Promise<{ healthChecks: HealthCheck[] }> {
     const user = await this.requireAuth();
 
     const connection = await this.connectionRepository.findFirstByUserAndId(
@@ -75,22 +37,17 @@ export class HealthCheckService extends BaseService {
       connectionId
     );
 
-    const serializedHealthChecks = healthChecks.map((healthCheck) => ({
-      ...healthCheck,
-      createdAt: healthCheck.createdAt.toISOString(),
-      updatedAt: healthCheck.updatedAt.toISOString(),
-      lastExecutedAt: healthCheck.lastExecutedAt?.toISOString() ?? null,
-    }));
-
     return {
-      healthChecks: serializedHealthChecks,
+      healthChecks,
     };
   }
 
   async getHealthChecksWithResultsForConnection(
     connectionId: string,
     resultsLimit = 10
-  ): Promise<HealthCheckDataWithResults> {
+  ): Promise<{
+    healthChecks: HealthCheckWithResults[];
+  }> {
     const user = await this.requireAuth();
 
     const connection = await this.connectionRepository.findFirstByUserAndId(
@@ -104,12 +61,10 @@ export class HealthCheckService extends BaseService {
       };
     }
 
-    // Get health checks for the connection
     const healthChecks = await this.healthCheckRepository.findByConnectionId(
       connectionId
     );
 
-    // Get recent results for each health check in parallel
     const healthChecksWithResults = await Promise.all(
       healthChecks.map(async (healthCheck) => {
         const recentResults =
@@ -118,19 +73,9 @@ export class HealthCheckService extends BaseService {
             resultsLimit
           );
 
-        const serializedResults = recentResults.map((result) => ({
-          id: result.id,
-          status: result.status,
-          responseTime: result.responseTime,
-          timestamp: result.timestamp.toISOString(),
-        }));
-
         return {
           ...healthCheck,
-          createdAt: healthCheck.createdAt.toISOString(),
-          updatedAt: healthCheck.updatedAt.toISOString(),
-          lastExecutedAt: healthCheck.lastExecutedAt?.toISOString() ?? null,
-          recentResults: serializedResults,
+          recentResults,
         };
       })
     );
@@ -156,7 +101,8 @@ export class HealthCheckService extends BaseService {
   }
 
   async createHealthCheck(
-    input: HealthCheckCreateInput
+    connectionId: string,
+    data: Prisma.HealthCheckCreateInput
   ): Promise<HealthCheckCreateResult> {
     const user = await this.requireAuth();
 
@@ -183,9 +129,11 @@ export class HealthCheckService extends BaseService {
       };
     }
 
-    // Validate input using Zod schema
     try {
-      healthCheckSchemas.create.parse(input);
+      healthCheckSchemas.create.parse({
+        ...data,
+        apiConnectionId: connectionId,
+      });
     } catch (error) {
       if (error instanceof z.ZodError) {
         return {
@@ -212,32 +160,30 @@ export class HealthCheckService extends BaseService {
       };
     }
 
-    const healthCheck = await this.healthCheckRepository.create({
+    await this.healthCheckRepository.create({
       apiConnection: {
-        connect: { id: input.apiConnectionId },
+        connect: { id: connectionId },
       },
-      endpoint: input.endpoint,
-      method: input.method ?? "GET",
-      expectedStatus: input.expectedStatus ?? 200,
-      timeout: input.timeout ?? 30,
-      interval: input.interval ?? 300,
-      headers: input.headers ?? {},
-      body: input.body ?? null,
-      queryParams: input.queryParams ?? {},
+      endpoint: data.endpoint,
+      method: data.method ?? "GET",
+      expectedStatus: data.expectedStatus ?? 200,
+      timeout: data.timeout ?? 30,
+      interval: data.interval ?? 300,
+      headers: data.headers ?? {},
+      body: data.body ?? null,
+      queryParams: data.queryParams ?? {},
       isActive: true,
       lastExecutedAt: null,
     });
 
     return {
       success: true,
-      healthCheck,
     };
   }
 
   async deleteHealthCheck(healthCheckId: string) {
     const user = await this.requireAuth();
 
-    // Validate that the health check exists and belongs to the user
     await this.validateResourceOwnership(
       healthCheckId,
       user.id,
@@ -256,21 +202,10 @@ export class HealthCheckService extends BaseService {
 
   async updateHealthCheck(
     healthCheckId: string,
-    data: Partial<{
-      endpoint: string;
-      method: string;
-      expectedStatus: number;
-      timeout: number;
-      interval: number;
-      headers: Record<string, string>;
-      body: string | null;
-      queryParams: Record<string, string>;
-      isActive: boolean;
-    }>
+    data: Partial<Prisma.HealthCheckUpdateInput>
   ) {
     const user = await this.requireAuth();
 
-    // Validate that the health check exists and belongs to the user
     await this.validateResourceOwnership(
       healthCheckId,
       user.id,
@@ -290,7 +225,6 @@ export class HealthCheckService extends BaseService {
   async triggerHealthCheck(healthCheckId: string) {
     const user = await this.requireAuth();
 
-    // Validate that the health check exists and belongs to the user
     await this.validateResourceOwnership(
       healthCheckId,
       user.id,

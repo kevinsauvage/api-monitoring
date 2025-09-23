@@ -67,7 +67,7 @@ model ApiConnection {
   name        String
   provider    String   // e.g., "stripe", "twilio", "custom"
   baseUrl     String
-  apiKey      String   @db.Text // encrypted
+  apiKey      String?   @db.Text // encrypted
   secretKey   String?  @db.Text // encrypted (for providers that need it)
   accountSid  String?  @db.Text // encrypted (for Twilio)
   authToken   String?  @db.Text // encrypted (for Twilio)

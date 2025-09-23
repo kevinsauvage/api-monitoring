@@ -1,7 +1,12 @@
 import { CheckCircle, AlertTriangle } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 
-interface DashboardStatsProps {
+export default function DashboardStats({
+  totalConnections,
+  activeConnections,
+  totalHealthChecks,
+  monitoringStats,
+}: {
   totalConnections: number;
   activeConnections: number;
   totalHealthChecks: number;
@@ -11,14 +16,7 @@ interface DashboardStatsProps {
     averageResponseTime: number;
     recentFailures: number;
   } | null;
-}
-
-export default function DashboardStats({
-  totalConnections,
-  activeConnections,
-  totalHealthChecks,
-  monitoringStats,
-}: DashboardStatsProps) {
+}) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
       <Card>

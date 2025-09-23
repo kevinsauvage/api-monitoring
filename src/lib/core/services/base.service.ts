@@ -1,15 +1,14 @@
+import type { User } from "next-auth";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/infrastructure/auth";
 import {
   UnauthorizedError,
   handleError,
-  withErrorHandling,
-  withSyncErrorHandling,
   logError,
   NotFoundError,
 } from "@/lib/shared/errors";
 import { container } from "@/lib/infrastructure/di";
-import { log } from "@/lib/shared/utils/logger";
+import { log } from "@/lib/shared/utils";
 import type { ServiceIdentifier } from "@/lib/infrastructure/di";
 import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
 import type {
@@ -19,7 +18,7 @@ import type {
   UserRepository,
   MonitoringRepository,
   CostMetricRepository,
-} from "@/lib/core/repositories";
+} from "@/lib/core";
 
 export abstract class BaseService {
   protected resolve<T>(identifier: ServiceIdentifier): T {
@@ -59,12 +58,7 @@ export abstract class BaseService {
     );
   }
 
-  protected async getCurrentUser(): Promise<{
-    id: string;
-    email?: string | null;
-    name?: string | null;
-    image?: string | null;
-  } | null> {
+  protected async getCurrentUser(): Promise<User | null> {
     try {
       const session = await getServerSession(authOptions);
       return session?.user ?? null;
@@ -74,12 +68,7 @@ export abstract class BaseService {
     }
   }
 
-  protected async requireAuth(): Promise<{
-    id: string;
-    email?: string | null;
-    name?: string | null;
-    image?: string | null;
-  }> {
+  protected async requireAuth(): Promise<User> {
     try {
       const user = await this.getCurrentUser();
       if (!user?.id) {
@@ -102,23 +91,6 @@ export abstract class BaseService {
     throw handleError(error);
   }
 
-  protected async executeWithErrorHandling<T>(
-    operation: () => Promise<T>,
-    context: string
-  ): Promise<T> {
-    return withErrorHandling(operation, context);
-  }
-
-  protected executeSyncWithErrorHandling<T>(
-    operation: () => T,
-    context: string
-  ): T {
-    return withSyncErrorHandling(operation, context);
-  }
-
-  /**
-   * Validates that a resource exists and belongs to the user
-   */
   protected async validateResourceOwnership<T>(
     resourceId: string,
     userId: string,
@@ -134,9 +106,6 @@ export abstract class BaseService {
     return resource;
   }
 
-  /**
-   * Creates a standardized service response
-   */
   protected createServiceResponse<T>(
     success: boolean,
     data?: T,

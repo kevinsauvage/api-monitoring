@@ -19,21 +19,17 @@ import {
 } from "@/components/ui/card";
 import { TrendingUp, TrendingDown, Clock } from "lucide-react";
 
-interface ResponseTimeData {
-  timestamp: string;
-  responseTime: number;
-  status: string;
-}
-
-interface ConnectionResponseTimeChartProps {
-  data: ResponseTimeData[];
-  connectionName: string;
-}
-
 export default function ConnectionResponseTimeChart({
   data,
   connectionName,
-}: ConnectionResponseTimeChartProps) {
+}: {
+  data: Array<{
+    timestamp: string | Date;
+    responseTime: number;
+    status: string;
+  }>;
+  connectionName: string;
+}) {
   // Process data for the last 24 hours
   const chartData = data
     .slice(0, 24) // Last 24 data points

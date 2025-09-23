@@ -57,6 +57,7 @@ export const commonSchemas = {
 // Connection schemas
 export const connectionSchemas = {
   validation: z.object({
+    name: z.string().min(1, "Connection name is required"),
     provider: z.string().min(1, "Provider is required"),
     baseUrl: commonSchemas.url,
     apiKey: z.string().optional(),
@@ -170,9 +171,7 @@ export type ConnectionCreateInput = z.infer<typeof connectionSchemas.create>;
 export type ConnectionUpdateInput = z.infer<typeof connectionSchemas.update>;
 export type ConnectionDeleteInput = z.infer<typeof connectionSchemas.delete>;
 export type RegistrationInput = z.infer<typeof authSchemas.registration>;
-export type HealthCheckCreateInput = z.infer<typeof healthCheckSchemas.create>;
 export type HealthCheckDeleteInput = z.infer<typeof healthCheckSchemas.delete>;
-export type HealthCheckUpdateInput = z.infer<typeof healthCheckSchemas.update>;
 export type HealthCheckTriggerInput = z.infer<
   typeof healthCheckSchemas.trigger
 >;

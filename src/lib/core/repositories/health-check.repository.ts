@@ -1,13 +1,11 @@
 import type { HealthCheck, Prisma } from "@prisma/client";
 import { BaseRepository } from "./base.repository";
+import type {
+  HealthCheckWithConnection,
+  PaginationInfo,
+} from "@/lib/core/types";
 
 export class HealthCheckRepository extends BaseRepository {
-  /**
-   * Find all health checks for a connection
-   *
-   * @param connectionId - The connection's unique identifier
-   * @returns Promise resolving to array of health checks
-   */
   async findByConnectionId(connectionId: string): Promise<HealthCheck[]> {
     this.validateRequiredParams({ connectionId }, ["connectionId"]);
 
@@ -25,13 +23,6 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Update a health check by ID
-   *
-   * @param id - The health check's unique identifier
-   * @param data - Data to update
-   * @returns Promise resolving to the updated health check
-   */
   async update(
     id: string,
     data: Prisma.HealthCheckUpdateInput
@@ -48,12 +39,6 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Count health checks for a user
-   *
-   * @param userId - The user's unique identifier
-   * @returns Promise resolving to health check count
-   */
   async countByUserId(userId: string): Promise<number> {
     this.validateRequiredParams({ userId }, ["userId"]);
 
@@ -70,12 +55,6 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Count active health checks for a user
-   *
-   * @param userId - The user's unique identifier
-   * @returns Promise resolving to active health check count
-   */
   async countActiveByUserId(userId: string): Promise<number> {
     this.validateRequiredParams({ userId }, ["userId"]);
 
@@ -93,13 +72,6 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find a health check by ID and user ID (ownership verification)
-   *
-   * @param id - The health check's unique identifier
-   * @param userId - The user's unique identifier
-   * @returns Promise resolving to health check or null if not found
-   */
   async findFirstByUserAndId(
     id: string,
     userId: string
@@ -120,12 +92,6 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Create a new health check
-   *
-   * @param data - Health check creation data
-   * @returns Promise resolving to the created health check
-   */
   async create(data: Prisma.HealthCheckCreateInput): Promise<HealthCheck> {
     this.validateRequiredParams(data, ["endpoint", "method", "apiConnection"]);
 
@@ -138,12 +104,6 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find a health check by ID
-   *
-   * @param id - The health check's unique identifier
-   * @returns Promise resolving to health check or null if not found
-   */
   async findById(id: string): Promise<HealthCheck | null> {
     this.validateRequiredParams({ id }, ["id"]);
 
@@ -156,12 +116,6 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Delete a health check by ID
-   *
-   * @param id - The health check's unique identifier
-   * @returns Promise resolving when deletion is complete
-   */
   async delete(id: string): Promise<void> {
     this.validateRequiredParams({ id }, ["id"]);
 
@@ -174,28 +128,9 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find health checks that are due for execution
-   *
-   * @param currentTime - Current timestamp for comparison
-   * @returns Promise resolving to array of health checks due for execution
-   */
-  async findDueForExecution(currentTime: Date): Promise<
-    Array<{
-      id: string;
-      apiConnectionId: string;
-      endpoint: string;
-      method: string;
-      expectedStatus: number;
-      timeout: number;
-      interval: number;
-      lastExecutedAt: Date | null;
-      apiConnection: {
-        id: string;
-        isActive: boolean;
-      };
-    }>
-  > {
+  async findDueForExecution(
+    currentTime: Date
+  ): Promise<Array<HealthCheckWithConnection>> {
     this.validateRequiredParams({ currentTime }, ["currentTime"]);
 
     return this.executeQuery(
@@ -234,26 +169,13 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find all health checks for a user with pagination
-   *
-   * @param userId - The user's unique identifier
-   * @param page - Page number (1-based)
-   * @param limit - Number of items per page
-   * @returns Promise resolving to paginated health checks
-   */
   async findByUserIdPaginated(
     userId: string,
     page: number = 1,
     limit: number = 50
   ): Promise<{
     data: HealthCheck[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
+    pagination: PaginationInfo;
   }> {
     this.validateRequiredParams({ userId, page, limit }, ["userId"]);
 
@@ -273,12 +195,6 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find active health checks for a user
-   *
-   * @param userId - The user's unique identifier
-   * @returns Promise resolving to array of active health checks
-   */
   async findActiveByUserId(userId: string): Promise<HealthCheck[]> {
     this.validateRequiredParams({ userId }, ["userId"]);
 
@@ -297,13 +213,6 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Update health check status (active/inactive)
-   *
-   * @param id - The health check's unique identifier
-   * @param isActive - Whether the health check should be active
-   * @returns Promise resolving to the updated health check
-   */
   async updateStatus(id: string, isActive: boolean): Promise<HealthCheck> {
     this.validateRequiredParams({ id, isActive }, ["id", "isActive"]);
 
@@ -317,13 +226,6 @@ export class HealthCheckRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Update last executed timestamp for a health check
-   *
-   * @param id - The health check's unique identifier
-   * @param lastExecutedAt - The timestamp of last execution
-   * @returns Promise resolving to the updated health check
-   */
   async updateLastExecuted(
     id: string,
     lastExecutedAt: Date

@@ -16,30 +16,13 @@ import {
 import { triggerHealthCheck } from "@/actions/health-actions";
 import { toast } from "sonner";
 import { log } from "@/lib/shared/utils/logger";
-import type { HealthCheck } from "@prisma/client";
-
-type SerializedHealthCheckWithResults = Omit<
-  HealthCheck,
-  "createdAt" | "updatedAt" | "lastExecutedAt"
-> & {
-  createdAt: string;
-  updatedAt: string;
-  lastExecutedAt: string | null;
-  recentResults: Array<{
-    id: string;
-    status: "SUCCESS" | "FAILURE" | "TIMEOUT" | "ERROR";
-    responseTime: number;
-    timestamp: string;
-  }>;
-};
-
-interface HealthChecksOverviewProps {
-  healthChecks: SerializedHealthCheckWithResults[];
-}
+import type { HealthCheckWithResults } from "@/lib/core/types";
 
 export default function HealthChecksOverview({
   healthChecks,
-}: HealthChecksOverviewProps) {
+}: {
+  healthChecks: HealthCheckWithResults[];
+}) {
   const [isTriggeringAll, setIsTriggeringAll] = useState(false);
 
   const activeHealthChecks = healthChecks.filter((hc) => hc.isActive).length;

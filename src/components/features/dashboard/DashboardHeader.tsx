@@ -12,16 +12,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-
-interface User {
-  id: string;
-  name?: string | null;
-  email?: string | null;
-  image?: string | null;
-}
+import type { User as UseType } from "next-auth";
 
 interface DashboardHeaderProps {
-  user: User;
+  user: UseType;
 }
 
 export default function DashboardHeader({ user }: DashboardHeaderProps) {

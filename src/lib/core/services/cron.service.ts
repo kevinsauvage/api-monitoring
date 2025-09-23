@@ -33,7 +33,6 @@ export class CronService extends BaseService {
     expectedStatus: number;
     timeout: number;
   }): Promise<void> {
-    // Get connection with decrypted credentials
     const connection = await this.connectionRepository.findByIdWithCredentials(
       healthCheck.apiConnectionId
     );
@@ -69,7 +68,7 @@ export class CronService extends BaseService {
       responseTime: result.responseTime,
       statusCode: result.statusCode,
       errorMessage: result.errorMessage,
-      metadata: result.metadata,
+      metadata: result.metadata as Record<string, unknown>,
     });
 
     // Update last executed timestamp

@@ -1,12 +1,13 @@
 import { Badge } from "@/components/ui/badge";
 import { getMethodColor } from "@/lib/shared/utils/status-utils";
 
-interface MethodBadgeProps {
+export function MethodBadge({
+  method,
+  className = "",
+}: {
   method: string;
   className?: string;
-}
-
-export function MethodBadge({ method, className = "" }: MethodBadgeProps) {
+}) {
   return (
     <Badge
       variant="outline"

@@ -4,17 +4,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Code, Shield } from "lucide-react";
 import { ZodError } from "@/components/ui/zod-error";
 
-interface AdvancedConfigSectionProps {
+export default function AdvancedConfigSection({
+  validationErrors = [],
+}: {
   validationErrors?: Array<{
     field: string;
     message: string;
     code: string;
   }>;
-}
-
-export default function AdvancedConfigSection({
-  validationErrors = [],
-}: AdvancedConfigSectionProps) {
+}) {
   return (
     <div className="space-y-6">
       <div>

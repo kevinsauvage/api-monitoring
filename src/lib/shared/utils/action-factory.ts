@@ -176,6 +176,7 @@ export function createAuthenticatedAction<TInput, TOutput>(
       const { redirect } = await import("next/navigation");
 
       const session = await getServerSession(authOptions);
+
       if (!session?.user?.id) {
         redirect("/auth/signin");
       }

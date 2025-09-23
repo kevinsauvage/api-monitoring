@@ -1,14 +1,12 @@
-import { BaseService } from "./base.service";
-import { decrypt } from "@/lib/infrastructure/encryption";
-import type { InputJsonValue, JsonValue } from "@prisma/client/runtime/library";
 import axios from "axios";
+import { decrypt } from "@/lib/infrastructure/encryption";
+import type { InputJsonValue } from "@prisma/client/runtime/library";
+import { BaseService } from "./base.service";
+import type {
+  CostTrackingStrategy,
+  CostTrackingResult,
+} from "@/lib/core/types";
 
-// Strategy interface for cost tracking
-interface CostTrackingStrategy {
-  trackCosts(credentials: Record<string, string>): Promise<CostTrackingResult>;
-}
-
-// Helper function for period calculation
 function getCurrentPeriod() {
   const now = new Date();
   return {
@@ -21,20 +19,6 @@ function getCurrentPeriod() {
   };
 }
 
-// Result interface
-interface CostTrackingResult {
-  success: boolean;
-  costData?: {
-    provider: string;
-    amount: number;
-    currency: string;
-    period: string;
-    metadata?: JsonValue;
-  };
-  error?: string;
-}
-
-// Stripe cost tracking strategy
 class StripeCostTrackingStrategy implements CostTrackingStrategy {
   async trackCosts(
     credentials: Record<string, string>
@@ -77,7 +61,6 @@ class StripeCostTrackingStrategy implements CostTrackingStrategy {
   }
 }
 
-// Twilio cost tracking strategy
 class TwilioCostTrackingStrategy implements CostTrackingStrategy {
   async trackCosts(
     credentials: Record<string, string>
@@ -127,7 +110,6 @@ class TwilioCostTrackingStrategy implements CostTrackingStrategy {
   }
 }
 
-// No-cost strategy for providers without cost tracking
 class NoCostTrackingStrategy implements CostTrackingStrategy {
   constructor(private readonly provider: string) {}
 
@@ -153,7 +135,6 @@ class NoCostTrackingStrategy implements CostTrackingStrategy {
   }
 }
 
-// Strategy factory
 class CostTrackingStrategyFactory {
   static createStrategy(provider: string): CostTrackingStrategy {
     switch (provider) {
@@ -185,10 +166,8 @@ export class CostTrackingService extends BaseService {
       const { provider, apiKey, secretKey, accountSid, authToken, token } =
         connection;
 
-      // Get the appropriate strategy
       const strategy = CostTrackingStrategyFactory.createStrategy(provider);
 
-      // Prepare credentials based on provider
       const credentials = this.prepareCredentials(provider, {
         apiKey: apiKey ? decrypt(apiKey) : "",
         secretKey: secretKey ? decrypt(secretKey) : "",
@@ -201,11 +180,11 @@ export class CostTrackingService extends BaseService {
 
       if (result.success && result.costData) {
         await this.costMetricRepository.create({
-          apiConnectionId: connectionId,
           amount: result.costData.amount,
           currency: result.costData.currency,
           period: result.costData.period,
           metadata: result.costData.metadata as InputJsonValue,
+          apiConnection: { connect: { id: connectionId } },
         });
       }
 
@@ -245,7 +224,6 @@ export class CostTrackingService extends BaseService {
       const connections =
         await this.connectionRepository.findByUserIdWithHealthChecks(userId);
 
-      // Process connections in parallel with rate limiting
       const batchSize = 5;
       for (let i = 0; i < connections.length; i += batchSize) {
         const batch = connections.slice(i, i + batchSize);
@@ -254,7 +232,7 @@ export class CostTrackingService extends BaseService {
             const result = await this.trackCostsForConnection(connection.id);
             if (result.success && result.costData) {
               await this.costMetricRepository.create({
-                apiConnectionId: connection.id,
+                apiConnection: { connect: { id: connection.id } },
                 amount: result.costData.amount,
                 currency: result.costData.currency,
                 period: result.costData.period,

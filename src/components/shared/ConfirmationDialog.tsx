@@ -10,17 +10,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { AlertTriangle } from "lucide-react";
 
-interface ConfirmationDialogProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onConfirm: () => void;
-  title: string;
-  description: string;
-  confirmText?: string;
-  cancelText?: string;
-  variant?: "default" | "destructive";
-}
-
 export function ConfirmationDialog({
   isOpen,
   onClose,
@@ -30,7 +19,16 @@ export function ConfirmationDialog({
   confirmText = "Confirm",
   cancelText = "Cancel",
   variant = "default",
-}: ConfirmationDialogProps) {
+}: {
+  isOpen: boolean;
+  onClose: () => void;
+  onConfirm: () => void;
+  title: string;
+  description: string;
+  confirmText?: string;
+  cancelText?: string;
+  variant?: "default" | "destructive";
+}) {
   const isDestructive = variant === "destructive";
 
   return (

@@ -1,14 +1,13 @@
 "use server";
 
 import bcrypt from "bcryptjs";
-import { UserRepository } from "@/lib/core/repositories";
+import { UserRepository } from "@/lib/core";
 import { authSchemas } from "@/lib/shared/schemas";
 import { createActionWithRedirect } from "@/lib/shared/utils/action-factory";
-import type { RegistrationInput } from "@/lib/shared/types";
 
 export const registerUser = createActionWithRedirect(
   authSchemas.registration,
-  async (input: RegistrationInput) => {
+  async (input) => {
     const userRepository = new UserRepository();
     const existingUser = await userRepository.findByEmail(input.email);
 

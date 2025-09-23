@@ -2,11 +2,11 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ArrowLeft } from "lucide-react";
 
-interface FormHeaderProps {
+export default function FormHeader({
+  apiConnectionId,
+}: {
   apiConnectionId: string;
-}
-
-export default function FormHeader({ apiConnectionId }: FormHeaderProps) {
+}) {
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center space-x-4">

@@ -20,18 +20,13 @@ import {
   updateConnection,
   deleteConnection,
 } from "@/actions/connection-actions";
-
-interface ConnectionActionsProps {
-  connection: {
-    id: string;
-    name: string;
-    isActive: boolean;
-  };
-}
+import type { ApiConnection } from "@prisma/client";
 
 export default function ConnectionActions({
   connection,
-}: ConnectionActionsProps) {
+}: {
+  connection: ApiConnection;
+}) {
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();

@@ -1,4 +1,3 @@
-// Components
 export { default as AdvancedConfigSection } from "./AdvancedConfigSection";
 export { default as BasicConfigSection } from "./BasicConfigSection";
 export { default as CreateHealthCheckForm } from "./CreateHealthCheckForm";
@@ -14,8 +13,4 @@ export { default as HealthMetricsCards } from "./HealthMetricsCards";
 export { default as PlanInfoCard } from "./PlanInfoCard";
 export { default as RefreshHealthButton } from "./RefreshHealthButton";
 export { default as HealthCheckResultsTable } from "./HealthCheckResultsTable";
-export { default as HealthDashboard } from "./HealthDashboard";
 export { default as HealthNavigation } from "./HealthNavigation";
-
-// Types
-export type * from "./types";

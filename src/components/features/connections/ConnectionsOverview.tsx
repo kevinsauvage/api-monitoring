@@ -12,6 +12,7 @@ import {
   Clock,
   Zap,
 } from "lucide-react";
+import type { ConnectionLimits } from "@/lib/core/types";
 
 interface ConnectionsOverviewProps {
   connections: Array<{
@@ -24,14 +25,7 @@ interface ConnectionsOverviewProps {
       isActive: boolean;
     }>;
   }>;
-  limits: {
-    currentConnections: number;
-    maxConnections: number;
-    currentHealthChecks: number;
-    maxHealthChecks: number;
-    canCreateConnection: boolean;
-    canCreateHealthCheck: boolean;
-  };
+  limits: ConnectionLimits;
 }
 
 export default function ConnectionsOverview({

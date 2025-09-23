@@ -1,32 +1,8 @@
 import type { CheckResult, Prisma } from "@prisma/client";
 import { BaseRepository } from "./base.repository";
-
-export type CheckResultWithDetails = Prisma.CheckResultGetPayload<{
-  include: {
-    healthCheck: {
-      select: {
-        id: true;
-        endpoint: true;
-        method: true;
-        apiConnection: {
-          select: {
-            name: true;
-            provider: true;
-          };
-        };
-      };
-    };
-  };
-}>;
+import type { CheckResultWithDetails, PaginationInfo } from "@/lib/core/types";
 
 export class CheckResultRepository extends BaseRepository {
-  /**
-   * Find check results for a user with detailed information
-   *
-   * @param userId - The user's unique identifier
-   * @param limit - Maximum number of results to return (default: 50)
-   * @returns Promise resolving to array of check results with details
-   */
   async findByUserIdWithDetails(
     userId: string,
     limit = 50
@@ -65,13 +41,6 @@ export class CheckResultRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find check results for a connection with detailed information
-   *
-   * @param connectionId - The connection's unique identifier
-   * @param limit - Maximum number of results to return (default: 100)
-   * @returns Promise resolving to array of check results with details
-   */
   async findByConnectionId(
     connectionId: string,
     limit = 100
@@ -114,13 +83,6 @@ export class CheckResultRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find check results for a specific health check
-   *
-   * @param healthCheckId - The health check's unique identifier
-   * @param limit - Maximum number of results to return (default: 10)
-   * @returns Promise resolving to array of check results
-   */
   async findByHealthCheckId(
     healthCheckId: string,
     limit = 10
@@ -146,12 +108,6 @@ export class CheckResultRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Create a new check result
-   *
-   * @param data - Check result creation data
-   * @returns Promise resolving to the created check result
-   */
   async create(data: Prisma.CheckResultCreateInput): Promise<CheckResult> {
     this.validateRequiredParams(data, [
       "healthCheckId",
@@ -168,12 +124,6 @@ export class CheckResultRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find a check result by ID
-   *
-   * @param id - The check result's unique identifier
-   * @returns Promise resolving to check result or null if not found
-   */
   async findById(id: string): Promise<CheckResult | null> {
     this.validateRequiredParams({ id }, ["id"]);
 
@@ -186,13 +136,6 @@ export class CheckResultRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Update a check result by ID
-   *
-   * @param id - The check result's unique identifier
-   * @param data - Data to update
-   * @returns Promise resolving to the updated check result
-   */
   async update(
     id: string,
     data: Prisma.CheckResultUpdateInput
@@ -209,12 +152,6 @@ export class CheckResultRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Delete a check result by ID
-   *
-   * @param id - The check result's unique identifier
-   * @returns Promise resolving when deletion is complete
-   */
   async delete(id: string): Promise<void> {
     this.validateRequiredParams({ id }, ["id"]);
 
@@ -227,12 +164,6 @@ export class CheckResultRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Delete multiple check results matching the criteria
-   *
-   * @param where - Criteria to match check results
-   * @returns Promise resolving to deletion count
-   */
   async deleteMany(
     where: Prisma.CheckResultWhereInput
   ): Promise<{ count: number }> {
@@ -245,12 +176,6 @@ export class CheckResultRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Count check results for a user
-   *
-   * @param userId - The user's unique identifier
-   * @returns Promise resolving to check result count
-   */
   async countByUserId(userId: string): Promise<number> {
     this.validateRequiredParams({ userId }, ["userId"]);
 
@@ -269,26 +194,13 @@ export class CheckResultRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find check results with pagination
-   *
-   * @param userId - The user's unique identifier
-   * @param page - Page number (1-based)
-   * @param limit - Number of items per page
-   * @returns Promise resolving to paginated check results
-   */
   async findByUserIdPaginated(
     userId: string,
     page: number = 1,
     limit: number = 50
   ): Promise<{
     data: CheckResultWithDetails[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
+    pagination: PaginationInfo;
   }> {
     this.validateRequiredParams({ userId, page, limit }, ["userId"]);
 

@@ -2,15 +2,13 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
-interface HealthChecksHeaderProps {
-  connectionProvider: string;
-  connectionId: string;
-}
-
 export default function HealthChecksHeader({
   connectionProvider,
   connectionId,
-}: HealthChecksHeaderProps) {
+}: {
+  connectionProvider: string;
+  connectionId: string;
+}) {
   return (
     <div className="flex items-center justify-between">
       <div>

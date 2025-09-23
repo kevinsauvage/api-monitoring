@@ -1,23 +1,10 @@
 "use client";
 
 import { useState, useCallback } from "react";
-
-interface UseConfirmationDialogOptions {
-  title: string;
-  description: string;
-  confirmText?: string;
-  cancelText?: string;
-  variant?: "default" | "destructive";
-}
-
-interface UseConfirmationDialogReturn {
-  isOpen: boolean;
-  openDialog: () => void;
-  closeDialog: () => void;
-  confirm: () => void;
-  options: UseConfirmationDialogOptions;
-  setOptions: (options: Partial<UseConfirmationDialogOptions>) => void;
-}
+import type {
+  UseConfirmationDialogOptions,
+  UseConfirmationDialogReturn,
+} from "../types";
 
 export function useConfirmationDialog(
   initialOptions: UseConfirmationDialogOptions

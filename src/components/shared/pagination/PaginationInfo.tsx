@@ -1,20 +1,18 @@
 import { Badge } from "@/components/ui/badge";
 
-interface PaginationInfoProps {
-  currentPage: number;
-  totalPages: number;
-  totalItems: number;
-  itemsPerPage: number;
-  filteredCount?: number;
-}
-
 export default function PaginationInfo({
   currentPage,
   totalPages,
   totalItems,
   itemsPerPage,
   filteredCount,
-}: PaginationInfoProps) {
+}: {
+  currentPage: number;
+  totalPages: number;
+  totalItems: number;
+  itemsPerPage: number;
+  filteredCount?: number;
+}) {
   const startItem = (currentPage - 1) * itemsPerPage + 1;
   const endItem = Math.min(currentPage * itemsPerPage, totalItems);
   const isFiltered =

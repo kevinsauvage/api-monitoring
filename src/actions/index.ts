@@ -25,10 +25,3 @@ export {
   trackAllCosts,
   trackConnectionCosts,
 } from "./cost-actions";
-
-// Shared types
-export type {
-  ConnectionValidationResult,
-  ConnectionCreateResult,
-  ConnectionActionResult,
-} from "@/lib/shared/types";

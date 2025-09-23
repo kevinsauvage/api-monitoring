@@ -8,13 +8,6 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 
-interface ServerPaginationProps {
-  currentPage: number;
-  totalPages: number;
-  baseUrl: string;
-  searchParams?: Record<string, string>;
-}
-
 export default function ServerPagination({
   currentPage,
   totalPages,
@@ -24,7 +17,12 @@ export default function ServerPagination({
     status: "all",
     search: "",
   },
-}: ServerPaginationProps) {
+}: {
+  currentPage: number;
+  totalPages: number;
+  baseUrl: string;
+  searchParams?: Record<string, string>;
+}) {
   const createPageUrl = (page: number) => {
     const params = new URLSearchParams(searchParams);
     params.set("page", page.toString());

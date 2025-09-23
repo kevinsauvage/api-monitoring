@@ -1,13 +1,8 @@
-import type { User, Subscription } from "@prisma/client";
+import type { User, Subscription, Prisma } from "@prisma/client";
 import { BaseRepository } from "./base.repository";
+import type { PaginationInfo } from "@/lib/core/types";
 
 export class UserRepository extends BaseRepository {
-  /**
-   * Find a user by their unique ID
-   *
-   * @param id - The user's unique identifier
-   * @returns Promise resolving to the user or null if not found
-   */
   async findById(id: string): Promise<User | null> {
     this.validateRequiredParams({ id }, ["id"]);
 
@@ -20,12 +15,6 @@ export class UserRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find a user by their email address
-   *
-   * @param email - The user's email address
-   * @returns Promise resolving to the user or null if not found
-   */
   async findByEmail(email: string): Promise<User | null> {
     this.validateRequiredParams({ email }, ["email"]);
 
@@ -38,17 +27,7 @@ export class UserRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Create a new user with the provided data
-   *
-   * @param data - User creation data
-   * @returns Promise resolving to the created user
-   */
-  async create(data: {
-    name: string;
-    email: string;
-    password: string;
-  }): Promise<User> {
+  async create(data: Prisma.UserCreateInput): Promise<User> {
     this.validateRequiredParams(data, ["name", "email", "password"]);
 
     return this.executeQuery(
@@ -60,12 +39,6 @@ export class UserRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find a user by ID with their subscription information
-   *
-   * @param id - The user's unique identifier
-   * @returns Promise resolving to user with subscription or null if not found
-   */
   async findByIdWithSubscription(id: string): Promise<{
     id: string;
     name: string | null;
@@ -89,20 +62,9 @@ export class UserRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Update a user's information
-   *
-   * @param id - The user's unique identifier
-   * @param data - Partial user data to update
-   * @returns Promise resolving to the updated user
-   */
   async update(
     id: string,
-    data: Partial<{
-      name: string;
-      email: string;
-      subscription: Subscription;
-    }>
+    data: Partial<Prisma.UserUpdateInput>
   ): Promise<User> {
     this.validateRequiredParams({ id, data }, ["id", "data"]);
 
@@ -116,12 +78,6 @@ export class UserRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Delete a user by their ID
-   *
-   * @param id - The user's unique identifier
-   * @returns Promise resolving when deletion is complete
-   */
   async delete(id: string): Promise<void> {
     this.validateRequiredParams({ id }, ["id"]);
 
@@ -134,12 +90,6 @@ export class UserRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Check if a user exists by email
-   *
-   * @param email - The email address to check
-   * @returns Promise resolving to true if user exists, false otherwise
-   */
   async existsByEmail(email: string): Promise<boolean> {
     this.validateRequiredParams({ email }, ["email"]);
 
@@ -147,11 +97,6 @@ export class UserRepository extends BaseRepository {
     return user !== null;
   }
 
-  /**
-   * Get user count for analytics
-   *
-   * @returns Promise resolving to the total number of users
-   */
   async count(): Promise<number> {
     return this.executeQuery(
       async () => this.prisma.user.count(),
@@ -159,24 +104,12 @@ export class UserRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find all users with pagination
-   *
-   * @param page - Page number (1-based)
-   * @param limit - Number of items per page
-   * @returns Promise resolving to paginated users
-   */
   async findAllPaginated(
     page: number = 1,
     limit: number = 50
   ): Promise<{
     data: User[];
-    pagination: {
-      page: number;
-      limit: number;
-      total: number;
-      totalPages: number;
-    };
+    pagination: PaginationInfo;
   }> {
     this.validateRequiredParams({ page, limit }, ["page", "limit"]);
 
@@ -188,12 +121,6 @@ export class UserRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find users by subscription type
-   *
-   * @param subscription - The subscription type to filter by
-   * @returns Promise resolving to array of users with the specified subscription
-   */
   async findBySubscription(subscription: Subscription): Promise<User[]> {
     this.validateRequiredParams({ subscription }, ["subscription"]);
 
@@ -207,13 +134,6 @@ export class UserRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Update user subscription
-   *
-   * @param id - The user's unique identifier
-   * @param subscription - The new subscription type
-   * @returns Promise resolving to the updated user
-   */
   async updateSubscription(
     id: string,
     subscription: Subscription

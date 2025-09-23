@@ -1,13 +1,5 @@
 import type { User, Subscription } from "@prisma/client";
-
-export interface SerializedUser {
-  id: string;
-  name: string | null;
-  email: string;
-  subscription: Subscription;
-  createdAt: string;
-  updatedAt: string;
-}
+import type { SerializedUser } from "@/lib/core/types";
 
 export function serializeUser(user: User): SerializedUser {
   return {

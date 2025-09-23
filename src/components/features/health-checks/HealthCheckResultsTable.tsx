@@ -25,10 +25,21 @@ import { Clock } from "lucide-react";
 import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
 import { StatusBadge, MethodBadge } from "@/components/shared";
 import { getStatusIcon } from "@/lib/shared/utils";
-import type { SortField, SortDirection } from "@/lib/shared/types";
 import type { SerializedCheckResultWithDetails } from "@/lib/core/serializers";
 
-export interface HealthCheckResultsTableProps {
+export type SortField = "timestamp" | "status" | "responseTime" | "statusCode";
+export type SortDirection = "asc" | "desc";
+
+export default function HealthCheckResultsTable({
+  results,
+  currentPage: _currentPage = 1,
+  totalPages: _totalPages = 1,
+  totalCount: _totalCount = 0,
+  itemsPerPage: _itemsPerPage = 20,
+  statusFilter: initialStatusFilter = "all",
+  searchTerm: initialSearchTerm = "",
+  searchParameters: _searchParameters = {},
+}: {
   results: SerializedCheckResultWithDetails[];
   currentPage?: number;
   totalPages?: number;
@@ -41,18 +52,7 @@ export interface HealthCheckResultsTableProps {
     status?: string;
     search?: string;
   };
-}
-
-export default function HealthCheckResultsTable({
-  results,
-  currentPage: _currentPage = 1,
-  totalPages: _totalPages = 1,
-  totalCount: _totalCount = 0,
-  itemsPerPage: _itemsPerPage = 20,
-  statusFilter: initialStatusFilter = "all",
-  searchTerm: initialSearchTerm = "",
-  searchParameters: _searchParameters = {},
-}: HealthCheckResultsTableProps) {
+}) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const pathname = usePathname();

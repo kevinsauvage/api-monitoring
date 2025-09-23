@@ -7,8 +7,7 @@ import { Zap, Eye, EyeOff, AlertTriangle } from "lucide-react";
 import { registerUser } from "@/actions/auth-actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
-// Type for registration result
-type RegistrationResult = {
+export type RegistrationResult = {
   success: boolean;
   message: string;
   zodError?: Array<{

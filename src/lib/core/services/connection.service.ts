@@ -1,38 +1,10 @@
-import { BaseService } from "./base.service";
-import type { ConnectionWithHealthChecks } from "@/lib/core/repositories";
-import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
+import type z from "zod";
+import type { Prisma, User } from "@prisma/client";
+import { getPlanLimits, validateApiConnection } from "@/lib/shared/utils";
 import { encrypt } from "@/lib/infrastructure/encryption";
-import { validateApiConnection } from "@/lib/shared/utils/api-validation";
-import type { UserWithPassword } from "@/lib/shared/types/prisma";
-import type {
-  ConnectionValidationInput,
-  ConnectionCreateInput,
-} from "@/lib/shared/types";
-
-export type ConnectionData = {
-  connections: ConnectionWithHealthChecks[];
-  user: UserWithPassword | null;
-  limits: {
-    maxConnections: number;
-    maxHealthChecks: number;
-    currentConnections: number;
-    currentHealthChecks: number;
-    canCreateConnection: boolean;
-    canCreateHealthCheck: boolean;
-  };
-};
-
-export interface ConnectionValidationResult {
-  success: boolean;
-  message: string;
-  data?: Record<string, unknown>;
-}
-
-export interface ConnectionCreateResult {
-  success: boolean;
-  message: string;
-  connectionId?: string;
-}
+import { BaseService } from "./base.service";
+import type { connectionSchemas } from "@/lib/shared/schemas";
+import type { ConnectionData, ConnectionCreateResult } from "@/lib/core/types";
 
 export class ConnectionService extends BaseService {
   async getConnections(): Promise<ConnectionData> {
@@ -64,7 +36,7 @@ export class ConnectionService extends BaseService {
 
     return {
       connections,
-      user: userData as UserWithPassword,
+      user: userData as User,
       limits: {
         maxConnections: planLimits.maxConnections,
         maxHealthChecks: planLimits.maxHealthChecks,
@@ -97,8 +69,12 @@ export class ConnectionService extends BaseService {
   }
 
   async validateConnection(
-    input: ConnectionValidationInput
-  ): Promise<ConnectionValidationResult> {
+    input: z.infer<typeof connectionSchemas.validation>
+  ): Promise<{
+    success: boolean;
+    message: string;
+    data?: Record<string, unknown>;
+  }> {
     await this.requireAuth();
 
     const validationInput = {
@@ -119,7 +95,7 @@ export class ConnectionService extends BaseService {
   }
 
   async createConnection(
-    input: ConnectionCreateInput
+    input: Omit<Prisma.ApiConnectionCreateInput, "user">
   ): Promise<ConnectionCreateResult> {
     const user = await this.requireAuth();
 
@@ -146,22 +122,22 @@ export class ConnectionService extends BaseService {
       };
     }
 
-    const encryptedData: Record<string, string> = {};
+    const encryptedData: Partial<Prisma.ApiConnectionCreateInput> = {};
 
-    if (input["apiKey"]) {
-      encryptedData["apiKey"] = encrypt(input["apiKey"]);
+    if (input.apiKey) {
+      encryptedData.apiKey = encrypt(input.apiKey);
     }
-    if (input["secretKey"]) {
-      encryptedData["secretKey"] = encrypt(input["secretKey"]);
+    if (input.secretKey) {
+      encryptedData.secretKey = encrypt(input.secretKey);
     }
-    if (input["accountSid"]) {
-      encryptedData["accountSid"] = encrypt(input["accountSid"]);
+    if (input.accountSid) {
+      encryptedData.accountSid = encrypt(input.accountSid);
     }
-    if (input["authToken"]) {
-      encryptedData["authToken"] = encrypt(input["authToken"]);
+    if (input.authToken) {
+      encryptedData.authToken = encrypt(input.authToken);
     }
-    if (input["token"]) {
-      encryptedData["token"] = encrypt(input["token"]);
+    if (input.token) {
+      encryptedData.token = encrypt(input.token);
     }
 
     const connection = await this.connectionRepository.create({
@@ -171,15 +147,15 @@ export class ConnectionService extends BaseService {
       user: {
         connect: { id: user.id },
       },
-      apiKey: encryptedData["apiKey"], // Required field
-      secretKey: encryptedData["secretKey"],
-      ...(encryptedData["accountSid"] && {
-        accountSid: encryptedData["accountSid"],
+      apiKey: encryptedData.apiKey ?? "",
+      secretKey: encryptedData.secretKey,
+      ...(encryptedData.accountSid && {
+        accountSid: encryptedData.accountSid,
       }),
-      ...(encryptedData["authToken"] && {
-        authToken: encryptedData["authToken"],
+      ...(encryptedData.authToken && {
+        authToken: encryptedData.authToken,
       }),
-      ...(encryptedData["token"] && { token: encryptedData["token"] }),
+      ...(encryptedData.token && { token: encryptedData.token }),
     });
 
     return {
@@ -191,20 +167,10 @@ export class ConnectionService extends BaseService {
 
   async updateConnection(
     connectionId: string,
-    data: Partial<{
-      name: string;
-      baseUrl: string;
-      isActive: boolean;
-      apiKey: string;
-      secretKey: string;
-      accountSid: string;
-      authToken: string;
-      token: string;
-    }>
+    data: Partial<Prisma.ApiConnectionUpdateInput>
   ) {
     const user = await this.requireAuth();
 
-    // Validate that the connection exists and belongs to the user
     await this.validateResourceOwnership(
       connectionId,
       user.id,
@@ -213,21 +179,21 @@ export class ConnectionService extends BaseService {
     );
 
     // Encrypt sensitive data if provided
-    const encryptedData: Partial<typeof data> = { ...data };
+    const encryptedData: Partial<Prisma.ApiConnectionUpdateInput> = { ...data };
     if (data.apiKey) {
-      encryptedData.apiKey = encrypt(data.apiKey);
+      encryptedData.apiKey = encrypt(data.apiKey as string);
     }
     if (data.secretKey) {
-      encryptedData.secretKey = encrypt(data.secretKey);
+      encryptedData.secretKey = encrypt(data.secretKey as string);
     }
     if (data.accountSid) {
-      encryptedData.accountSid = encrypt(data.accountSid);
+      encryptedData.accountSid = encrypt(data.accountSid as string);
     }
     if (data.authToken) {
-      encryptedData.authToken = encrypt(data.authToken);
+      encryptedData.authToken = encrypt(data.authToken as string);
     }
     if (data.token) {
-      encryptedData.token = encrypt(data.token);
+      encryptedData.token = encrypt(data.token as string);
     }
 
     await this.connectionRepository.updateMany(
@@ -252,7 +218,6 @@ export class ConnectionService extends BaseService {
   async deleteConnection(connectionId: string) {
     const user = await this.requireAuth();
 
-    // Validate that the connection exists and belongs to the user
     await this.validateResourceOwnership(
       connectionId,
       user.id,

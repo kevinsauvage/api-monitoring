@@ -1,6 +1,3 @@
-/**
- * Serialize a date to ISO string
- */
 export function serializeTimestamp(date: Date | string | null): string | null {
   if (!date) return null;
 
@@ -9,9 +6,6 @@ export function serializeTimestamp(date: Date | string | null): string | null {
   return date.toISOString();
 }
 
-/**
- * Serialize entity timestamps
- */
 export function serializeEntityTimestamps(entity: {
   createdAt: Date | string;
   updatedAt: Date | string;
@@ -28,9 +22,6 @@ export function serializeEntityTimestamps(entity: {
   };
 }
 
-/**
- * Serialize JSON metadata safely
- */
 export function serializeMetadata(
   metadata: unknown
 ): Record<string, unknown> | null {

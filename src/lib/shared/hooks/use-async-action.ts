@@ -2,21 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { handleAsyncOperation } from "../utils/error-handling";
-
-interface UseAsyncActionOptions<T> {
-  successMessage?: string;
-  errorMessage?: string;
-  onSuccess?: (result: T) => void;
-  onError?: (error: Error) => void;
-}
-
-interface UseAsyncActionReturn<T> {
-  execute: (
-    operation: () => Promise<T>
-  ) => Promise<{ success: boolean; data?: T; error?: string }>;
-  isLoading: boolean;
-  error: string | null;
-}
+import type { UseAsyncActionOptions, UseAsyncActionReturn } from "../types";
 
 export function useAsyncAction<T = unknown>(
   options: UseAsyncActionOptions<T> = {}

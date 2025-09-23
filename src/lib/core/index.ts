@@ -9,5 +9,3 @@ export * from "./services";
 export * from "./serializers";
 
 export * from "./monitoring";
-
-export type { DashboardStats } from "./services";

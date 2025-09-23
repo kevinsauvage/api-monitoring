@@ -21,6 +21,3 @@ export const SERVICE_IDENTIFIERS = {
   COST_TRACKING_SERVICE: Symbol("CostTrackingService"),
   SERIALIZATION_SERVICE: Symbol("SerializationService"),
 } as const;
-
-export type ServiceIdentifier =
-  (typeof SERVICE_IDENTIFIERS)[keyof typeof SERVICE_IDENTIFIERS];

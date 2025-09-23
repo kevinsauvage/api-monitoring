@@ -3,11 +3,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import type { SerializedCheckResultWithDetails } from "@/lib/core/serializers";
 
-interface RecentActivityProps {
+export default function RecentActivity({
+  recentResults,
+}: {
   recentResults: SerializedCheckResultWithDetails[];
-}
-
-export default function RecentActivity({ recentResults }: RecentActivityProps) {
+}) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "SUCCESS":

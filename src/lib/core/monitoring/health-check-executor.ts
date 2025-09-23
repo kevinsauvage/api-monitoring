@@ -2,20 +2,16 @@ import type { AxiosRequestConfig, AxiosResponse } from "axios";
 import axios from "axios";
 import { getAuthHeaders } from "@/lib/shared/utils/api-validation";
 import { log } from "@/lib/shared/utils/logger";
-import type {
-  HealthCheckConfig,
-  HealthCheckResult,
-  ConnectionWithCredentials,
-} from "@/lib/shared/types";
-
+import type { HealthCheckConfig } from "@/lib/shared/types";
+import type { CheckResult } from "@prisma/client";
+import type { ConnectionWithCredentials } from "@/lib/core/types";
 export class HealthCheckExecutor {
   async executeHealthCheck(
     config: HealthCheckConfig,
     connection: ConnectionWithCredentials
-  ): Promise<HealthCheckResult> {
+  ): Promise<CheckResult> {
     const startTime = Date.now();
-    let result: HealthCheckResult;
-
+    let result: CheckResult;
     try {
       const fullUrl = this.buildUrl(
         connection.baseUrl,
@@ -104,15 +100,11 @@ export class HealthCheckExecutor {
     return result;
   }
 
-  /**
-   * Build full URL with query parameters
-   */
   private buildUrl(
     baseUrl: string,
     endpoint: string,
     queryParams?: Record<string, string>
   ): string {
-    // Ensure baseUrl doesn't end with slash and endpoint starts with slash
     const cleanBaseUrl = baseUrl.replace(/\/$/, "");
     const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
 
@@ -130,9 +122,6 @@ export class HealthCheckExecutor {
     return fullUrl;
   }
 
-  /**
-   * Get authentication headers for the API connection
-   */
   private getAuthHeaders(
     connection: Record<string, unknown>
   ): Record<string, string> {
@@ -144,37 +133,27 @@ export class HealthCheckExecutor {
     return getAuthHeaders(connection["provider"] as string, credentials);
   }
 
-  /**
-   * Determine the status of a health check based on response
-   */
   private determineStatus(
     response: AxiosResponse,
     expectedStatus: number,
     responseTime: number,
     timeout: number
   ): "SUCCESS" | "FAILURE" | "TIMEOUT" | "ERROR" {
-    // Check for timeout
     if (responseTime >= timeout) {
       return "TIMEOUT";
     }
 
-    // Check for expected status code
     if (response.status === expectedStatus) {
       return "SUCCESS";
     }
 
-    // Check for server errors (5xx)
     if (response.status >= 500) {
       return "ERROR";
     }
 
-    // Everything else is a failure
     return "FAILURE";
   }
 
-  /**
-   * Get error message for failed health checks
-   */
   private getErrorMessage(response: AxiosResponse, status: string): string {
     switch (status) {
       case "TIMEOUT":

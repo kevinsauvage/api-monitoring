@@ -2,20 +2,19 @@ import { BaseService } from "./base.service";
 import { NotFoundError } from "@/lib/shared/errors";
 import { healthCheckExecutor } from "@/lib/core/monitoring/health-check-executor";
 import { decrypt } from "@/lib/infrastructure/encryption";
-import type { HealthCheck } from "@prisma/client";
-import type {
-  HealthCheckCreateInput,
-  HealthCheckUpdateInput,
-} from "@/lib/shared/types";
+import type { HealthCheck, Prisma } from "@prisma/client";
 import { serializeHealthCheck } from "@/lib/core/serializers";
 
 export class MonitoringService extends BaseService {
-  async createHealthCheck(input: HealthCheckCreateInput): Promise<HealthCheck> {
+  async createHealthCheck(
+    connectionId: string,
+    input: Prisma.HealthCheckCreateInput
+  ): Promise<HealthCheck> {
     await this.requireAuth();
 
     return this.healthCheckRepository.create({
       apiConnection: {
-        connect: { id: input.apiConnectionId },
+        connect: { id: connectionId },
       },
       endpoint: input.endpoint,
       method: input.method ?? "GET",
@@ -32,7 +31,7 @@ export class MonitoringService extends BaseService {
 
   async updateHealthCheck(
     id: string,
-    input: HealthCheckUpdateInput
+    input: Prisma.HealthCheckUpdateInput
   ): Promise<HealthCheck> {
     await this.requireAuth();
 
@@ -99,7 +98,7 @@ export class MonitoringService extends BaseService {
       responseTime: result.responseTime,
       statusCode: result.statusCode,
       errorMessage: result.errorMessage,
-      metadata: result.metadata,
+      metadata: result.metadata as Record<string, unknown>,
     });
 
     await this.healthCheckRepository.update(healthCheckId, {

@@ -1,27 +1,8 @@
 import type { ApiConnection, Prisma } from "@prisma/client";
 import { BaseRepository } from "./base.repository";
-
-export type ConnectionWithHealthChecks = Prisma.ApiConnectionGetPayload<{
-  include: {
-    healthChecks: {
-      select: {
-        id: true;
-        endpoint: true;
-        method: true;
-        isActive: true;
-        lastExecutedAt: true;
-      };
-    };
-  };
-}>;
+import type { ConnectionWithHealthChecks } from "@/lib/core/types";
 
 export class ConnectionRepository extends BaseRepository {
-  /**
-   * Find all connections for a user with their health checks
-   *
-   * @param userId - The user's unique identifier
-   * @returns Promise resolving to array of connections with health checks
-   */
   async findByUserIdWithHealthChecks(
     userId: string
   ): Promise<ConnectionWithHealthChecks[]> {
@@ -48,13 +29,6 @@ export class ConnectionRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find a connection by ID and user ID with health checks
-   *
-   * @param id - The connection's unique identifier
-   * @param userId - The user's unique identifier
-   * @returns Promise resolving to connection with health checks or null if not found
-   */
   async findByIdWithHealthChecks(
     id: string,
     userId: string
@@ -88,12 +62,6 @@ export class ConnectionRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Create a new API connection
-   *
-   * @param data - Connection creation data
-   * @returns Promise resolving to the created connection
-   */
   async create(data: Prisma.ApiConnectionCreateInput): Promise<ApiConnection> {
     this.validateRequiredParams(data, [
       "name",
@@ -111,13 +79,6 @@ export class ConnectionRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Update multiple connections matching the criteria
-   *
-   * @param where - Criteria to match connections
-   * @param data - Data to update
-   * @returns Promise resolving to update count
-   */
   async updateMany(
     where: Prisma.ApiConnectionWhereInput,
     data: Prisma.ApiConnectionUpdateInput
@@ -134,12 +95,6 @@ export class ConnectionRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Delete multiple connections matching the criteria
-   *
-   * @param where - Criteria to match connections
-   * @returns Promise resolving to deletion count
-   */
   async deleteMany(
     where: Prisma.ApiConnectionWhereInput
   ): Promise<{ count: number }> {
@@ -154,12 +109,6 @@ export class ConnectionRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Count connections for a user
-   *
-   * @param userId - The user's unique identifier
-   * @returns Promise resolving to connection count
-   */
   async countByUserId(userId: string): Promise<number> {
     this.validateRequiredParams({ userId }, ["userId"]);
 
@@ -172,12 +121,6 @@ export class ConnectionRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Count active connections for a user
-   *
-   * @param userId - The user's unique identifier
-   * @returns Promise resolving to active connection count
-   */
   async countActiveByUserId(userId: string): Promise<number> {
     this.validateRequiredParams({ userId }, ["userId"]);
 
@@ -193,13 +136,6 @@ export class ConnectionRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find a connection by ID and user ID (ownership verification)
-   *
-   * @param id - The connection's unique identifier
-   * @param userId - The user's unique identifier
-   * @returns Promise resolving to connection or null if not found
-   */
   async findFirstByUserAndId(
     id: string,
     userId: string
@@ -218,18 +154,12 @@ export class ConnectionRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Find a connection by ID with credentials (for health check execution)
-   *
-   * @param id - The connection's unique identifier
-   * @returns Promise resolving to connection with credentials or null if not found
-   */
   async findByIdWithCredentials(id: string): Promise<{
     id: string;
     name: string;
     provider: string;
     baseUrl: string;
-    apiKey: string;
+    apiKey: string | null;
     secretKey: string | null;
     accountSid: string | null;
     authToken: string | null;
@@ -257,13 +187,6 @@ export class ConnectionRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Update a connection by ID
-   *
-   * @param id - The connection's unique identifier
-   * @param data - Data to update
-   * @returns Promise resolving to the updated connection
-   */
   async update(
     id: string,
     data: Prisma.ApiConnectionUpdateInput
@@ -280,12 +203,6 @@ export class ConnectionRepository extends BaseRepository {
     );
   }
 
-  /**
-   * Delete a connection by ID
-   *
-   * @param id - The connection's unique identifier
-   * @returns Promise resolving when deletion is complete
-   */
   async delete(id: string): Promise<void> {
     this.validateRequiredParams({ id }, ["id"]);
 

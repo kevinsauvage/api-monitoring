@@ -1,15 +1,15 @@
-import type { ApiConnection } from "@prisma/client";
-import type { CheckResultWithDetails } from "@/lib/core/repositories";
 import {
   serializeEntityTimestamps,
   serializeTimestamp,
 } from "@/lib/core/utils/serializer-utils";
-import type { SerializedApiConnection } from "@/lib/core/types";
-
-export type SerializedConnection = SerializedApiConnection;
+import type { ApiConnection } from "@prisma/client";
+import type {
+  SerializedApiConnection,
+  CheckResultWithDetails,
+} from "@/lib/core/types";
 
 export interface SerializedConnectionWithHealthChecks
-  extends SerializedConnection {
+  extends SerializedApiConnection {
   healthChecks: Array<{
     id: string;
     endpoint: string;
@@ -26,7 +26,7 @@ export interface SerializedConnectionWithHealthChecksAndResults
 
 export function serializeConnection(
   connection: ApiConnection
-): SerializedConnection {
+): SerializedApiConnection {
   return {
     id: connection.id,
     name: connection.name,
@@ -39,7 +39,7 @@ export function serializeConnection(
 
 export function serializeConnections(
   connections: ApiConnection[]
-): SerializedConnection[] {
+): SerializedApiConnection[] {
   return connections.map(serializeConnection);
 }
 

@@ -1,40 +1,8 @@
-import type { JsonValue } from "@prisma/client/runtime/library";
 import { BaseService } from "./base.service";
-
-export interface DashboardStats {
-  totalConnections: number;
-  activeConnections: number;
-  totalHealthChecks: number;
-  monitoringStats: {
-    successRate: number;
-    averageResponseTime: number;
-    totalChecks: number;
-    recentFailures: number;
-  };
-  recentResults: Array<{
-    id: string;
-    healthCheckId: string;
-    status: "SUCCESS" | "FAILURE" | "TIMEOUT" | "ERROR";
-    responseTime: number;
-    statusCode: number | null;
-    errorMessage: string | null;
-    timestamp: Date;
-    metadata: JsonValue;
-    healthCheck: {
-      id: string;
-      endpoint: string;
-      method: string;
-      apiConnection: {
-        provider: string;
-        name: string;
-      };
-    };
-  }>;
-}
+import type { DashboardStats } from "@/lib/core/types";
 
 export class DashboardService extends BaseService {
   async getDashboardStats(userId: string): Promise<DashboardStats> {
-    // Execute all queries in parallel for better performance
     const [
       totalConnections,
       activeConnections,

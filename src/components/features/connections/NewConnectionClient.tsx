@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { validateConnection } from "@/actions/connection-actions";
-import ProviderSelection from "@/components/features/connections/ProviderSelection";
-import ConnectionForm from "@/components/features/connections/ConnectionForm";
-import { API_PROVIDERS } from "@/components/utils/constants";
-import { log } from "@/lib/shared/utils/logger";
+import { validateConnection } from "@/actions";
+import { ProviderSelection } from "@/components/features/connections";
+import { ConnectionForm } from "@/components/features/connections";
+import { API_PROVIDERS } from "@/components/utils";
+import { log } from "@/lib/shared/utils";
 
 export default function NewConnectionClient() {
   const [selectedProvider, setSelectedProvider] = useState<string>("");
@@ -64,6 +64,7 @@ export default function NewConnectionClient() {
         accountSid: formData.accountSid,
         authToken: formData.authToken,
         token: formData.token,
+        name: formData.name,
       });
 
       setValidationResult({

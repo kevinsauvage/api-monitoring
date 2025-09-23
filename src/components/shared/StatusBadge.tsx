@@ -6,19 +6,17 @@ import {
 } from "@/lib/shared/utils/status-utils";
 import type { CheckStatus } from "@prisma/client";
 
-interface StatusBadgeProps {
-  status: CheckStatus | string;
-  showIcon?: boolean;
-  variant?: "default" | "extended";
-  className?: string;
-}
-
 export function StatusBadge({
   status,
   showIcon = false,
   variant = "default",
   className = "",
-}: StatusBadgeProps) {
+}: {
+  status: CheckStatus | string;
+  showIcon?: boolean;
+  variant?: "default" | "extended";
+  className?: string;
+}) {
   const colorClass =
     variant === "extended"
       ? getStatusColorExtended(status)

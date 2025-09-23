@@ -7,40 +7,30 @@ import {
   createDeleteAction,
   createUpdateAction,
 } from "@/lib/shared/utils/action-factory";
-import type {
-  ConnectionValidationInput,
-  ConnectionCreateInput,
-} from "@/lib/shared/types";
-import type { ConnectionUpdateInput } from "@/lib/shared/schemas";
 
 const connectionService = getConnectionService();
 
 export const validateConnection = createDataAction(
   connectionSchemas.validation,
-  async (input: ConnectionValidationInput) =>
-    connectionService.validateConnection(input)
+  async (input) => connectionService.validateConnection(input)
 );
 
 export const createConnection = createDataAction(
   connectionSchemas.create,
-  async (input: ConnectionCreateInput) =>
-    connectionService.createConnection(input),
+  async (input) => connectionService.createConnection(input),
   ["/dashboard", "/dashboard/connections"]
 );
 
 export const updateConnection = createUpdateAction(
   connectionSchemas.update,
-  async (input: ConnectionUpdateInput) =>
-    connectionService.updateConnection(
-      input.connectionId,
-      input.data as Parameters<typeof connectionService.updateConnection>[1]
-    ),
+  async (input) =>
+    connectionService.updateConnection(input.connectionId, input.data),
   ["/dashboard", "/dashboard/connections"]
 );
 
 export const deleteConnection = createDeleteAction(
   connectionSchemas.delete,
-  async (input: { connectionId: string }) => {
+  async (input) => {
     const result = await connectionService.deleteConnection(input.connectionId);
     if (!result.success) {
       throw new Error(result.message);

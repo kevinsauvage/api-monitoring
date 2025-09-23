@@ -39,15 +39,15 @@ import {
 } from "@/lib/shared/utils/check-result-utils";
 
 import type { SerializedConnectionWithHealthChecks } from "@/lib/core/serializers";
-import type { CheckResultWithDetails } from "@/lib/core/repositories";
+import type { CheckResultWithDetails } from "@/lib/core/types";
 
-interface ConnectionCardProps {
+export default function ConnectionCard({
+  connection,
+}: {
   connection: SerializedConnectionWithHealthChecks & {
     recentResults?: CheckResultWithDetails[];
   };
-}
-
-export default function ConnectionCard({ connection }: ConnectionCardProps) {
+}) {
   const { execute: executeToggle, isLoading: isToggling } = useAsyncAction({
     successMessage: `Connection ${
       connection.isActive ? "deactivated" : "activated"
@@ -234,7 +234,7 @@ export default function ConnectionCard({ connection }: ConnectionCardProps) {
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground">
                   <span>{lastResult?.responseTime ?? "N/A"}ms</span>
                   <span>
-                    {formatTime(lastExecutedHealthCheck?.lastExecutedAt)}
+                    {formatTime(lastExecutedHealthCheck.lastExecutedAt)}
                   </span>
                 </div>
               </div>
