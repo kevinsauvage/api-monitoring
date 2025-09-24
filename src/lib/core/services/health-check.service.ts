@@ -1,6 +1,6 @@
 import type { HealthCheckWithResults } from "@/lib/core/types";
 import { HealthCheckValidator } from "@/lib/core/validators/health-check-validator";
-import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
+import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di/service-identifiers";
 import type { ValidationServiceResult } from "@/lib/shared/types/api-results";
 import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
 

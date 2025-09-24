@@ -7,3 +7,4 @@ export { CronService } from "./cron.service";
 export { CostTrackingService } from "./cost-tracking-strategy.service";
 export { CostMetricService } from "./cost-metric.service";
 export { SettingsService } from "./settings.service";
+export { BillingService } from "./billing.service";

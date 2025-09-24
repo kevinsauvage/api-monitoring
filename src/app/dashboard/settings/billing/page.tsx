@@ -3,8 +3,9 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
 import BillingSettings from "@/components/features/settings/BillingSettings";
+import { BillingService } from "@/lib/core/services";
 import { authOptions } from "@/lib/infrastructure/auth";
-import { getDashboardService } from "@/lib/infrastructure/di";
+import { registerAllServices } from "@/lib/infrastructure/di";
 
 export default async function BillingSettingsPage() {
   const session = await getServerSession(authOptions);
@@ -13,12 +14,24 @@ export default async function BillingSettingsPage() {
     redirect("/auth/signin");
   }
 
-  const dashboardService = getDashboardService();
-  const user = await dashboardService.getUser();
+  // Register services
+  registerAllServices();
 
-  if (!user) {
-    redirect("/auth/signin");
-  }
+  const billingService = new BillingService();
 
-  return <BillingSettings user={user} />;
+  // Fetch billing data server-side
+  const [billingData, billingHistory, paymentMethods] = await Promise.all([
+    billingService.getBillingData(session.user.id),
+    billingService.getBillingHistory(session.user.id, 10),
+    billingService.getPaymentMethods(session.user.id),
+  ]);
+
+  return (
+    <BillingSettings
+      user={session.user}
+      billingData={billingData}
+      billingHistory={billingHistory}
+      paymentMethods={paymentMethods}
+    />
+  );
 }

@@ -18,32 +18,50 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-
+import type {
+  BillingData,
+  BillingHistoryItem,
+  PaymentMethod,
+} from "@/lib/core/types";
 
 import type { User as UserType } from "next-auth";
 
 interface BillingSettingsProps {
   user: UserType;
+  billingData: BillingData | null;
+  billingHistory: BillingHistoryItem[];
+  paymentMethods: PaymentMethod[];
 }
 
-export default function BillingSettings({ user }: BillingSettingsProps) {
+export default function BillingSettings({
+  user,
+  billingData,
+  billingHistory,
+  paymentMethods,
+}: BillingSettingsProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  // Mock subscription data - in real app, this would come from props or API
-  const subscription = {
-    plan: "Pro",
-    status: "active",
-    nextBillingDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
-    amount: 29.99,
-    currency: "USD",
+  // Use the data passed from server-side
+  const subscription = billingData || {
+    subscription: "HOBBY" as const,
+    planName: "Hobby",
+    planDescription: "Perfect for personal projects",
     features: [
-      "Unlimited API connections",
-      "Advanced health checks",
-      "Real-time monitoring",
-      "Priority support",
-      "Custom alerts",
-      "API usage analytics",
+      "5 health checks",
+      "3 API connections",
+      "5-minute intervals",
+      "Basic monitoring",
+      "Email alerts",
     ],
+    amount: 0,
+    currency: "USD",
+    nextBillingDate: new Date(),
+    status: "active" as const,
+    usage: {
+      connections: { current: 0, limit: 3 },
+      healthChecks: { current: 0, limit: 5 },
+      apiCalls: { current: 0, limit: -1 },
+    },
   };
 
   const handleUpgrade = async () => {
@@ -82,16 +100,21 @@ export default function BillingSettings({ user }: BillingSettingsProps) {
             <div>
               <div className="flex items-center space-x-2">
                 <h3 className="text-lg font-semibold">
-                  {subscription.plan} Plan
+                  {subscription.planName} Plan
                 </h3>
                 <Badge variant="default">
                   <CheckCircle className="h-3 w-3 mr-1" />
-                  Active
+                  {subscription.status === "active"
+                    ? "Active"
+                    : subscription.status}
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                ${subscription.amount}/
-                {subscription.currency === "USD" ? "month" : "year"}
+                {subscription.amount > 0
+                  ? `$${subscription.amount}/${
+                      subscription.currency === "USD" ? "month" : "year"
+                    }`
+                  : "Free"}
               </p>
             </div>
             <Button onClick={handleUpgrade} disabled={isLoading}>
@@ -135,23 +158,42 @@ export default function BillingSettings({ user }: BillingSettingsProps) {
                 </p>
               </div>
             </div>
-            <Badge variant="outline">${subscription.amount}</Badge>
+            <Badge variant="outline">
+              {subscription.amount > 0 ? `$${subscription.amount}` : "Free"}
+            </Badge>
           </div>
 
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-3">
-              <CreditCard className="h-4 w-4 text-muted-foreground" />
-              <div>
-                <span className="text-sm font-medium">Payment Method</span>
-                <p className="text-sm text-muted-foreground">
-                  **** **** **** 4242
-                </p>
+          {paymentMethods.length > 0 ? (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <CreditCard className="h-4 w-4 text-muted-foreground" />
+                <div>
+                  <span className="text-sm font-medium">Payment Method</span>
+                  <p className="text-sm text-muted-foreground">
+                    **** **** **** {paymentMethods[0].last4}
+                  </p>
+                </div>
               </div>
+              <Button variant="outline" size="sm">
+                Update
+              </Button>
             </div>
-            <Button variant="outline" size="sm">
-              Update
-            </Button>
-          </div>
+          ) : (
+            <div className="flex items-center justify-between">
+              <div className="flex items-center space-x-3">
+                <CreditCard className="h-4 w-4 text-muted-foreground" />
+                <div>
+                  <span className="text-sm font-medium">Payment Method</span>
+                  <p className="text-sm text-muted-foreground">
+                    No payment method on file
+                  </p>
+                </div>
+              </div>
+              <Button variant="outline" size="sm">
+                Add Payment Method
+              </Button>
+            </div>
+          )}
 
           <div className="flex justify-end space-x-2">
             <Button
@@ -181,10 +223,25 @@ export default function BillingSettings({ user }: BillingSettingsProps) {
               <span className="text-sm">API Connections</span>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-muted-foreground">
-                  5 / Unlimited
+                  {subscription.usage.connections.current} /{" "}
+                  {subscription.usage.connections.limit === -1
+                    ? "Unlimited"
+                    : subscription.usage.connections.limit}
                 </span>
                 <div className="w-20 h-2 bg-muted rounded-full">
-                  <div className="w-1/4 h-2 bg-primary rounded-full"></div>
+                  <div
+                    className="h-2 bg-primary rounded-full"
+                    style={{
+                      width:
+                        subscription.usage.connections.limit === -1
+                          ? "100%"
+                          : `${
+                              (subscription.usage.connections.current /
+                                subscription.usage.connections.limit) *
+                              100
+                            }%`,
+                    }}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -193,10 +250,25 @@ export default function BillingSettings({ user }: BillingSettingsProps) {
               <span className="text-sm">Health Checks</span>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-muted-foreground">
-                  12 / Unlimited
+                  {subscription.usage.healthChecks.current} /{" "}
+                  {subscription.usage.healthChecks.limit === -1
+                    ? "Unlimited"
+                    : subscription.usage.healthChecks.limit}
                 </span>
                 <div className="w-20 h-2 bg-muted rounded-full">
-                  <div className="w-1/3 h-2 bg-primary rounded-full"></div>
+                  <div
+                    className="h-2 bg-primary rounded-full"
+                    style={{
+                      width:
+                        subscription.usage.healthChecks.limit === -1
+                          ? "100%"
+                          : `${
+                              (subscription.usage.healthChecks.current /
+                                subscription.usage.healthChecks.limit) *
+                              100
+                            }%`,
+                    }}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -205,10 +277,25 @@ export default function BillingSettings({ user }: BillingSettingsProps) {
               <span className="text-sm">Monthly API Calls</span>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-muted-foreground">
-                  2.4K / Unlimited
+                  {subscription.usage.apiCalls.current.toLocaleString()} /{" "}
+                  {subscription.usage.apiCalls.limit === -1
+                    ? "Unlimited"
+                    : subscription.usage.apiCalls.limit.toLocaleString()}
                 </span>
                 <div className="w-20 h-2 bg-muted rounded-full">
-                  <div className="w-1/6 h-2 bg-primary rounded-full"></div>
+                  <div
+                    className="h-2 bg-primary rounded-full"
+                    style={{
+                      width:
+                        subscription.usage.apiCalls.limit === -1
+                          ? "100%"
+                          : `${
+                              (subscription.usage.apiCalls.current /
+                                subscription.usage.apiCalls.limit) *
+                              100
+                            }%`,
+                    }}
+                  ></div>
                 </div>
               </div>
             </div>
@@ -223,46 +310,33 @@ export default function BillingSettings({ user }: BillingSettingsProps) {
         </CardHeader>
         <CardContent>
           <div className="space-y-3">
-            {[
-              {
-                date: "2024-01-15",
-                amount: 29.99,
-                status: "paid",
-                invoice: "INV-001",
-              },
-              {
-                date: "2023-12-15",
-                amount: 29.99,
-                status: "paid",
-                invoice: "INV-002",
-              },
-              {
-                date: "2023-11-15",
-                amount: 29.99,
-                status: "paid",
-                invoice: "INV-003",
-              },
-            ].map((invoice, index) => (
-              <div
-                key={index}
-                className="flex items-center justify-between p-3 border rounded-lg"
-              >
-                <div className="flex items-center space-x-3">
-                  <div>
-                    <p className="text-sm font-medium">${invoice.amount}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {invoice.date}
-                    </p>
+            {billingHistory.length > 0 ? (
+              billingHistory.map((invoice) => (
+                <div
+                  key={invoice.id}
+                  className="flex items-center justify-between p-3 border rounded-lg"
+                >
+                  <div className="flex items-center space-x-3">
+                    <div>
+                      <p className="text-sm font-medium">${invoice.amount}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {invoice.date.toLocaleDateString()}
+                      </p>
+                    </div>
+                    <Badge variant="outline" className="text-xs">
+                      {invoice.status}
+                    </Badge>
                   </div>
-                  <Badge variant="outline" className="text-xs">
-                    {invoice.status}
-                  </Badge>
+                  <Button variant="ghost" size="sm">
+                    <Download className="h-4 w-4" />
+                  </Button>
                 </div>
-                <Button variant="ghost" size="sm">
-                  <Download className="h-4 w-4" />
-                </Button>
+              ))
+            ) : (
+              <div className="text-center py-8 text-muted-foreground">
+                <p>No billing history available</p>
               </div>
-            ))}
+            )}
           </div>
         </CardContent>
       </Card>

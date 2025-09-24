@@ -1,5 +1,5 @@
 import { CostTrackingStrategyFactory } from "@/lib/core/strategies/cost-tracking";
-import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
+import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di/service-identifiers";
 import { decrypt } from "@/lib/infrastructure/encryption";
 import type { CostTrackingResult } from "@/lib/shared/types/api-results";
 

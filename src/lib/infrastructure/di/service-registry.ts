@@ -1,7 +1,28 @@
-import { UserRepository , ConnectionRepository , HealthCheckRepository , CheckResultRepository , MonitoringRepository , CostMetricRepository , UserPreferencesRepository , NotificationSettingsRepository } from "@/lib/core/repositories";
-import { ConnectionService , HealthCheckService , DashboardService , MonitoringService , CronService , CostTrackingService , CostMetricService , SettingsService } from "@/lib/core/services";
+import {
+  UserRepository,
+  ConnectionRepository,
+  HealthCheckRepository,
+  CheckResultRepository,
+  MonitoringRepository,
+  CostMetricRepository,
+  UserPreferencesRepository,
+  NotificationSettingsRepository,
+  BillingRepository,
+} from "@/lib/core/repositories";
+import {
+  ConnectionService,
+  HealthCheckService,
+  DashboardService,
+  MonitoringService,
+  CronService,
+  CostTrackingService,
+  CostMetricService,
+  SettingsService,
+  BillingService,
+} from "@/lib/core/services";
 
-import { container, SERVICE_IDENTIFIERS } from "./index";
+import { container } from "./container";
+import { SERVICE_IDENTIFIERS } from "./service-identifiers";
 
 /**
  * Register all repositories as singletons
@@ -45,6 +66,11 @@ export function registerRepositories(): void {
   container.registerSingleton(
     SERVICE_IDENTIFIERS.NOTIFICATION_SETTINGS_REPOSITORY,
     () => new NotificationSettingsRepository()
+  );
+
+  container.registerSingleton(
+    SERVICE_IDENTIFIERS.BILLING_REPOSITORY,
+    () => new BillingRepository()
   );
 }
 
@@ -90,6 +116,11 @@ export function registerServices(): void {
   container.registerSingleton(
     SERVICE_IDENTIFIERS.SETTINGS_SERVICE,
     () => new SettingsService()
+  );
+
+  container.registerSingleton(
+    SERVICE_IDENTIFIERS.BILLING_SERVICE,
+    () => new BillingService()
   );
 }
 

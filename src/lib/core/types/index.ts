@@ -235,3 +235,6 @@ export type ConnectionWithCredentials = {
   authToken?: string | null;
   token?: string | null;
 };
+
+// Re-export billing types
+export type { BillingData, BillingHistoryItem, PaymentMethod } from "./billing";
