@@ -163,6 +163,50 @@ export const costSchemas = {
   }),
 };
 
+// Settings schemas
+export const settingsSchemas = {
+  updateProfile: z.object({
+    name: z.string().min(1, "Name is required").max(100, "Name is too long"),
+    email: commonSchemas.email,
+  }),
+  updatePassword: z
+    .object({
+      currentPassword: z.string().min(1, "Current password is required"),
+      newPassword: commonSchemas.password,
+      confirmPassword: z.string().min(1, "Please confirm your password"),
+    })
+    .refine((data) => data.newPassword === data.confirmPassword, {
+      message: "Passwords do not match",
+      path: ["confirmPassword"],
+    }),
+  updateNotificationSettings: z.object({
+    emailNotifications: z.boolean(),
+    pushNotifications: z.boolean(),
+    smsNotifications: z.boolean(),
+    healthCheckAlerts: z.boolean(),
+    costAlerts: z.boolean(),
+    securityAlerts: z.boolean(),
+    frequency: z.enum(["immediate", "hourly", "daily", "weekly"]),
+    quietHours: z.boolean(),
+    quietHoursStart: z.string(),
+    quietHoursEnd: z.string(),
+  }),
+  updatePreferences: z.object({
+    theme: z.enum(["light", "dark", "system"]),
+    language: z.string(),
+    timezone: z.string(),
+    dateFormat: z.string(),
+    timeFormat: z.enum(["12h", "24h"]),
+    autoRefresh: z.boolean(),
+    refreshInterval: z.number().int().min(15).max(3600),
+    showNotifications: z.boolean(),
+    compactMode: z.boolean(),
+    showTooltips: z.boolean(),
+    enableAnalytics: z.boolean(),
+    enableCrashReporting: z.boolean(),
+  }),
+};
+
 // Export type inference helpers
 export type ConnectionValidationInput = z.infer<
   typeof connectionSchemas.validation

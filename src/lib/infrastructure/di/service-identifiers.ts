@@ -6,6 +6,8 @@ export const SERVICE_IDENTIFIERS = {
   CHECK_RESULT_REPOSITORY: Symbol("CheckResultRepository"),
   MONITORING_REPOSITORY: Symbol("MonitoringRepository"),
   COST_METRIC_REPOSITORY: Symbol("CostMetricRepository"),
+  USER_PREFERENCES_REPOSITORY: Symbol("UserPreferencesRepository"),
+  NOTIFICATION_SETTINGS_REPOSITORY: Symbol("NotificationSettingsRepository"),
 
   // Services
   CONNECTION_SERVICE: Symbol("ConnectionService"),
@@ -17,4 +19,5 @@ export const SERVICE_IDENTIFIERS = {
   COST_METRIC_SERVICE: Symbol("CostMetricService"),
   SERIALIZATION_SERVICE: Symbol("SerializationService"),
   USER_SERVICE: Symbol("UserService"),
+  SETTINGS_SERVICE: Symbol("SettingsService"),
 } as const;

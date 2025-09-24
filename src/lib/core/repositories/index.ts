@@ -5,3 +5,5 @@ export { HealthCheckRepository } from "./health-check.repository";
 export { CheckResultRepository } from "./check-result.repository";
 export { MonitoringRepository } from "./monitoring.repository";
 export { CostMetricRepository } from "./cost-metric.repository";
+export { UserPreferencesRepository } from "./user-preferences.repository";
+export { NotificationSettingsRepository } from "./notification-settings.repository";

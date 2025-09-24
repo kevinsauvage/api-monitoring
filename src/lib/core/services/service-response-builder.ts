@@ -1,7 +1,3 @@
-/**
- * Service response builder for consistent API responses
- */
-
 import type {
   ApiResult,
   CreateApiResult,

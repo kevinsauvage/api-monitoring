@@ -1,5 +1,6 @@
-import { BaseService } from "./base.service";
 import type { DashboardStats } from "@/lib/core/types";
+
+import { BaseService } from "./base.service";
 
 export class DashboardService extends BaseService {
   async getDashboardStats(userId: string): Promise<DashboardStats> {

@@ -6,7 +6,7 @@ import { useSession } from "next-auth/react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
 import { log } from "@/lib/shared/utils/logger";
-import { createHealthCheck } from "@/actions/health-actions";
+import { createHealthCheck } from "@/actions";
 import {
   getIntervalOptions,
   getDefaultInterval,

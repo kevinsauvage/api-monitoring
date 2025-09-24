@@ -52,6 +52,8 @@ model User {
   sessions Session[]
   apiConnections ApiConnection[]
   alerts Alert[]
+  userPreferences UserPreferences?
+  notificationSettings NotificationSettings?
 }
 
 model VerificationToken {
@@ -214,4 +216,44 @@ enum AlertSeverity {
   MEDIUM
   HIGH
   CRITICAL
+}
+
+model UserPreferences {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  theme             String   @default("system") // "light", "dark", "system"
+  language          String   @default("en")
+  timezone          String   @default("UTC")
+  dateFormat        String   @default("MM/DD/YYYY")
+  timeFormat        String   @default("12h") // "12h", "24h"
+  autoRefresh       Boolean  @default(true)
+  refreshInterval   Int      @default(30) // seconds
+  showNotifications Boolean  @default(true)
+  compactMode       Boolean  @default(false)
+  showTooltips      Boolean  @default(true)
+  enableAnalytics   Boolean  @default(true)
+  enableCrashReporting Boolean @default(true)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model NotificationSettings {
+  id                String   @id @default(cuid())
+  userId            String   @unique
+  emailNotifications Boolean @default(true)
+  pushNotifications Boolean  @default(true)
+  smsNotifications  Boolean  @default(false)
+  healthCheckAlerts Boolean  @default(true)
+  costAlerts        Boolean  @default(true)
+  securityAlerts    Boolean  @default(true)
+  frequency         String   @default("immediate") // "immediate", "hourly", "daily", "weekly"
+  quietHours        Boolean  @default(false)
+  quietHoursStart   String   @default("22:00")
+  quietHoursEnd     String   @default("08:00")
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 }

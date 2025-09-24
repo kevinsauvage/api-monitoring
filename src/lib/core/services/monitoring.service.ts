@@ -1,9 +1,11 @@
-import { BaseService } from "./base.service";
-import { NotFoundError } from "@/lib/shared/errors";
 import { healthCheckExecutor } from "@/lib/core/monitoring/health-check-executor";
-import { decrypt } from "@/lib/infrastructure/encryption";
-import type { HealthCheck, Prisma } from "@prisma/client";
 import { serializeHealthCheck } from "@/lib/core/serializers";
+import { decrypt } from "@/lib/infrastructure/encryption";
+import { NotFoundError } from "@/lib/shared/errors";
+
+import { BaseService } from "./base.service";
+
+import type { HealthCheck, Prisma } from "@prisma/client";
 
 export class MonitoringService extends BaseService {
   async createHealthCheck(

@@ -14,10 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 
 import { ConfirmationDialog, MethodBadge } from "@/components/shared";
-import {
-  deleteHealthCheck,
-  triggerHealthCheck,
-} from "@/actions/health-actions";
+import { deleteHealthCheck, triggerHealthCheck } from "@/actions";
 import { formatTime } from "@/lib/shared/utils/utils";
 import {
   getStatusColor,

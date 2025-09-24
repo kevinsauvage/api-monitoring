@@ -21,10 +21,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { ConfirmationDialog } from "@/components/shared";
-import {
-  updateConnection,
-  deleteConnection,
-} from "@/actions/connection-actions";
+import { updateConnection, deleteConnection } from "@/actions";
 import { formatTime } from "@/lib/shared/utils/utils";
 import {
   getProviderColor,

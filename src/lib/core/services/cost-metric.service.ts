@@ -1,8 +1,10 @@
+import type { ApiResult } from "@/lib/shared/types/api-results";
+
 import { BaseService } from "./base.service";
 import { ServiceResponseBuilder } from "./service-response-builder";
+
 import type { CostMetric } from "@prisma/client";
 import type { InputJsonValue } from "@prisma/client/runtime/library";
-import type { ApiResult } from "@/lib/shared/types/api-results";
 
 export class CostMetricService extends BaseService {
   async createCostMetric(

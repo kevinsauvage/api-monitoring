@@ -6,6 +6,7 @@ import type { DashboardService } from "@/lib/core/services";
 import type { MonitoringService } from "@/lib/core/services";
 import type { CronService } from "@/lib/core/services";
 import type { CostTrackingService } from "@/lib/core/services";
+import type { SettingsService } from "@/lib/core/services";
 import type { CheckResultRepository } from "@/lib/core/repositories";
 
 initializeDI();
@@ -47,5 +48,11 @@ export function getCheckResultRepository(): CheckResultRepository {
 export function getCostTrackingService(): CostTrackingService {
   return container.resolve<CostTrackingService>(
     SERVICE_IDENTIFIERS.COST_TRACKING_SERVICE
+  );
+}
+
+export function getSettingsService(): SettingsService {
+  return container.resolve<SettingsService>(
+    SERVICE_IDENTIFIERS.SETTINGS_SERVICE
   );
 }

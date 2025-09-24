@@ -1,7 +1,8 @@
-import { BaseService } from "./base.service";
-import { NotFoundError } from "@/lib/shared/errors";
 import { healthCheckExecutor } from "@/lib/core/monitoring/health-check-executor";
 import { decrypt } from "@/lib/infrastructure/encryption";
+import { NotFoundError } from "@/lib/shared/errors";
+
+import { BaseService } from "./base.service";
 
 export class CronService extends BaseService {
   async getHealthChecksDueForExecution(): Promise<

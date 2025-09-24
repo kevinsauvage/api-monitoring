@@ -18,7 +18,7 @@ import {
   deleteHealthCheck,
   updateHealthCheck,
   triggerHealthCheck,
-} from "@/actions/health-actions";
+} from "@/actions";
 import { log } from "@/lib/shared/utils/logger";
 
 export default function HealthCheckActions({

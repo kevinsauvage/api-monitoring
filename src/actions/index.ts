@@ -25,3 +25,17 @@ export {
   trackAllCosts,
   trackConnectionCosts,
 } from "./cost-actions";
+
+// Settings actions
+export {
+  updateUserProfile,
+  updatePassword,
+  enableTwoFactor,
+  disableTwoFactor,
+  updateNotificationSettings,
+  updatePreferences,
+  clearData,
+  exportData,
+  getUserPreferences,
+  getNotificationSettings,
+} from "./settings-actions";

@@ -3,6 +3,7 @@ import { fileURLToPath } from "url";
 import { FlatCompat } from "@eslint/eslintrc";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import typescriptParser from "@typescript-eslint/parser";
+import importPlugin from "eslint-plugin-import";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -33,6 +34,7 @@ const eslintConfig = [
     },
     plugins: {
       "@typescript-eslint": typescriptEslint,
+      import: importPlugin,
     },
     rules: {
       // TypeScript-specific rules
@@ -96,6 +98,58 @@ const eslintConfig = [
       "@typescript-eslint/return-await": "error",
       "@typescript-eslint/switch-exhaustiveness-check": "error",
       "@typescript-eslint/unified-signatures": "error",
+
+      // Import ordering rules
+      "import/order": [
+        "error",
+        {
+          groups: [
+            "builtin", // Node.js built-in modules
+            "external", // npm packages
+            "internal", // Internal modules (using path mapping)
+            "parent", // Parent directory imports
+            "sibling", // Same directory imports
+            "index", // Index file imports
+            "type", // Type imports
+          ],
+          "newlines-between": "always",
+          alphabetize: {
+            order: "asc",
+            caseInsensitive: true,
+          },
+          pathGroups: [
+            {
+              pattern: "react",
+              group: "external",
+              position: "before",
+            },
+            {
+              pattern: "next/**",
+              group: "external",
+              position: "before",
+            },
+            {
+              pattern: "@/**",
+              group: "internal",
+              position: "before",
+            },
+            {
+              pattern: "**/*.css",
+              group: "type",
+              position: "after",
+            },
+          ],
+          pathGroupsExcludedImportTypes: ["react", "next"],
+        },
+      ],
+      "import/no-duplicates": "error",
+      "import/no-unresolved": "off", // TypeScript handles this
+      "import/no-named-as-default": "error",
+      "import/no-named-as-default-member": "error",
+      "import/no-self-import": "error",
+      "import/no-cycle": "error",
+      "import/no-useless-path-segments": "error",
+      "import/prefer-default-export": "off", // Allow named exports
 
       // General rules
       "no-unused-vars": "off", // Use TypeScript version instead

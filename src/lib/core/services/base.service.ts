@@ -1,16 +1,5 @@
-import type { User } from "next-auth";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/infrastructure/auth";
-import {
-  UnauthorizedError,
-  handleError,
-  logError,
-  NotFoundError,
-} from "@/lib/shared/errors";
-import { container } from "@/lib/infrastructure/di";
-import { log } from "@/lib/shared/utils";
-import type { ServiceIdentifier } from "@/lib/infrastructure/di";
-import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
+
 import type {
   ConnectionRepository,
   HealthCheckRepository,
@@ -18,7 +7,21 @@ import type {
   UserRepository,
   MonitoringRepository,
   CostMetricRepository,
+  UserPreferencesRepository,
+  NotificationSettingsRepository,
 } from "@/lib/core";
+import { authOptions } from "@/lib/infrastructure/auth";
+import type { ServiceIdentifier } from "@/lib/infrastructure/di";
+import { container, SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
+import {
+  UnauthorizedError,
+  handleError,
+  logError,
+  NotFoundError,
+} from "@/lib/shared/errors";
+import { log } from "@/lib/shared/utils";
+
+import type { User } from "next-auth";
 
 export abstract class BaseService {
   protected resolve<T>(identifier: ServiceIdentifier): T {
@@ -55,6 +58,18 @@ export abstract class BaseService {
   protected get costMetricRepository(): CostMetricRepository {
     return this.resolve<CostMetricRepository>(
       SERVICE_IDENTIFIERS.COST_METRIC_REPOSITORY
+    );
+  }
+
+  protected get userPreferencesRepository(): UserPreferencesRepository {
+    return this.resolve<UserPreferencesRepository>(
+      SERVICE_IDENTIFIERS.USER_PREFERENCES_REPOSITORY
+    );
+  }
+
+  protected get notificationSettingsRepository(): NotificationSettingsRepository {
+    return this.resolve<NotificationSettingsRepository>(
+      SERVICE_IDENTIFIERS.NOTIFICATION_SETTINGS_REPOSITORY
     );
   }
 

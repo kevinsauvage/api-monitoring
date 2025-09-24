@@ -1,10 +1,12 @@
-import type z from "zod";
-import type { Prisma, User } from "@prisma/client";
-import { getPlanLimits, validateApiConnection } from "@/lib/shared/utils";
-import { encrypt } from "@/lib/infrastructure/encryption";
-import { BaseService } from "./base.service";
-import type { connectionSchemas } from "@/lib/shared/schemas";
 import type { ConnectionData, ConnectionCreateResult } from "@/lib/core/types";
+import { encrypt } from "@/lib/infrastructure/encryption";
+import type { connectionSchemas } from "@/lib/shared/schemas";
+import { getPlanLimits, validateApiConnection } from "@/lib/shared/utils";
+
+import { BaseService } from "./base.service";
+
+import type { Prisma, User } from "@prisma/client";
+import type { z } from "zod";
 
 export class ConnectionService extends BaseService {
   async getConnections(): Promise<ConnectionData> {
