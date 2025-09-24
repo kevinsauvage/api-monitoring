@@ -1,17 +1,18 @@
+import { getServerSession } from "next-auth";
+
 import DashboardStats from "@/components/features/dashboard/DashboardStats";
-import RecentActivity from "@/components/features/dashboard/RecentActivity";
 import PerformanceMetrics from "@/components/features/dashboard/PerformanceMetrics";
+import RecentActivity from "@/components/features/dashboard/RecentActivity";
 import ResponseTimeChart from "@/components/shared/charts/ResponseTimeChart";
 import SuccessRateChart from "@/components/shared/charts/SuccessRateChart";
 import UptimeChart from "@/components/shared/charts/UptimeChart";
+import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
+import { authOptions } from "@/lib/infrastructure/auth";
 import { getDashboardService } from "@/lib/infrastructure/di";
 import {
   getStatusData,
   getUptimeData,
 } from "@/lib/shared/utils/check-result-utils";
-import { authOptions } from "@/lib/infrastructure/auth";
-import { getServerSession } from "next-auth";
-import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 
 export const revalidate = 300; // 5 minutes
 

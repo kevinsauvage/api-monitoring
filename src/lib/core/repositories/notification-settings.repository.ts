@@ -1,5 +1,6 @@
-import type { NotificationSettings, Prisma } from "@prisma/client";
 import { BaseRepository } from "./base.repository";
+
+import type { NotificationSettings, Prisma } from "@prisma/client";
 
 export class NotificationSettingsRepository extends BaseRepository {
   async findByUserId(userId: string): Promise<NotificationSettings | null> {

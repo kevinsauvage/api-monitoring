@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
 import {
   PieChart,
   Pie,
@@ -8,6 +9,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+
 import {
   Card,
   CardContent,
@@ -15,7 +17,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
+
 import type { CheckStatus } from "@prisma/client";
 
 export type StatusData = {

@@ -1,9 +1,10 @@
+import type { SerializedHealthCheck } from "@/lib/core/types";
 import {
   serializeEntityTimestamps,
   serializeTimestamp,
 } from "@/lib/core/utils/serializer-utils";
+
 import type { HealthCheck } from "@prisma/client";
-import type { SerializedHealthCheck } from "@/lib/core/types";
 
 export interface SerializedHealthCheckWithConnection
   extends SerializedHealthCheck {

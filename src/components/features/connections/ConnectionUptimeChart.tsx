@@ -1,5 +1,6 @@
 "use client";
 
+import { Activity } from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -9,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+
 import {
   Card,
   CardContent,
@@ -16,7 +18,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Activity } from "lucide-react";
 import type { UptimeData } from "@/lib/shared/types";
 
 interface ConnectionUptimeChartProps {

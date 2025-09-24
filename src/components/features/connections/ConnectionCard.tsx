@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+
 import {
   MoreVertical,
   ExternalLink,
@@ -9,9 +10,12 @@ import {
   Power,
   PowerOff,
 } from "lucide-react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
+import { updateConnection, deleteConnection } from "@/actions";
+import { ConfirmationDialog } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,24 +23,21 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Button } from "@/components/ui/button";
-import { ConfirmationDialog } from "@/components/shared";
-import { updateConnection, deleteConnection } from "@/actions";
-import { formatTime } from "@/lib/shared/utils/utils";
+import { Progress } from "@/components/ui/progress";
+import type { SerializedConnectionWithHealthChecks } from "@/lib/core/serializers";
+import type { CheckResultWithDetails } from "@/lib/core/types";
+import { useAsyncAction, useConfirmationDialog } from "@/lib/shared/hooks";
 import {
   getProviderColor,
   getActiveStatusColor,
   getStatusIcon,
   getStatusColor,
 } from "@/lib/shared/utils";
-import { useAsyncAction, useConfirmationDialog } from "@/lib/shared/hooks";
 import {
   getSuccessRate,
   getAverageResponseTime,
 } from "@/lib/shared/utils/check-result-utils";
-
-import type { SerializedConnectionWithHealthChecks } from "@/lib/core/serializers";
-import type { CheckResultWithDetails } from "@/lib/core/types";
+import { formatTime } from "@/lib/shared/utils/utils";
 
 export default function ConnectionCard({
   connection,

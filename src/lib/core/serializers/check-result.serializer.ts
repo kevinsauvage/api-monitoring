@@ -1,12 +1,13 @@
-import type { CheckResult } from "@prisma/client";
-import {
-  serializeMetadata,
-  serializeTimestamp,
-} from "@/lib/core/utils/serializer-utils";
 import type {
   CheckResultWithDetails,
   SerializedCheckResult,
 } from "@/lib/core/types";
+import {
+  serializeMetadata,
+  serializeTimestamp,
+} from "@/lib/core/utils/serializer-utils";
+
+import type { CheckResult } from "@prisma/client";
 
 export interface SerializedCheckResultWithDetails
   extends SerializedCheckResult {

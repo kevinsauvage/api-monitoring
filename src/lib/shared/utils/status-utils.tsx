@@ -1,6 +1,7 @@
 import React from "react";
+
 import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
-import type { CheckStatus } from "@prisma/client";
+
 import {
   STATUS_COLORS,
   STATUS_COLORS_EXTENDED,
@@ -12,6 +13,8 @@ import {
   RESPONSE_TIME_THRESHOLDS,
   UPTIME_THRESHOLDS,
 } from "../constants";
+
+import type { CheckStatus } from "@prisma/client";
 
 export function getStatusColor(
   status: CheckStatus | string | undefined

@@ -1,6 +1,8 @@
-import type { User, Subscription, Prisma } from "@prisma/client";
-import { BaseRepository } from "./base.repository";
 import type { PaginationInfo } from "@/lib/core/types";
+
+import { BaseRepository } from "./base.repository";
+
+import type { User, Subscription, Prisma } from "@prisma/client";
 
 export class UserRepository extends BaseRepository {
   async findById(id: string): Promise<User | null> {

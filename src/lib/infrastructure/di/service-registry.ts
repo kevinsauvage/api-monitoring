@@ -1,20 +1,7 @@
+import { UserRepository , ConnectionRepository , HealthCheckRepository , CheckResultRepository , MonitoringRepository , CostMetricRepository , UserPreferencesRepository , NotificationSettingsRepository } from "@/lib/core/repositories";
+import { ConnectionService , HealthCheckService , DashboardService , MonitoringService , CronService , CostTrackingService , CostMetricService , SettingsService } from "@/lib/core/services";
+
 import { container, SERVICE_IDENTIFIERS } from "./index";
-import { UserRepository } from "@/lib/core/repositories";
-import { ConnectionRepository } from "@/lib/core/repositories";
-import { HealthCheckRepository } from "@/lib/core/repositories";
-import { CheckResultRepository } from "@/lib/core/repositories";
-import { MonitoringRepository } from "@/lib/core/repositories";
-import { CostMetricRepository } from "@/lib/core/repositories";
-import { UserPreferencesRepository } from "@/lib/core/repositories";
-import { NotificationSettingsRepository } from "@/lib/core/repositories";
-import { ConnectionService } from "@/lib/core/services";
-import { HealthCheckService } from "@/lib/core/services";
-import { DashboardService } from "@/lib/core/services";
-import { MonitoringService } from "@/lib/core/services";
-import { CronService } from "@/lib/core/services";
-import { CostTrackingService } from "@/lib/core/services";
-import { CostMetricService } from "@/lib/core/services";
-import { SettingsService } from "@/lib/core/services";
 
 /**
  * Register all repositories as singletons

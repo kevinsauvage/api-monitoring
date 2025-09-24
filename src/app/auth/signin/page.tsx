@@ -1,11 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { signIn } from "next-auth/react";
-import { log } from "@/lib/shared/utils/logger";
-import { useRouter } from "next/navigation";
+
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+
 import { Zap, Eye, EyeOff } from "lucide-react";
+import { signIn } from "next-auth/react";
+
+import { log } from "@/lib/shared/utils/logger";
+
 
 export default function SignIn() {
   const [email, setEmail] = useState("");

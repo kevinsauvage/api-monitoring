@@ -1,5 +1,6 @@
-import type { UserPreferences, Prisma } from "@prisma/client";
 import { BaseRepository } from "./base.repository";
+
+import type { UserPreferences, Prisma } from "@prisma/client";
 
 export class UserPreferencesRepository extends BaseRepository {
   async findByUserId(userId: string): Promise<UserPreferences | null> {

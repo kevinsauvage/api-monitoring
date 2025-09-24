@@ -1,6 +1,8 @@
-import { BaseRepository } from "./base.repository";
-import type { CostMetric, Prisma } from "@prisma/client";
 import { Decimal } from "@prisma/client/runtime/library";
+
+import { BaseRepository } from "./base.repository";
+
+import type { CostMetric, Prisma } from "@prisma/client";
 
 export class CostMetricRepository extends BaseRepository {
   async create(data: Prisma.CostMetricCreateInput): Promise<CostMetric> {

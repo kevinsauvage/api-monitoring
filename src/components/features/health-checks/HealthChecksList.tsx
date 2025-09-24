@@ -1,7 +1,10 @@
 "use client";
 
 import { useState } from "react";
+
 import { Plus, Search, Filter, Grid, List, X } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -12,10 +15,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
-import HealthCheckCard from "./HealthCheckCard";
 import type { HealthCheckWithResults } from "@/lib/core/types";
+
+import HealthCheckCard from "./HealthCheckCard";
 
 export default function HealthChecksList({
   healthChecks,

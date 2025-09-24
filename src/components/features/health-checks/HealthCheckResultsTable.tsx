@@ -1,8 +1,22 @@
 "use client";
 
 import { useState, useMemo, useEffect, useCallback } from "react";
+
 import { useRouter, useSearchParams, usePathname } from "next/navigation";
-import { ArrowUpDown, Filter, Search } from "lucide-react";
+
+import { ArrowUpDown, Filter, Search , Clock } from "lucide-react";
+
+import { StatusBadge, MethodBadge } from "@/components/shared";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import {
   Table,
   TableBody,
@@ -11,21 +25,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Clock } from "lucide-react";
-import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
-import { StatusBadge, MethodBadge } from "@/components/shared";
-import { getStatusIcon } from "@/lib/shared/utils";
 import type { SerializedCheckResultWithDetails } from "@/lib/core/serializers";
+import { getStatusIcon } from "@/lib/shared/utils";
+import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
 
 export type SortField = "timestamp" | "status" | "responseTime" | "statusCode";
 export type SortDirection = "asc" | "desc";

@@ -1,7 +1,8 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/infrastructure/auth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
+import { getServerSession } from "next-auth";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { authOptions } from "@/lib/infrastructure/auth";
 
 export const revalidate = 120; // 2 minutes
 

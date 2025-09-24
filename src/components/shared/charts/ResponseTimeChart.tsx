@@ -1,6 +1,6 @@
 "use client";
 
-import { formatTimeForChart } from "@/lib/shared/utils/utils";
+import { TrendingUp, TrendingDown } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -10,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+
 import {
   Card,
   CardContent,
@@ -17,8 +18,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TrendingUp, TrendingDown } from "lucide-react";
 import type { SerializedCheckResultWithDetails } from "@/lib/core/serializers";
+import { formatTimeForChart } from "@/lib/shared/utils/utils";
 
 export default function ResponseTimeChart({
   data,

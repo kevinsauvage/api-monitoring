@@ -1,9 +1,11 @@
-import type { HealthCheck, Prisma } from "@prisma/client";
-import { BaseRepository } from "./base.repository";
 import type {
   HealthCheckWithConnection,
   PaginationInfo,
 } from "@/lib/core/types";
+
+import { BaseRepository } from "./base.repository";
+
+import type { HealthCheck, Prisma } from "@prisma/client";
 
 export class HealthCheckRepository extends BaseRepository {
   async findByConnectionId(connectionId: string): Promise<HealthCheck[]> {

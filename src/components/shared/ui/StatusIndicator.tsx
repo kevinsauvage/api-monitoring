@@ -3,8 +3,11 @@
  */
 
 import React from "react";
+
 import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
+
 import { ColorUtils } from "@/lib/shared/utils/color-utils";
+
 import type { CheckStatus } from "@prisma/client";
 
 interface StatusIndicatorProps {

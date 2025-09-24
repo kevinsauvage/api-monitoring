@@ -1,5 +1,7 @@
 "use client";
 
+import { Sparkles } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -8,7 +10,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { Sparkles } from "lucide-react";
 import { API_PROVIDERS } from "@/components/utils/constants";
 
 export default function ProviderSelection({

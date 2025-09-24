@@ -1,12 +1,13 @@
-import {
-  serializeEntityTimestamps,
-  serializeTimestamp,
-} from "@/lib/core/utils/serializer-utils";
-import type { ApiConnection } from "@prisma/client";
 import type {
   SerializedApiConnection,
   CheckResultWithDetails,
 } from "@/lib/core/types";
+import {
+  serializeEntityTimestamps,
+  serializeTimestamp,
+} from "@/lib/core/utils/serializer-utils";
+
+import type { ApiConnection } from "@prisma/client";
 
 export interface SerializedConnectionWithHealthChecks
   extends SerializedApiConnection {

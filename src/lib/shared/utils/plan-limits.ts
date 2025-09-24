@@ -1,5 +1,5 @@
-import type { Subscription } from "@prisma/client";
 import type { PlanLimits } from "../types";
+import type { Subscription } from "@prisma/client";
 
 export const PLAN_LIMITS: Record<Subscription, PlanLimits> = {
   HOBBY: {

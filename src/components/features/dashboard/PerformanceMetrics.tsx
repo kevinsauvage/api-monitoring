@@ -1,8 +1,9 @@
 "use client";
 
+import { Clock, CheckCircle, Activity, Target } from "lucide-react";
+
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
-import { Clock, CheckCircle, Activity, Target } from "lucide-react";
 
 export default function PerformanceMetrics({
   averageResponseTime,

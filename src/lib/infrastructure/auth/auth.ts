@@ -1,12 +1,14 @@
-import type { NextAuthOptions } from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import CredentialsProvider from "next-auth/providers/credentials";
-import GoogleProvider from "next-auth/providers/google";
-import GitHubProvider from "next-auth/providers/github";
 import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/infrastructure/database";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GitHubProvider from "next-auth/providers/github";
+import GoogleProvider from "next-auth/providers/google";
+
 import { UserRepository } from "@/lib/core/repositories";
+import { prisma } from "@/lib/infrastructure/database";
 import { log } from "@/lib/shared/utils/logger";
+
+import type { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),

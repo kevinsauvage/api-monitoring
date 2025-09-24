@@ -1,8 +1,10 @@
-import { authOptions } from "@/lib/infrastructure/auth";
-import { getServerSession } from "next-auth";
 import { redirect } from "next/navigation";
-import CostAnalyticsDashboard from "@/components/features/cost/CostAnalyticsDashboard";
+
+import { getServerSession } from "next-auth";
+
 import { getCostAnalytics, getCostMetrics } from "@/actions";
+import CostAnalyticsDashboard from "@/components/features/cost/CostAnalyticsDashboard";
+import { authOptions } from "@/lib/infrastructure/auth";
 
 export const revalidate = 300; // 5 minutes
 

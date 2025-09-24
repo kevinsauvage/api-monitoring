@@ -1,5 +1,6 @@
-import type { User, Subscription } from "@prisma/client";
 import type { SerializedUser } from "@/lib/core/types";
+
+import type { User, Subscription } from "@prisma/client";
 
 export function serializeUser(user: User): SerializedUser {
   return {

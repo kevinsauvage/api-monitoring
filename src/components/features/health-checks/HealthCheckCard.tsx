@@ -1,10 +1,12 @@
 "use client";
 
 import { Activity, Zap, MoreVertical, Trash2 } from "lucide-react";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+
+import { deleteHealthCheck, triggerHealthCheck } from "@/actions";
+import { ConfirmationDialog, MethodBadge } from "@/components/shared";
 import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,18 +14,15 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-
-import { ConfirmationDialog, MethodBadge } from "@/components/shared";
-import { deleteHealthCheck, triggerHealthCheck } from "@/actions";
-import { formatTime } from "@/lib/shared/utils/utils";
+import { Progress } from "@/components/ui/progress";
+import type { HealthCheckWithResults } from "@/lib/core/types";
+import { useAsyncAction, useConfirmationDialog } from "@/lib/shared/hooks";
 import {
   getStatusColor,
   getStatusIcon,
   getActiveStatusColor,
 } from "@/lib/shared/utils";
-import { useAsyncAction, useConfirmationDialog } from "@/lib/shared/hooks";
-
-import type { HealthCheckWithResults } from "@/lib/core/types";
+import { formatTime } from "@/lib/shared/utils/utils";
 
 export default function HealthCheckCard({
   healthCheck,

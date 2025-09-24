@@ -1,14 +1,17 @@
 "use client";
 
+import { TrendingUp, PieChart, BarChart3, Calendar } from "lucide-react";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TrendingUp, PieChart, BarChart3, Calendar } from "lucide-react";
-import CostTrendChart from "./CostTrendChart";
-import CostByProviderChart from "./CostByProviderChart";
+
 import CostByPeriodChart from "./CostByPeriodChart";
-import RecentCostMetrics from "./RecentCostMetrics";
-import CostTrackingButton from "./CostTrackingButton";
+import CostByProviderChart from "./CostByProviderChart";
 import CostSummaryCards from "./CostSummaryCards";
+import CostTrackingButton from "./CostTrackingButton";
+import CostTrendChart from "./CostTrendChart";
+import RecentCostMetrics from "./RecentCostMetrics";
+
 import type { JsonValue } from "@prisma/client/runtime/library";
 
 interface CostAnalyticsDashboardProps {

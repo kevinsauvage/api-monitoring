@@ -1,6 +1,8 @@
-import type { HealthCheck, Prisma } from "@prisma/client";
-import { BaseRepository } from "./base.repository";
 import type { Stats } from "@/lib/core/types";
+
+import { BaseRepository } from "./base.repository";
+
+import type { HealthCheck, Prisma } from "@prisma/client";
 
 export class MonitoringRepository extends BaseRepository {
   async getHealthChecksWithStats(

@@ -1,5 +1,7 @@
 import React from "react";
+
 import { Star, Zap, Crown } from "lucide-react";
+
 import type { Subscription } from "@prisma/client";
 
 export function getPlanIcon(plan: Subscription) {

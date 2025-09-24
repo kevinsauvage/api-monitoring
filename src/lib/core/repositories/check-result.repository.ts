@@ -1,6 +1,8 @@
-import type { CheckResult, Prisma } from "@prisma/client";
-import { BaseRepository } from "./base.repository";
 import type { CheckResultWithDetails, PaginationInfo } from "@/lib/core/types";
+
+import { BaseRepository } from "./base.repository";
+
+import type { CheckResult, Prisma } from "@prisma/client";
 
 export class CheckResultRepository extends BaseRepository {
   async findByUserIdWithDetails(

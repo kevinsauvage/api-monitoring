@@ -1,10 +1,12 @@
-import type { AxiosRequestConfig, AxiosResponse } from "axios";
 import axios from "axios";
+
+import type { ConnectionWithCredentials } from "@/lib/core/types";
+import type { HealthCheckConfig } from "@/lib/shared/types";
 import { getAuthHeaders } from "@/lib/shared/utils/api-validation";
 import { log } from "@/lib/shared/utils/logger";
-import type { HealthCheckConfig } from "@/lib/shared/types";
+
 import type { CheckResult } from "@prisma/client";
-import type { ConnectionWithCredentials } from "@/lib/core/types";
+import type { AxiosRequestConfig, AxiosResponse } from "axios";
 export class HealthCheckExecutor {
   async executeHealthCheck(
     config: HealthCheckConfig,

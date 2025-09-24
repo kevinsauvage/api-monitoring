@@ -4,6 +4,7 @@ import {
   getStatusColorExtended,
   getStatusIcon,
 } from "@/lib/shared/utils/status-utils";
+
 import type { CheckStatus } from "@prisma/client";
 
 export function StatusBadge({

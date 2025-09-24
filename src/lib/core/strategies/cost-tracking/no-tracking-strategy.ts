@@ -1,5 +1,6 @@
-import { BaseCostTrackingStrategy, getCurrentPeriod } from "./base-strategy";
 import type { CostTrackingResult } from "@/lib/shared/types/api-results";
+
+import { BaseCostTrackingStrategy, getCurrentPeriod } from "./base-strategy";
 
 export class NoCostTrackingStrategy extends BaseCostTrackingStrategy {
   constructor(private readonly provider: string) {

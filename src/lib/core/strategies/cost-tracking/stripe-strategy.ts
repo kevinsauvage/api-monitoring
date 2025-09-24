@@ -3,8 +3,10 @@
  */
 
 import axios from "axios";
-import { BaseCostTrackingStrategy, getCurrentPeriod } from "./base-strategy";
+
 import type { CostTrackingResult } from "@/lib/shared/types/api-results";
+
+import { BaseCostTrackingStrategy, getCurrentPeriod } from "./base-strategy";
 
 export class StripeCostTrackingStrategy extends BaseCostTrackingStrategy {
   async trackCosts(

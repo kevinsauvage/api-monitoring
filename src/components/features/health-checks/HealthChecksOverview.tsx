@@ -1,10 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { toast } from "sonner";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Progress } from "@/components/ui/progress";
-import { Button } from "@/components/ui/button";
+
 import {
   Activity,
   CheckCircle,
@@ -14,9 +11,14 @@ import {
   Zap,
   TrendingUp,
 } from "lucide-react";
+import { toast } from "sonner";
+
 import { triggerHealthCheck } from "@/actions";
-import { log } from "@/lib/shared/utils";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
 import type { HealthCheckWithResults } from "@/lib/core/types";
+import { log } from "@/lib/shared/utils";
 
 export default function HealthChecksOverview({
   healthChecks,

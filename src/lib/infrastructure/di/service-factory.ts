@@ -1,13 +1,9 @@
-import { container, SERVICE_IDENTIFIERS } from "./index";
-import { initializeDI } from "./init";
-import type { ConnectionService } from "@/lib/core/services";
-import type { HealthCheckService } from "@/lib/core/services";
-import type { DashboardService } from "@/lib/core/services";
-import type { MonitoringService } from "@/lib/core/services";
-import type { CronService } from "@/lib/core/services";
-import type { CostTrackingService } from "@/lib/core/services";
-import type { SettingsService } from "@/lib/core/services";
 import type { CheckResultRepository } from "@/lib/core/repositories";
+import type { ConnectionService , HealthCheckService , DashboardService , MonitoringService , CronService , CostTrackingService , SettingsService } from "@/lib/core/services";
+
+import { initializeDI } from "./init";
+
+import { container, SERVICE_IDENTIFIERS } from "./index";
 
 initializeDI();
 

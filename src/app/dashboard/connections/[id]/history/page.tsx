@@ -1,12 +1,15 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { notFound } from "next/navigation";
+
 import { History } from "lucide-react";
+
+import HealthCheckResultsTable from "@/components/features/health-checks/HealthCheckResultsTable";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 import {
   getConnectionService,
   getHealthCheckService,
 } from "@/lib/infrastructure/di";
-import HealthCheckResultsTable from "@/components/features/health-checks/HealthCheckResultsTable";
-import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
-import { notFound } from "next/navigation";
+
 
 export const revalidate = 300; // 5 minutes
 

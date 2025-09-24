@@ -1,9 +1,11 @@
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/infrastructure/auth";
-import type { Subscription } from "@prisma/client";
+
+import NewConnectionClient from "@/components/features/connections/NewConnectionClient";
 import NewConnectionHeader from "@/components/features/connections/NewConnectionHeader";
 import PlanLimitsCard from "@/components/features/connections/PlanLimitsCard";
-import NewConnectionClient from "@/components/features/connections/NewConnectionClient";
+import { authOptions } from "@/lib/infrastructure/auth";
+
+import type { Subscription } from "@prisma/client";
 
 export const revalidate = 600; // 10 minutes
 

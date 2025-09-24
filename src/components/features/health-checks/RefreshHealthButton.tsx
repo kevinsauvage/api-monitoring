@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+
 import { RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
-import { log } from "@/lib/shared/utils/logger";
+
 import { refreshHealthData } from "@/actions";
+import { Button } from "@/components/ui/button";
+import { log } from "@/lib/shared/utils/logger";
 
 export default function RefreshHealthButton() {
   const [loading, setLoading] = useState(false);

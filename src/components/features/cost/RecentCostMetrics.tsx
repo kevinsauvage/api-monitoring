@@ -1,5 +1,7 @@
 "use client";
 
+import { formatDistanceToNow } from "date-fns";
+
 import { Badge } from "@/components/ui/badge";
 import {
   Table,
@@ -9,8 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+
 import type { JsonValue } from "@prisma/client/runtime/library";
-import { formatDistanceToNow } from "date-fns";
 
 interface RecentCostMetricsProps {
   costMetrics: Array<{

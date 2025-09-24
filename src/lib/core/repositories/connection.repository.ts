@@ -1,6 +1,8 @@
-import type { ApiConnection, Prisma } from "@prisma/client";
-import { BaseRepository } from "./base.repository";
 import type { ConnectionWithHealthChecks } from "@/lib/core/types";
+
+import { BaseRepository } from "./base.repository";
+
+import type { ApiConnection, Prisma } from "@prisma/client";
 
 export class ConnectionRepository extends BaseRepository {
   async findByUserIdWithHealthChecks(

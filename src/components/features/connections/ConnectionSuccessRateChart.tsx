@@ -1,6 +1,13 @@
 "use client";
 
 import {
+  CheckCircle,
+  XCircle,
+  Clock,
+  AlertTriangle,
+  Target,
+} from "lucide-react";
+import {
   PieChart,
   Pie,
   Cell,
@@ -8,6 +15,7 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
+
 import {
   Card,
   CardContent,
@@ -15,13 +23,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  CheckCircle,
-  XCircle,
-  Clock,
-  AlertTriangle,
-  Target,
-} from "lucide-react";
 
 interface StatusData {
   status: "SUCCESS" | "FAILURE" | "TIMEOUT" | "ERROR";

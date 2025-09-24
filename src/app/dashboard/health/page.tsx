@@ -1,7 +1,3 @@
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/infrastructure/auth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Activity,
   Heart,
@@ -10,10 +6,15 @@ import {
   Clock,
   TrendingUp,
 } from "lucide-react";
+import { getServerSession } from "next-auth";
+
 import HealthCheckResultsTable from "@/components/features/health-checks/HealthCheckResultsTable";
 import RefreshHealthButton from "@/components/features/health-checks/RefreshHealthButton";
-import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckResultRepository } from "@/lib/core/repositories";
+import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
+import { authOptions } from "@/lib/infrastructure/auth";
 
 export const revalidate = 180; // 3 minutes
 

@@ -1,11 +1,14 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import HealthCheckResultsTable from "@/components/features/health-checks/HealthCheckResultsTable";
+import { notFound } from "next/navigation";
+
+import ConnectionDetailsCard from "@/components/features/connections/ConnectionDetailsCard";
 import ConnectionHeader from "@/components/features/connections/ConnectionHeader";
 import ConnectionMetrics from "@/components/features/connections/ConnectionMetrics";
 import ConnectionResponseTimeChart from "@/components/features/connections/ConnectionResponseTimeChart";
 import ConnectionSuccessRateChart from "@/components/features/connections/ConnectionSuccessRateChart";
 import ConnectionUptimeChart from "@/components/features/connections/ConnectionUptimeChart";
-import ConnectionDetailsCard from "@/components/features/connections/ConnectionDetailsCard";
+import HealthCheckResultsTable from "@/components/features/health-checks/HealthCheckResultsTable";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 import {
   getConnectionService,
   getCheckResultRepository,
@@ -15,8 +18,7 @@ import {
   getStatusData,
   getUptimeData,
 } from "@/lib/shared/utils/check-result-utils";
-import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
-import { notFound } from "next/navigation";
+
 
 export const revalidate = 300; // 5 minutes
 

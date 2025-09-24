@@ -1,9 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useSession, signOut } from "next-auth/react";
-import { log } from "@/lib/shared/utils/logger";
+
 import { Zap, User, LogOut, BarChart3 } from "lucide-react";
+import { useSession, signOut } from "next-auth/react";
+
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { log } from "@/lib/shared/utils/logger";
 
 export default function Navigation() {
   const { data: session, status } = useSession();

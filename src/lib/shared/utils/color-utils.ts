@@ -3,7 +3,6 @@
  * Replaces scattered color functions with a unified approach
  */
 
-import type { CheckStatus } from "@prisma/client";
 import {
   STATUS_COLORS,
   STATUS_COLORS_EXTENDED,
@@ -15,6 +14,8 @@ import {
   RESPONSE_TIME_THRESHOLDS,
   UPTIME_THRESHOLDS,
 } from "../constants";
+
+import type { CheckStatus } from "@prisma/client";
 
 export class ColorUtils {
   /**

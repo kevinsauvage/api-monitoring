@@ -1,6 +1,6 @@
 "use client";
 
-import { formatTimeForChart } from "@/lib/shared/utils/utils";
+import { TrendingUp, TrendingDown, Clock } from "lucide-react";
 import {
   LineChart,
   Line,
@@ -10,6 +10,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+
 import {
   Card,
   CardContent,
@@ -17,7 +18,8 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { TrendingUp, TrendingDown, Clock } from "lucide-react";
+import { formatTimeForChart } from "@/lib/shared/utils/utils";
+
 
 export default function ConnectionResponseTimeChart({
   data,

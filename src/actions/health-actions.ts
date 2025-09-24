@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+
 import { getHealthCheckService } from "@/lib/infrastructure/di";
 import { healthCheckSchemas } from "@/lib/shared/schemas";
 import {
@@ -8,6 +9,7 @@ import {
   createDeleteAction,
   createUpdateAction,
 } from "@/lib/shared/utils/action-factory";
+
 import type { Prisma } from "@prisma/client";
 
 const healthCheckService = getHealthCheckService();

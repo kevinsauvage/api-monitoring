@@ -1,9 +1,13 @@
 "use client";
 
 import { useState } from "react";
+
 import { useRouter } from "next/navigation";
+
 import { Trash2, Play, Pause } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
+import { updateConnection, deleteConnection } from "@/actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -14,9 +18,9 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import { log } from "@/lib/shared/utils/logger";
-import { updateConnection, deleteConnection } from "@/actions";
+
 import type { ApiConnection } from "@prisma/client";
 
 export default function ConnectionActions({

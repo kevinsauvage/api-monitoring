@@ -1,6 +1,5 @@
-import type { Session } from "next-auth";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/infrastructure/auth";
+
 import HealthLayoutHeader from "@/components/features/health-checks/HealthLayoutHeader";
 import HealthMetricsCards from "@/components/features/health-checks/HealthMetricsCards";
 import HealthNavigation from "@/components/features/health-checks/HealthNavigation";
@@ -9,6 +8,9 @@ import {
   HealthCheckRepository,
   MonitoringRepository,
 } from "@/lib/core/repositories";
+import { authOptions } from "@/lib/infrastructure/auth";
+
+import type { Session } from "next-auth";
 
 export default async function HealthLayout({
   children,

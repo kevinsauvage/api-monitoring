@@ -1,8 +1,15 @@
 "use client";
 
 import { useState } from "react";
+
 import { Play, Pause, Trash2 } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+
+import {
+  deleteHealthCheck,
+  updateHealthCheck,
+  triggerHealthCheck,
+} from "@/actions";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,12 +20,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { toast } from "sonner";
-import {
-  deleteHealthCheck,
-  updateHealthCheck,
-  triggerHealthCheck,
-} from "@/actions";
+import { Button } from "@/components/ui/button";
 import { log } from "@/lib/shared/utils/logger";
 
 export default function HealthCheckActions({

@@ -1,5 +1,3 @@
-import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Activity,
   CheckCircle,
@@ -7,6 +5,9 @@ import {
   AlertTriangle,
   TrendingUp,
 } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function HealthMetricsCards({
   totalHealthChecks,

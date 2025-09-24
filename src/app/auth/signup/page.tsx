@@ -1,9 +1,12 @@
 "use client";
 
 import { useState, useActionState } from "react";
-import { signIn } from "next-auth/react";
+
 import Link from "next/link";
+
 import { Zap, Eye, EyeOff, AlertTriangle } from "lucide-react";
+import { signIn } from "next-auth/react";
+
 import { registerUser } from "@/actions";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 

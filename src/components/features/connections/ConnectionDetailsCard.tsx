@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { formatTimestamp } from "@/lib/shared/utils/utils";
+
 import type { ApiConnection } from "@prisma/client";
 
 export default function ConnectionDetailsCard({

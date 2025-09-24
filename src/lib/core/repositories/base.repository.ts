@@ -1,7 +1,8 @@
-import type { PrismaClient } from "@prisma/client";
 import { prisma } from "@/lib/infrastructure/database";
 import { DatabaseError } from "@/lib/shared/errors";
 import { log } from "@/lib/shared/utils/logger";
+
+import type { PrismaClient } from "@prisma/client";
 
 export abstract class BaseRepository {
   protected readonly prisma: PrismaClient;

@@ -1,6 +1,7 @@
-import { getConnectionService } from "@/lib/infrastructure/di";
-import CreateHealthCheckForm from "@/components/features/health-checks/CreateHealthCheckForm";
 import { notFound } from "next/navigation";
+
+import CreateHealthCheckForm from "@/components/features/health-checks/CreateHealthCheckForm";
+import { getConnectionService } from "@/lib/infrastructure/di";
 
 export const revalidate = 600; // 10 minutes
 

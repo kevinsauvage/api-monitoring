@@ -1,11 +1,11 @@
 import ConnectionsHeader from "@/components/features/connections/ConnectionsHeader";
-import ConnectionsOverview from "@/components/features/connections/ConnectionsOverview";
 import ConnectionsList from "@/components/features/connections/ConnectionsList";
+import ConnectionsOverview from "@/components/features/connections/ConnectionsOverview";
+import { serializeConnectionWithHealthChecksAndResults } from "@/lib/core/serializers";
 import {
   getConnectionService,
   getCheckResultRepository,
 } from "@/lib/infrastructure/di";
-import { serializeConnectionWithHealthChecksAndResults } from "@/lib/core/serializers";
 
 export const revalidate = 600; // 10 minutes
 

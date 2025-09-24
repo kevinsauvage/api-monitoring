@@ -1,5 +1,6 @@
-import type { ApiConnection } from "@prisma/client";
 import ConnectionActions from "./ConnectionActions";
+
+import type { ApiConnection } from "@prisma/client";
 
 export default function ConnectionHeader({
   connection,

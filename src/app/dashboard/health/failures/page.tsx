@@ -1,11 +1,13 @@
-import type { Session } from "next-auth";
-import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/infrastructure/auth";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
-import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
+import { getServerSession } from "next-auth";
+
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckResultRepository } from "@/lib/core/repositories";
+import { authOptions } from "@/lib/infrastructure/auth";
+import { formatTimestamp, formatResponseTime } from "@/lib/shared/utils/utils";
+
+import type { Session } from "next-auth";
 
 export const revalidate = 120; // 2 minutes
 

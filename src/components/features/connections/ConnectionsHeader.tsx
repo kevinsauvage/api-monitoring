@@ -1,9 +1,12 @@
 import Link from "next/link";
+
 import { Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { getPlanIcon, getPlanColor } from "@/components/utils/planUtils";
 import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
+
 import type { Subscription } from "@prisma/client";
 
 export default function ConnectionsHeader({

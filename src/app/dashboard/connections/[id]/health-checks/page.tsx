@@ -1,11 +1,13 @@
+import { notFound } from "next/navigation";
+
+import HealthChecksHeader from "@/components/features/health-checks/HealthChecksHeader";
+import HealthChecksList from "@/components/features/health-checks/HealthChecksList";
+import HealthChecksOverview from "@/components/features/health-checks/HealthChecksOverview";
 import {
   getConnectionService,
   getHealthCheckService,
 } from "@/lib/infrastructure/di";
-import HealthChecksHeader from "@/components/features/health-checks/HealthChecksHeader";
-import HealthChecksOverview from "@/components/features/health-checks/HealthChecksOverview";
-import HealthChecksList from "@/components/features/health-checks/HealthChecksList";
-import { notFound } from "next/navigation";
+
 
 export const revalidate = 300; // 5 minutes
 

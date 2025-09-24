@@ -1,8 +1,12 @@
 "use client";
 
 import { useState } from "react";
+
 import Link from "next/link";
+
 import { Plus, Search, Filter, Grid, List } from "lucide-react";
+
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -13,11 +17,10 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
-import ConnectionCard from "./ConnectionCard";
-
 import type { SerializedConnectionWithHealthChecks } from "@/lib/core/serializers";
 import type { CheckResultWithDetails } from "@/lib/core/types";
+
+import ConnectionCard from "./ConnectionCard";
 
 export default function ConnectionsList({
   connections,

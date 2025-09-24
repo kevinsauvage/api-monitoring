@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import {
   User,
   Bell,
@@ -10,6 +10,8 @@ import {
   CreditCard,
   Settings as SettingsIcon,
 } from "lucide-react";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const settingsSections = [
   {

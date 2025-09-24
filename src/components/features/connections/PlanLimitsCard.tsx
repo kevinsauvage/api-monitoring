@@ -1,5 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Info, Globe, Shield, Settings } from "lucide-react";
+
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
 import type { Subscription } from "@prisma/client";
 
 interface PlanLimitsCardProps {
