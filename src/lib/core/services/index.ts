@@ -4,7 +4,5 @@ export { HealthCheckService } from "./health-check.service";
 export { DashboardService } from "./dashboard.service";
 export { MonitoringService } from "./monitoring.service";
 export { CronService } from "./cron.service";
-export { CostTrackingService } from "./cost-tracking-strategy.service";
-export { CostMetricService } from "./cost-metric.service";
 export { SettingsService } from "./settings.service";
 export { BillingService } from "./billing.service";

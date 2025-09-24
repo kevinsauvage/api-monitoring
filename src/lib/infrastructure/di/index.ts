@@ -14,6 +14,6 @@ export {
   getMonitoringService,
   getCronService,
   getCheckResultRepository,
-  getCostTrackingService,
   getSettingsService,
+  getBillingService,
 } from "./service-factory";

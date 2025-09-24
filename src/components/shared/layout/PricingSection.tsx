@@ -32,7 +32,6 @@ export default function PricingSection() {
         "1-minute monitoring intervals",
         "30-day data retention",
         "Slack + email alerts",
-        "Cost analytics",
       ],
       buttonText: "Start Free Trial",
       buttonStyle: "bg-primary text-primary-foreground hover:bg-primary/90",

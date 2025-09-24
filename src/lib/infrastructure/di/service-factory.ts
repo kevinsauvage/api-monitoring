@@ -5,8 +5,8 @@ import type {
   DashboardService,
   MonitoringService,
   CronService,
-  CostTrackingService,
   SettingsService,
+  BillingService,
 } from "@/lib/core/services";
 
 import { container } from "./container";
@@ -63,16 +63,14 @@ export function getCheckResultRepository(): CheckResultRepository {
   );
 }
 
-export function getCostTrackingService(): CostTrackingService {
-  ensureInitialized();
-  return container.resolve<CostTrackingService>(
-    SERVICE_IDENTIFIERS.COST_TRACKING_SERVICE
-  );
-}
-
 export function getSettingsService(): SettingsService {
   ensureInitialized();
   return container.resolve<SettingsService>(
     SERVICE_IDENTIFIERS.SETTINGS_SERVICE
   );
+}
+
+export function getBillingService(): BillingService {
+  ensureInitialized();
+  return container.resolve<BillingService>(SERVICE_IDENTIFIERS.BILLING_SERVICE);
 }

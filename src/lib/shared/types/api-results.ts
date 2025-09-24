@@ -35,17 +35,6 @@ export interface PaginatedApiResult<T> extends ApiResult<T[]> {
   };
 }
 
-// Cost tracking specific result type
-export interface CostTrackingResult extends BaseApiResult {
-  costData?: {
-    provider: string;
-    amount: number;
-    currency: string;
-    period: string;
-    metadata?: unknown;
-  };
-}
-
 // Utility types for common patterns
 export type ServiceResult<T = unknown> = ApiResult<T>;
 export type CreateServiceResult = CreateApiResult;

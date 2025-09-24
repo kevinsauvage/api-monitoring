@@ -4,7 +4,6 @@ import {
   HealthCheckRepository,
   CheckResultRepository,
   MonitoringRepository,
-  CostMetricRepository,
   UserPreferencesRepository,
   NotificationSettingsRepository,
   BillingRepository,
@@ -15,8 +14,6 @@ import {
   DashboardService,
   MonitoringService,
   CronService,
-  CostTrackingService,
-  CostMetricService,
   SettingsService,
   BillingService,
 } from "@/lib/core/services";
@@ -51,11 +48,6 @@ export function registerRepositories(): void {
   container.registerSingleton(
     SERVICE_IDENTIFIERS.MONITORING_REPOSITORY,
     () => new MonitoringRepository()
-  );
-
-  container.registerSingleton(
-    SERVICE_IDENTIFIERS.COST_METRIC_REPOSITORY,
-    () => new CostMetricRepository()
   );
 
   container.registerSingleton(
@@ -101,16 +93,6 @@ export function registerServices(): void {
   container.registerSingleton(
     SERVICE_IDENTIFIERS.CRON_SERVICE,
     () => new CronService()
-  );
-
-  container.registerSingleton(
-    SERVICE_IDENTIFIERS.COST_TRACKING_SERVICE,
-    () => new CostTrackingService()
-  );
-
-  container.registerSingleton(
-    SERVICE_IDENTIFIERS.COST_METRIC_SERVICE,
-    () => new CostMetricService()
   );
 
   container.registerSingleton(

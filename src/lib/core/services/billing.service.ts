@@ -16,8 +16,6 @@ export class BillingService extends BaseService {
   }
 
   async getBillingData(userId: string): Promise<BillingData | null> {
-    this.validateRequiredParams({ userId }, ["userId"]);
-
     try {
       return await this.billingRepository.getBillingData(userId);
     } catch (error) {
@@ -29,8 +27,6 @@ export class BillingService extends BaseService {
     userId: string,
     limit?: number
   ): Promise<BillingHistoryItem[]> {
-    this.validateRequiredParams({ userId }, ["userId"]);
-
     try {
       return await this.billingRepository.getBillingHistory(userId, limit);
     } catch (error) {
@@ -39,8 +35,6 @@ export class BillingService extends BaseService {
   }
 
   async getPaymentMethods(userId: string): Promise<PaymentMethod[]> {
-    this.validateRequiredParams({ userId }, ["userId"]);
-
     try {
       return await this.billingRepository.getPaymentMethods(userId);
     } catch (error) {

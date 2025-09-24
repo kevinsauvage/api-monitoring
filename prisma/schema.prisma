@@ -81,7 +81,6 @@ model ApiConnection {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
   healthChecks HealthCheck[]
-  costMetrics CostMetric[]
   rateLimitMetrics RateLimitMetric[]
   alerts Alert[]
 
@@ -125,19 +124,6 @@ model CheckResult {
   @@index([healthCheckId, timestamp])
 }
 
-model CostMetric {
-  id              String   @id @default(cuid())
-  apiConnectionId String
-  amount          Decimal  @db.Decimal(10, 4)
-  currency        String   @default("USD")
-  period          String   // e.g., "2024-01", "daily", "monthly"
-  timestamp       DateTime @default(now())
-  metadata        Json?    // provider-specific cost breakdown
-
-  apiConnection ApiConnection @relation(fields: [apiConnectionId], references: [id], onDelete: Cascade)
-
-  @@index([apiConnectionId, timestamp])
-}
 
 model RateLimitMetric {
   id              String   @id @default(cuid())
@@ -205,7 +191,7 @@ enum CheckStatus {
 enum AlertType {
   ERROR_RATE
   RESPONSE_TIME
-  COST_THRESHOLD
+
   RATE_LIMIT
   UPTIME
   CUSTOM
@@ -226,10 +212,7 @@ model UserPreferences {
   timezone          String   @default("UTC")
   dateFormat        String   @default("MM/DD/YYYY")
   timeFormat        String   @default("12h") // "12h", "24h"
-  autoRefresh       Boolean  @default(true)
-  refreshInterval   Int      @default(30) // seconds
   showNotifications Boolean  @default(true)
-  compactMode       Boolean  @default(false)
   showTooltips      Boolean  @default(true)
   enableAnalytics   Boolean  @default(true)
   enableCrashReporting Boolean @default(true)
@@ -246,7 +229,6 @@ model NotificationSettings {
   pushNotifications Boolean  @default(true)
   smsNotifications  Boolean  @default(false)
   healthCheckAlerts Boolean  @default(true)
-  costAlerts        Boolean  @default(true)
   securityAlerts    Boolean  @default(true)
   frequency         String   @default("immediate") // "immediate", "hourly", "daily", "weekly"
   quietHours        Boolean  @default(false)

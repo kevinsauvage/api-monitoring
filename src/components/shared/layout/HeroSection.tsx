@@ -11,9 +11,8 @@ export default function HeroSection() {
           <span className="block text-primary">In One Place</span>
         </h1>
         <p className="text-xl text-muted-foreground mb-8 max-w-3xl mx-auto">
-          Track health, monitor costs, and get intelligent alerts for all your
-          API integrations. From Stripe to Twilio, keep everything running
-          smoothly.
+          Track health, and get intelligent alerts for all your API
+          integrations. From Stripe to Twilio, keep everything running smoothly.
         </p>
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <Link

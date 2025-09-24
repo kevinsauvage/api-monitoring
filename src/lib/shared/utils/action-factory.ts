@@ -56,8 +56,6 @@ export function createActionWithRedirect<TInput>(
       if (revalidatePaths) {
         revalidatePaths.forEach((path) => revalidatePath(path));
       }
-
-      redirect(redirectPath);
     } catch (error) {
       const result = handleActionError(error);
       return {
@@ -66,6 +64,7 @@ export function createActionWithRedirect<TInput>(
         zodError: result.zodError ?? [],
       };
     }
+    redirect(redirectPath);
   };
 }
 

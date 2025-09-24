@@ -3,7 +3,8 @@
 import { useState } from "react";
 
 import { validateConnection } from "@/actions";
-import { ProviderSelection , ConnectionForm } from "@/components/features/connections";
+import ConnectionForm from "@/components/features/connections/ConnectionForm";
+import ProviderSelection from "@/components/features/connections/ProviderSelection";
 import { API_PROVIDERS } from "@/components/utils";
 import { log } from "@/lib/shared/utils";
 

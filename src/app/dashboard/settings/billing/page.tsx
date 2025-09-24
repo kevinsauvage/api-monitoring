@@ -3,9 +3,8 @@ import { redirect } from "next/navigation";
 import { getServerSession } from "next-auth";
 
 import BillingSettings from "@/components/features/settings/BillingSettings";
-import { BillingService } from "@/lib/core/services";
 import { authOptions } from "@/lib/infrastructure/auth";
-import { registerAllServices } from "@/lib/infrastructure/di";
+import { getBillingService } from "@/lib/infrastructure/di";
 
 export default async function BillingSettingsPage() {
   const session = await getServerSession(authOptions);
@@ -14,24 +13,38 @@ export default async function BillingSettingsPage() {
     redirect("/auth/signin");
   }
 
-  // Register services
-  registerAllServices();
+  const billingService = getBillingService();
 
-  const billingService = new BillingService();
+  const user = session.user;
+  const userId = user.id;
 
-  // Fetch billing data server-side
-  const [billingData, billingHistory, paymentMethods] = await Promise.all([
-    billingService.getBillingData(session.user.id),
-    billingService.getBillingHistory(session.user.id, 10),
-    billingService.getPaymentMethods(session.user.id),
-  ]);
+  try {
+    const [billingData, billingHistory, paymentMethods] = await Promise.all([
+      billingService.getBillingData(userId),
+      billingService.getBillingHistory(userId, 10),
+      billingService.getPaymentMethods(userId),
+    ]);
 
-  return (
-    <BillingSettings
-      user={session.user}
-      billingData={billingData}
-      billingHistory={billingHistory}
-      paymentMethods={paymentMethods}
-    />
-  );
+    if (!billingData) {
+      throw new Error("Failed to load billing data");
+    }
+
+    return (
+      <BillingSettings
+        user={user}
+        billingData={billingData}
+        billingHistory={billingHistory}
+        paymentMethods={paymentMethods}
+      />
+    );
+  } catch (error) {
+    console.error("Error loading billing data:", error);
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">Failed to load billing data</p>
+        </div>
+      </div>
+    );
+  }
 }

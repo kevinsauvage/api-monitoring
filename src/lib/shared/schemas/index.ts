@@ -148,21 +148,6 @@ export const healthCheckSchemas = {
   }),
 };
 
-// Cost schemas
-export const costSchemas = {
-  analytics: z.object({
-    startDate: z.date().optional(),
-    endDate: z.date().optional(),
-  }),
-  metrics: z.object({
-    startDate: z.date().optional(),
-    endDate: z.date().optional(),
-  }),
-  trackConnection: z.object({
-    connectionId: commonSchemas.connectionId,
-  }),
-};
-
 // Settings schemas
 export const settingsSchemas = {
   updateProfile: z.object({
@@ -184,7 +169,6 @@ export const settingsSchemas = {
     pushNotifications: z.boolean(),
     smsNotifications: z.boolean(),
     healthCheckAlerts: z.boolean(),
-    costAlerts: z.boolean(),
     securityAlerts: z.boolean(),
     frequency: z.enum(["immediate", "hourly", "daily", "weekly"]),
     quietHours: z.boolean(),
@@ -197,14 +181,12 @@ export const settingsSchemas = {
     timezone: z.string(),
     dateFormat: z.string(),
     timeFormat: z.enum(["12h", "24h"]),
-    autoRefresh: z.boolean(),
-    refreshInterval: z.number().int().min(15).max(3600),
     showNotifications: z.boolean(),
-    compactMode: z.boolean(),
     showTooltips: z.boolean(),
     enableAnalytics: z.boolean(),
     enableCrashReporting: z.boolean(),
   }),
+  emptyInput: z.object({}),
 };
 
 // Export type inference helpers
@@ -218,9 +200,4 @@ export type RegistrationInput = z.infer<typeof authSchemas.registration>;
 export type HealthCheckDeleteInput = z.infer<typeof healthCheckSchemas.delete>;
 export type HealthCheckTriggerInput = z.infer<
   typeof healthCheckSchemas.trigger
->;
-export type CostAnalyticsInput = z.infer<typeof costSchemas.analytics>;
-export type CostMetricsInput = z.infer<typeof costSchemas.metrics>;
-export type CostTrackConnectionInput = z.infer<
-  typeof costSchemas.trackConnection
 >;

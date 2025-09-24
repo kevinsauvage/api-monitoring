@@ -37,5 +37,4 @@ export const API_RATE_LIMITS = {
 export const API_TIMEOUTS = {
   DEFAULT: 5000,
   HEALTH_CHECK: 30000,
-  COST_TRACKING: 10000,
 } as const;

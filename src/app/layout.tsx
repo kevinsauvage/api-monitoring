@@ -1,5 +1,3 @@
-import type { Metadata } from "next";
-
 import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
@@ -7,6 +5,8 @@ import { ThemeProvider } from "next-themes";
 
 import SessionProvider from "@/components/shared/layout/SessionProvider";
 import { Toaster } from "@/components/ui/sonner";
+
+import type { Metadata } from "next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,14 +21,8 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "API Pulse - Unified API Monitoring Platform",
   description:
-    "Monitor, track, and optimize your APIs across multiple providers. Get real-time health checks, cost monitoring, and intelligent alerts.",
-  keywords: [
-    "API monitoring",
-    "health checks",
-    "cost tracking",
-    "rate limits",
-    "alerts",
-  ],
+    "Monitor, track, and optimize your APIs across multiple providers. Get real-time health checks, and intelligent alerts.",
+  keywords: ["API monitoring", "health checks", "rate limits", "alerts"],
   authors: [{ name: "API Pulse Team" }],
   openGraph: {
     title: "API Pulse - Unified API Monitoring Platform",

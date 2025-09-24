@@ -160,20 +160,6 @@ export type HealthCheckWithConnection = Prisma.HealthCheckGetPayload<{
   };
 }>;
 
-export interface CostTrackingResult extends BaseResult {
-  costData?: {
-    provider: string;
-    amount: number;
-    currency: string;
-    period: string;
-    metadata?: unknown;
-  };
-}
-
-export interface CostTrackingStrategy {
-  trackCosts(credentials: Record<string, string>): Promise<CostTrackingResult>;
-}
-
 export interface SerializedUser {
   id: string;
   name: string | null;

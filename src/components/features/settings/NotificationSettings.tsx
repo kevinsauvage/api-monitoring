@@ -19,8 +19,6 @@ import {
 import { Separator } from "@/components/ui/separator";
 import { Switch } from "@/components/ui/switch";
 
-
-
 import type { NotificationSettings } from "@prisma/client";
 
 interface NotificationSettingsProps {
@@ -36,7 +34,6 @@ export default function NotificationSettings({
     pushNotifications: initialSettings.pushNotifications,
     smsNotifications: initialSettings.smsNotifications,
     healthCheckAlerts: initialSettings.healthCheckAlerts,
-    costAlerts: initialSettings.costAlerts,
     securityAlerts: initialSettings.securityAlerts,
     frequency: initialSettings.frequency as
       | "immediate"
@@ -176,25 +173,6 @@ export default function NotificationSettings({
                   checked={settings.healthCheckAlerts}
                   onCheckedChange={(checked) =>
                     handleSettingChange("healthCheckAlerts", checked)
-                  }
-                />
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <Bell className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <Label htmlFor="cost-alerts">Cost Alerts</Label>
-                    <p className="text-sm text-muted-foreground">
-                      Get notified about cost threshold breaches
-                    </p>
-                  </div>
-                </div>
-                <Switch
-                  id="cost-alerts"
-                  checked={settings.costAlerts}
-                  onCheckedChange={(checked) =>
-                    handleSettingChange("costAlerts", checked)
                   }
                 />
               </div>

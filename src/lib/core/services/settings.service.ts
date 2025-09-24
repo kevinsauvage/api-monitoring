@@ -78,7 +78,6 @@ export class SettingsService extends BaseService {
   ): Promise<{ success: boolean; message: string }> {
     const user = await this.requireAuth();
 
-    // Update or create user preferences
     await this.userPreferencesRepository.update(user.id, data);
 
     return { success: true, message: "Preferences updated successfully" };

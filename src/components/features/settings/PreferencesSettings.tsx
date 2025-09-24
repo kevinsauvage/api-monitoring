@@ -35,10 +35,7 @@ export default function PreferencesSettings({
     timezone: initialPreferences.timezone,
     dateFormat: initialPreferences.dateFormat,
     timeFormat: initialPreferences.timeFormat as "12h" | "24h",
-    autoRefresh: initialPreferences.autoRefresh,
-    refreshInterval: initialPreferences.refreshInterval,
     showNotifications: initialPreferences.showNotifications,
-    compactMode: initialPreferences.compactMode,
     showTooltips: initialPreferences.showTooltips,
     enableAnalytics: initialPreferences.enableAnalytics,
     enableCrashReporting: initialPreferences.enableCrashReporting,
@@ -62,7 +59,7 @@ export default function PreferencesSettings({
       } else {
         toast.error(result.message || "Failed to update preferences");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("An error occurred while updating preferences");
     } finally {
       setIsLoading(false);
@@ -81,14 +78,14 @@ export default function PreferencesSettings({
     setIsLoading(true);
 
     try {
-      const result = await clearData();
+      const result = await clearData({});
 
       if (result.success) {
         toast.success("Data cleared successfully");
       } else {
         toast.error(result.message || "Failed to clear data");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("An error occurred while clearing data");
     } finally {
       setIsLoading(false);
@@ -99,7 +96,7 @@ export default function PreferencesSettings({
     setIsLoading(true);
 
     try {
-      const result = await exportData();
+      const result = await exportData({});
 
       if (result.success) {
         toast.success(
@@ -108,7 +105,7 @@ export default function PreferencesSettings({
       } else {
         toast.error(result.message || "Failed to start data export");
       }
-    } catch (error) {
+    } catch (_error) {
       toast.error("An error occurred while exporting data");
     } finally {
       setIsLoading(false);
@@ -144,22 +141,6 @@ export default function PreferencesSettings({
                   <SelectItem value="system">System</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-
-            <div className="flex items-center justify-between">
-              <div>
-                <Label htmlFor="compact-mode">Compact Mode</Label>
-                <p className="text-sm text-muted-foreground">
-                  Use a more compact interface layout
-                </p>
-              </div>
-              <Switch
-                id="compact-mode"
-                checked={preferences.compactMode}
-                onCheckedChange={(checked) =>
-                  handlePreferenceChange("compactMode", checked)
-                }
-              />
             </div>
 
             <div className="flex items-center justify-between">
@@ -286,44 +267,6 @@ export default function PreferencesSettings({
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div>
-                <Label htmlFor="auto-refresh">Auto Refresh</Label>
-                <p className="text-sm text-muted-foreground">
-                  Automatically refresh dashboard data
-                </p>
-              </div>
-              <Switch
-                id="auto-refresh"
-                checked={preferences.autoRefresh}
-                onCheckedChange={(checked) =>
-                  handlePreferenceChange("autoRefresh", checked)
-                }
-              />
-            </div>
-
-            {preferences.autoRefresh && (
-              <div className="space-y-2">
-                <Label htmlFor="refresh-interval">Refresh Interval</Label>
-                <Select
-                  value={preferences.refreshInterval}
-                  onValueChange={(value) =>
-                    handlePreferenceChange("refreshInterval", value)
-                  }
-                >
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select interval" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="15">15 seconds</SelectItem>
-                    <SelectItem value="30">30 seconds</SelectItem>
-                    <SelectItem value="60">1 minute</SelectItem>
-                    <SelectItem value="300">5 minutes</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-            )}
-
-            <div className="flex items-center justify-between">
-              <div>
                 <Label htmlFor="enable-analytics">Usage Analytics</Label>
                 <p className="text-sm text-muted-foreground">
                   Help improve the product by sharing anonymous usage data
@@ -373,7 +316,10 @@ export default function PreferencesSettings({
                 Download a copy of all your data including connections, health
                 checks, and analytics.
               </p>
-              <Button onClick={handleExportData} disabled={isLoading}>
+              <Button
+                onClick={() => void handleExportData()}
+                disabled={isLoading}
+              >
                 <Eye className="h-4 w-4 mr-2" />
                 Export Data
               </Button>
@@ -388,7 +334,7 @@ export default function PreferencesSettings({
               </p>
               <Button
                 variant="destructive"
-                onClick={handleClearData}
+                onClick={() => void handleClearData()}
                 disabled={isLoading}
               >
                 <Trash2 className="h-4 w-4 mr-2" />
@@ -400,7 +346,10 @@ export default function PreferencesSettings({
       </Card>
 
       <div className="flex justify-end">
-        <Button onClick={handleSavePreferences} disabled={isLoading}>
+        <Button
+          onClick={() => void handleSavePreferences()}
+          disabled={isLoading}
+        >
           {isLoading ? "Saving..." : "Save Preferences"}
         </Button>
       </div>

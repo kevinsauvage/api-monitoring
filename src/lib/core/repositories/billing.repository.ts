@@ -43,11 +43,28 @@ export class BillingRepository extends BaseRepository {
         0
       );
 
+      // Calculate actual API calls from check results in the last 30 days
+      const thirtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+
+      const apiCallsCount = await this.prisma.checkResult.count({
+        where: {
+          healthCheck: {
+            apiConnection: {
+              userId: userId,
+            },
+          },
+          timestamp: {
+            gte: thirtyDaysAgo,
+          },
+        },
+      });
+
       // Calculate next billing date (30 days from creation for demo)
       const nextBillingDate = new Date(user.createdAt);
       nextBillingDate.setDate(nextBillingDate.getDate() + 30);
 
-      // Get plan pricing (mock data - in real app this would come from Stripe)
+      // Get plan pricing from actual plan limits
       const planPricing = this.getPlanPricing(user.subscription);
 
       return {
@@ -69,7 +86,7 @@ export class BillingRepository extends BaseRepository {
             limit: planLimits.maxHealthChecks,
           },
           apiCalls: {
-            current: 2400, // Mock data - would be calculated from actual usage
+            current: apiCallsCount,
             limit: -1, // Unlimited for all plans
           },
         },
@@ -79,43 +96,14 @@ export class BillingRepository extends BaseRepository {
 
   async getBillingHistory(
     userId: string,
-    limit: number = 10
+    _limit: number = 10
   ): Promise<BillingHistoryItem[]> {
     this.validateRequiredParams({ userId }, ["userId"]);
 
     return this.executeQuery(async () => {
-      // Mock billing history - in real app this would come from Stripe
-      const mockHistory: BillingHistoryItem[] = [
-        {
-          id: "inv_001",
-          date: new Date("2024-01-15"),
-          amount: 29.99,
-          currency: "USD",
-          status: "paid",
-          invoiceId: "INV-001",
-          description: "Monthly subscription",
-        },
-        {
-          id: "inv_002",
-          date: new Date("2023-12-15"),
-          amount: 29.99,
-          currency: "USD",
-          status: "paid",
-          invoiceId: "INV-002",
-          description: "Monthly subscription",
-        },
-        {
-          id: "inv_003",
-          date: new Date("2023-11-15"),
-          amount: 29.99,
-          currency: "USD",
-          status: "paid",
-          invoiceId: "INV-003",
-          description: "Monthly subscription",
-        },
-      ];
-
-      return mockHistory.slice(0, limit);
+      // Since there's no billing table, return empty array for now
+      // In a real app, this would query a billing/invoice table
+      return Promise.resolve([]);
     }, this.buildErrorMessage("get", "billing history", userId));
   }
 
@@ -123,20 +111,9 @@ export class BillingRepository extends BaseRepository {
     this.validateRequiredParams({ userId }, ["userId"]);
 
     return this.executeQuery(async () => {
-      // Mock payment methods - in real app this would come from Stripe
-      const mockPaymentMethods: PaymentMethod[] = [
-        {
-          id: "pm_1234567890",
-          type: "card",
-          last4: "4242",
-          brand: "visa",
-          expiryMonth: 12,
-          expiryYear: 2025,
-          isDefault: true,
-        },
-      ];
-
-      return mockPaymentMethods;
+      // Since there's no payment methods table, return empty array for now
+      // In a real app, this would query a payment methods table or Stripe
+      return Promise.resolve([]);
     }, this.buildErrorMessage("get", "payment methods", userId));
   }
 

@@ -33,8 +33,7 @@ export default function Footer() {
               <span className="text-xl font-bold">API Pulse</span>
             </div>
             <p className="text-muted-foreground">
-              The unified platform for API monitoring, cost tracking, and
-              intelligent alerts.
+              The unified platform for API monitoring, and intelligent alerts.
             </p>
           </div>
 

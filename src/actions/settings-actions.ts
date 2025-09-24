@@ -46,13 +46,13 @@ export const getNotificationSettings = createDataAction(
 );
 
 export const clearData = createDataAction(
-  settingsSchemas.updatePreferences, // Using same schema for now
+  settingsSchemas.emptyInput,
   async (_input) => settingsService.clearUserData(),
   ["/dashboard/settings"]
 );
 
 export const exportData = createDataAction(
-  settingsSchemas.updatePreferences, // Using same schema for now
+  settingsSchemas.emptyInput,
   async (_input) => settingsService.exportUserData(),
   ["/dashboard/settings"]
 );
@@ -60,18 +60,20 @@ export const exportData = createDataAction(
 // Two-factor authentication actions (placeholder for now)
 export const enableTwoFactor = createDataAction(
   settingsSchemas.updatePreferences, // Using same schema for now
-  async (_input) => ({
-    success: true,
-    message: "Two-factor authentication enabled",
-  }),
+  async (_input) =>
+    Promise.resolve({
+      success: true,
+      message: "Two-factor authentication enabled",
+    }),
   ["/dashboard/settings"]
 );
 
 export const disableTwoFactor = createDataAction(
   settingsSchemas.updatePreferences, // Using same schema for now
-  async (_input) => ({
-    success: true,
-    message: "Two-factor authentication disabled",
-  }),
+  async (_input) =>
+    Promise.resolve({
+      success: true,
+      message: "Two-factor authentication disabled",
+    }),
   ["/dashboard/settings"]
 );

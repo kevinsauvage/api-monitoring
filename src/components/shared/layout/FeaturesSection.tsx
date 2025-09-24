@@ -1,11 +1,4 @@
-import {
-  CheckCircle,
-  Zap,
-  Shield,
-  DollarSign,
-  BarChart3,
-  Bell,
-} from "lucide-react";
+import { CheckCircle, Zap, Shield, BarChart3, Bell } from "lucide-react";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -19,14 +12,7 @@ export default function FeaturesSection() {
       description:
         "See status, response times, and error rates for all your APIs in a single, beautiful interface.",
     },
-    {
-      icon: DollarSign,
-      iconColor: "text-chart-2",
-      iconBg: "bg-chart-2/20",
-      title: "Cost Monitoring",
-      description:
-        "Track spending across all API providers and get alerts when costs spike unexpectedly.",
-    },
+
     {
       icon: Bell,
       iconColor: "text-chart-4",

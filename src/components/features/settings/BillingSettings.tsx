@@ -8,7 +8,6 @@ import {
   Download,
   ExternalLink,
   CheckCircle,
-  AlertTriangle,
   Crown,
   Zap,
 } from "lucide-react";
@@ -34,51 +33,39 @@ interface BillingSettingsProps {
 }
 
 export default function BillingSettings({
-  user,
+  user: _user,
   billingData,
   billingHistory,
   paymentMethods,
 }: BillingSettingsProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  // Use the data passed from server-side
-  const subscription = billingData || {
-    subscription: "HOBBY" as const,
-    planName: "Hobby",
-    planDescription: "Perfect for personal projects",
-    features: [
-      "5 health checks",
-      "3 API connections",
-      "5-minute intervals",
-      "Basic monitoring",
-      "Email alerts",
-    ],
-    amount: 0,
-    currency: "USD",
-    nextBillingDate: new Date(),
-    status: "active" as const,
-    usage: {
-      connections: { current: 0, limit: 3 },
-      healthChecks: { current: 0, limit: 5 },
-      apiCalls: { current: 0, limit: -1 },
-    },
-  };
+  // Use the real data passed from server-side
+  if (!billingData) {
+    return (
+      <div className="space-y-6">
+        <div className="text-center py-8">
+          <p className="text-muted-foreground">Unable to load billing data</p>
+        </div>
+      </div>
+    );
+  }
 
-  const handleUpgrade = async () => {
+  const handleUpgrade = () => {
     setIsLoading(true);
     // In real app, this would redirect to Stripe or payment provider
     toast.success("Redirecting to upgrade page...");
     setIsLoading(false);
   };
 
-  const handleManageBilling = async () => {
+  const handleManageBilling = () => {
     setIsLoading(true);
     // In real app, this would redirect to billing portal
     toast.success("Redirecting to billing portal...");
     setIsLoading(false);
   };
 
-  const handleDownloadInvoice = async () => {
+  const handleDownloadInvoice = () => {
     setIsLoading(true);
     // In real app, this would download the invoice
     toast.success("Downloading invoice...");
@@ -100,19 +87,19 @@ export default function BillingSettings({
             <div>
               <div className="flex items-center space-x-2">
                 <h3 className="text-lg font-semibold">
-                  {subscription.planName} Plan
+                  {billingData.planName} Plan
                 </h3>
                 <Badge variant="default">
                   <CheckCircle className="h-3 w-3 mr-1" />
-                  {subscription.status === "active"
+                  {billingData.status === "active"
                     ? "Active"
-                    : subscription.status}
+                    : billingData.status}
                 </Badge>
               </div>
               <p className="text-sm text-muted-foreground">
-                {subscription.amount > 0
-                  ? `$${subscription.amount}/${
-                      subscription.currency === "USD" ? "month" : "year"
+                {billingData.amount > 0
+                  ? `$${billingData.amount}/${
+                      billingData.currency === "USD" ? "month" : "year"
                     }`
                   : "Free"}
               </p>
@@ -128,7 +115,7 @@ export default function BillingSettings({
           <div className="space-y-3">
             <h4 className="text-sm font-medium">Plan Features</h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {subscription.features.map((feature, index) => (
+              {billingData.features.map((feature, index) => (
                 <div key={index} className="flex items-center space-x-2">
                   <CheckCircle className="h-4 w-4 text-green-500" />
                   <span className="text-sm">{feature}</span>
@@ -154,46 +141,31 @@ export default function BillingSettings({
               <div>
                 <span className="text-sm font-medium">Next Billing Date</span>
                 <p className="text-sm text-muted-foreground">
-                  {subscription.nextBillingDate.toLocaleDateString()}
+                  {billingData.nextBillingDate.toLocaleDateString()}
                 </p>
               </div>
             </div>
             <Badge variant="outline">
-              {subscription.amount > 0 ? `$${subscription.amount}` : "Free"}
+              {billingData.amount > 0 ? `$${billingData.amount}` : "Free"}
             </Badge>
           </div>
 
-          {paymentMethods.length > 0 ? (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <CreditCard className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <span className="text-sm font-medium">Payment Method</span>
-                  <p className="text-sm text-muted-foreground">
-                    **** **** **** {paymentMethods[0].last4}
-                  </p>
-                </div>
+          <div className="flex items-center justify-between">
+            <div className="flex items-center space-x-3">
+              <CreditCard className="h-4 w-4 text-muted-foreground" />
+              <div>
+                <span className="text-sm font-medium">Payment Method</span>
+                <p className="text-sm text-muted-foreground">
+                  {paymentMethods.length > 0
+                    ? `**** **** **** ${paymentMethods[0].last4}`
+                    : "No payment method on file"}
+                </p>
               </div>
-              <Button variant="outline" size="sm">
-                Update
-              </Button>
             </div>
-          ) : (
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-3">
-                <CreditCard className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <span className="text-sm font-medium">Payment Method</span>
-                  <p className="text-sm text-muted-foreground">
-                    No payment method on file
-                  </p>
-                </div>
-              </div>
-              <Button variant="outline" size="sm">
-                Add Payment Method
-              </Button>
-            </div>
-          )}
+            <Button variant="outline" size="sm">
+              {paymentMethods.length > 0 ? "Update" : "Add Payment Method"}
+            </Button>
+          </div>
 
           <div className="flex justify-end space-x-2">
             <Button
@@ -223,21 +195,21 @@ export default function BillingSettings({
               <span className="text-sm">API Connections</span>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-muted-foreground">
-                  {subscription.usage.connections.current} /{" "}
-                  {subscription.usage.connections.limit === -1
+                  {billingData.usage.connections.current} /{" "}
+                  {billingData.usage.connections.limit === -1
                     ? "Unlimited"
-                    : subscription.usage.connections.limit}
+                    : billingData.usage.connections.limit}
                 </span>
                 <div className="w-20 h-2 bg-muted rounded-full">
                   <div
                     className="h-2 bg-primary rounded-full"
                     style={{
                       width:
-                        subscription.usage.connections.limit === -1
+                        billingData.usage.connections.limit === -1
                           ? "100%"
                           : `${
-                              (subscription.usage.connections.current /
-                                subscription.usage.connections.limit) *
+                              (billingData.usage.connections.current /
+                                billingData.usage.connections.limit) *
                               100
                             }%`,
                     }}
@@ -250,21 +222,21 @@ export default function BillingSettings({
               <span className="text-sm">Health Checks</span>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-muted-foreground">
-                  {subscription.usage.healthChecks.current} /{" "}
-                  {subscription.usage.healthChecks.limit === -1
+                  {billingData.usage.healthChecks.current} /{" "}
+                  {billingData.usage.healthChecks.limit === -1
                     ? "Unlimited"
-                    : subscription.usage.healthChecks.limit}
+                    : billingData.usage.healthChecks.limit}
                 </span>
                 <div className="w-20 h-2 bg-muted rounded-full">
                   <div
                     className="h-2 bg-primary rounded-full"
                     style={{
                       width:
-                        subscription.usage.healthChecks.limit === -1
+                        billingData.usage.healthChecks.limit === -1
                           ? "100%"
                           : `${
-                              (subscription.usage.healthChecks.current /
-                                subscription.usage.healthChecks.limit) *
+                              (billingData.usage.healthChecks.current /
+                                billingData.usage.healthChecks.limit) *
                               100
                             }%`,
                     }}
@@ -277,21 +249,21 @@ export default function BillingSettings({
               <span className="text-sm">Monthly API Calls</span>
               <div className="flex items-center space-x-2">
                 <span className="text-sm text-muted-foreground">
-                  {subscription.usage.apiCalls.current.toLocaleString()} /{" "}
-                  {subscription.usage.apiCalls.limit === -1
+                  {billingData.usage.apiCalls.current.toLocaleString()} /{" "}
+                  {billingData.usage.apiCalls.limit === -1
                     ? "Unlimited"
-                    : subscription.usage.apiCalls.limit.toLocaleString()}
+                    : billingData.usage.apiCalls.limit.toLocaleString()}
                 </span>
                 <div className="w-20 h-2 bg-muted rounded-full">
                   <div
                     className="h-2 bg-primary rounded-full"
                     style={{
                       width:
-                        subscription.usage.apiCalls.limit === -1
+                        billingData.usage.apiCalls.limit === -1
                           ? "100%"
                           : `${
-                              (subscription.usage.apiCalls.current /
-                                subscription.usage.apiCalls.limit) *
+                              (billingData.usage.apiCalls.current /
+                                billingData.usage.apiCalls.limit) *
                               100
                             }%`,
                     }}

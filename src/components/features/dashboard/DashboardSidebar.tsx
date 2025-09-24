@@ -9,8 +9,6 @@ import {
   Plus,
   Settings,
   Bell,
-  CreditCard,
-  Shield,
   Activity,
   Menu,
 } from "lucide-react";
@@ -22,9 +20,7 @@ const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: BarChart3 },
   { name: "API Connections", href: "/dashboard/connections", icon: Plus },
   { name: "Health Checks", href: "/dashboard/health", icon: Activity },
-  { name: "Cost Analytics", href: "/dashboard/cost", icon: CreditCard },
   { name: "Alerts", href: "/dashboard/alerts", icon: Bell },
-  { name: "Security", href: "/dashboard/security", icon: Shield },
   { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 

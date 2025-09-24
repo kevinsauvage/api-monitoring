@@ -26,7 +26,6 @@ export const mockPrisma = {
   },
   healthCheck: createMockModel(),
   checkResult: createMockModel(),
-  costMetric: createMockModel(),
   $transaction: vi.fn(),
   $connect: vi.fn(),
   $disconnect: vi.fn(),

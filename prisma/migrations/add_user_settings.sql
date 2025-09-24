@@ -7,8 +7,6 @@ CREATE TABLE "UserPreferences" (
     "timezone" TEXT NOT NULL DEFAULT 'UTC',
     "dateFormat" TEXT NOT NULL DEFAULT 'MM/DD/YYYY',
     "timeFormat" TEXT NOT NULL DEFAULT '12h',
-    "autoRefresh" BOOLEAN NOT NULL DEFAULT true,
-    "refreshInterval" INTEGER NOT NULL DEFAULT 30,
     "showNotifications" BOOLEAN NOT NULL DEFAULT true,
     "compactMode" BOOLEAN NOT NULL DEFAULT false,
     "showTooltips" BOOLEAN NOT NULL DEFAULT true,
