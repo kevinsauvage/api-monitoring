@@ -111,7 +111,10 @@ describe("MonitoringService", () => {
 
       mockHealthCheckRepository.create.mockResolvedValue(mockHealthCheck);
 
-      const result = await service.createHealthCheck(input);
+      const result = await service.createHealthCheck(
+        input.apiConnectionId,
+        input
+      );
 
       expect(mockHealthCheckRepository.create).toHaveBeenCalledWith({
         apiConnection: {
@@ -148,7 +151,10 @@ describe("MonitoringService", () => {
 
       mockHealthCheckRepository.create.mockResolvedValue(mockHealthCheck);
 
-      const result = await service.createHealthCheck(input);
+      const result = await service.createHealthCheck(
+        input.apiConnectionId,
+        input
+      );
 
       expect(mockHealthCheckRepository.create).toHaveBeenCalledWith({
         apiConnection: {

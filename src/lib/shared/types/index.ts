@@ -1,3 +1,8 @@
+// Re-export enhanced types
+export * from "./api-results";
+export * from "./enhanced-types";
+
+// Legacy types for backward compatibility
 export interface PlanLimits {
   minInterval: number;
   maxHealthChecks: number;
@@ -13,6 +18,7 @@ export type UptimeData = {
   checks: number;
 }[];
 
+// Legacy ActionResult - use ApiResponse from api-results instead
 export interface ActionResult<T = unknown> {
   success: boolean;
   data?: T;

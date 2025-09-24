@@ -16,6 +16,8 @@ export default defineConfig({
         "src/test/",
         "**/*.d.ts",
         "**/*.config.{js,ts}",
+        "eslint.config.mjs",
+        "postcss.config.mjs",
         "**/coverage/**",
         "**/dist/**",
         "**/.next/**",

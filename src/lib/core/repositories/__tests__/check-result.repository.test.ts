@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { CheckResultRepository } from "../check-result.repository";
 import { mockPrisma, resetAllMocks } from "../../../../test/utils/test-helpers";
+import { CheckStatus } from "@prisma/client";
 import {
   createTestUser,
   createTestConnection,
@@ -23,9 +24,13 @@ describe("CheckResultRepository", () => {
       const mockResults = [
         {
           id: "result-1",
-          status: "SUCCESS",
+          healthCheckId: "health-check-1",
+          status: CheckStatus.SUCCESS,
           responseTime: 150,
+          statusCode: 200,
+          errorMessage: null,
           timestamp: new Date(),
+          metadata: {},
           healthCheck: {
             id: "health-check-1",
             endpoint: "/health",
@@ -38,7 +43,7 @@ describe("CheckResultRepository", () => {
         },
       ];
 
-      mockPrisma.checkResult.findMany.mockResolvedValue(mockResults);
+      vi.mocked(mockPrisma.checkResult.findMany).mockResolvedValue(mockResults);
 
       const result = await repository.findByUserIdWithDetails(userId);
 
@@ -74,9 +79,9 @@ describe("CheckResultRepository", () => {
     it("should find check results with custom limit", async () => {
       const userId = "test-user-id";
       const limit = 25;
-      const mockResults = [];
+      const mockResults: any[] = [];
 
-      mockPrisma.checkResult.findMany.mockResolvedValue(mockResults);
+      vi.mocked(mockPrisma.checkResult.findMany).mockResolvedValue(mockResults);
 
       const result = await repository.findByUserIdWithDetails(userId, limit);
 
@@ -113,7 +118,7 @@ describe("CheckResultRepository", () => {
       const userId = "test-user-id";
       const error = new Error("Database connection failed");
 
-      mockPrisma.checkResult.findMany.mockRejectedValue(error);
+      vi.mocked(mockPrisma.checkResult.findMany).mockRejectedValue(error);
 
       await expect(repository.findByUserIdWithDetails(userId)).rejects.toThrow(
         "Failed to find check results for user"
@@ -127,9 +132,13 @@ describe("CheckResultRepository", () => {
       const mockResults = [
         {
           id: "result-1",
-          status: "SUCCESS",
+          healthCheckId: "health-check-1",
+          status: CheckStatus.SUCCESS,
           responseTime: 150,
+          statusCode: 200,
+          errorMessage: null,
           timestamp: new Date(),
+          metadata: {},
           healthCheck: {
             id: "health-check-1",
             endpoint: "/health",
@@ -142,7 +151,7 @@ describe("CheckResultRepository", () => {
         },
       ];
 
-      mockPrisma.checkResult.findMany.mockResolvedValue(mockResults);
+      vi.mocked(mockPrisma.checkResult.findMany).mockResolvedValue(mockResults);
 
       const result = await repository.findByConnectionId(connectionId);
 
@@ -176,9 +185,9 @@ describe("CheckResultRepository", () => {
     it("should find check results with custom limit", async () => {
       const connectionId = "test-connection-id";
       const limit = 50;
-      const mockResults = [];
+      const mockResults: any[] = [];
 
-      mockPrisma.checkResult.findMany.mockResolvedValue(mockResults);
+      vi.mocked(mockPrisma.checkResult.findMany).mockResolvedValue(mockResults);
 
       const result = await repository.findByConnectionId(connectionId, limit);
 
@@ -213,7 +222,7 @@ describe("CheckResultRepository", () => {
       const connectionId = "test-connection-id";
       const error = new Error("Database connection failed");
 
-      mockPrisma.checkResult.findMany.mockRejectedValue(error);
+      vi.mocked(mockPrisma.checkResult.findMany).mockRejectedValue(error);
 
       await expect(repository.findByConnectionId(connectionId)).rejects.toThrow(
         "Failed to find check results for connection"
@@ -227,14 +236,17 @@ describe("CheckResultRepository", () => {
       const mockResults = [
         {
           id: "result-1",
-          status: "SUCCESS",
-          responseTime: 150,
-          timestamp: new Date(),
           healthCheckId,
+          status: CheckStatus.SUCCESS,
+          responseTime: 150,
+          statusCode: 200,
+          errorMessage: null,
+          timestamp: new Date(),
+          metadata: {},
         },
       ];
 
-      mockPrisma.checkResult.findMany.mockResolvedValue(mockResults);
+      vi.mocked(mockPrisma.checkResult.findMany).mockResolvedValue(mockResults);
 
       const result = await repository.findByHealthCheckId(healthCheckId);
 
@@ -251,9 +263,9 @@ describe("CheckResultRepository", () => {
     it("should find check results with custom limit", async () => {
       const healthCheckId = "test-health-check-id";
       const limit = 5;
-      const mockResults = [];
+      const mockResults: any[] = [];
 
-      mockPrisma.checkResult.findMany.mockResolvedValue(mockResults);
+      vi.mocked(mockPrisma.checkResult.findMany).mockResolvedValue(mockResults);
 
       const result = await repository.findByHealthCheckId(healthCheckId, limit);
 
@@ -271,7 +283,7 @@ describe("CheckResultRepository", () => {
       const healthCheckId = "test-health-check-id";
       const error = new Error("Database connection failed");
 
-      mockPrisma.checkResult.findMany.mockRejectedValue(error);
+      vi.mocked(mockPrisma.checkResult.findMany).mockRejectedValue(error);
 
       await expect(
         repository.findByHealthCheckId(healthCheckId)
@@ -282,9 +294,13 @@ describe("CheckResultRepository", () => {
   describe("create", () => {
     it("should create a new check result", async () => {
       const checkResultData = {
-        status: "SUCCESS",
+        healthCheckId: "test-health-check-id",
+        status: CheckStatus.SUCCESS,
         responseTime: 150,
+        statusCode: 200,
+        errorMessage: null,
         timestamp: new Date(),
+        metadata: {},
         healthCheck: {
           connect: {
             id: "test-health-check-id",
@@ -296,7 +312,7 @@ describe("CheckResultRepository", () => {
         ...checkResultData,
       };
 
-      mockPrisma.checkResult.create.mockResolvedValue(mockResult);
+      vi.mocked(mockPrisma.checkResult.create).mockResolvedValue(mockResult);
 
       const result = await repository.create(checkResultData);
 
@@ -308,9 +324,13 @@ describe("CheckResultRepository", () => {
 
     it("should handle database errors", async () => {
       const checkResultData = {
-        status: "SUCCESS",
+        healthCheckId: "test-health-check-id",
+        status: CheckStatus.SUCCESS,
         responseTime: 150,
+        statusCode: 200,
+        errorMessage: null,
         timestamp: new Date(),
+        metadata: {},
         healthCheck: {
           connect: {
             id: "test-health-check-id",
@@ -319,7 +339,7 @@ describe("CheckResultRepository", () => {
       };
       const error = new Error("Database connection failed");
 
-      mockPrisma.checkResult.create.mockRejectedValue(error);
+      vi.mocked(mockPrisma.checkResult.create).mockRejectedValue(error);
 
       await expect(repository.create(checkResultData)).rejects.toThrow(
         "Failed to create check result"

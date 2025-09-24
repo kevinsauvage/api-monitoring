@@ -89,7 +89,7 @@ describe("BaseService", () => {
 
       const result = await connectionService.getCurrentUser();
 
-      expect(result).toBeUndefined();
+      expect(result).toBeNull();
     });
 
     it("should return null when session has no user", async () => {

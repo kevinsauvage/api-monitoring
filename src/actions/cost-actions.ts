@@ -22,10 +22,12 @@ export const getCostMetrics = createAuthenticatedAction(
     );
 
     // Transform the data to convert Decimal to number
-    return metrics.map((metric) => ({
-      ...metric,
-      amount: Number(metric.amount),
-    }));
+    return (
+      metrics?.map((metric) => ({
+        ...metric,
+        amount: Number(metric.amount),
+      })) ?? []
+    );
   }
 );
 

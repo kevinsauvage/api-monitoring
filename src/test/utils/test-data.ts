@@ -3,6 +3,7 @@ import type {
   ApiConnection,
   HealthCheck,
   CheckResult,
+  CostMetric,
   Subscription,
 } from "@prisma/client";
 
@@ -71,6 +72,19 @@ export const createTestCheckResult = (
   ...overrides,
 });
 
+export const createTestCostMetric = (
+  overrides: Partial<CostMetric> = {}
+): CostMetric => ({
+  id: "test-cost-metric-id",
+  apiConnectionId: "test-connection-id",
+  amount: 10.5,
+  currency: "USD",
+  period: "monthly",
+  metadata: { source: "stripe" },
+  timestamp: new Date("2024-01-01"),
+  ...overrides,
+});
+
 // Test data collections
 export const testUsers = [
   createTestUser(),
@@ -91,5 +105,3 @@ export const testCheckResults = [
   createTestCheckResult(),
   createTestCheckResult({ id: "cr-2", status: "FAILURE" }),
 ];
-
-

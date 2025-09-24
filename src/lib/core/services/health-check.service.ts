@@ -1,14 +1,12 @@
-import { z } from "zod";
 import type { HealthCheck, Prisma } from "@prisma/client";
 import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
-import { healthCheckSchemas } from "@/lib/shared/schemas";
 import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
 import { BaseService } from "./base.service";
+import { ServiceResponseBuilder } from "./service-response-builder";
+import { HealthCheckValidator } from "@/lib/core/validators/health-check-validator";
 import type { MonitoringService } from "./monitoring.service";
-import type {
-  HealthCheckCreateResult,
-  HealthCheckWithResults,
-} from "@/lib/core/types";
+import type { HealthCheckWithResults } from "@/lib/core/types";
+import type { ValidationServiceResult } from "@/lib/shared/types/api-results";
 
 export class HealthCheckService extends BaseService {
   private get monitoringService(): MonitoringService {
@@ -103,7 +101,7 @@ export class HealthCheckService extends BaseService {
   async createHealthCheck(
     connectionId: string,
     data: Prisma.HealthCheckCreateInput
-  ): Promise<HealthCheckCreateResult> {
+  ): Promise<ValidationServiceResult> {
     const user = await this.requireAuth();
 
     const userData = await this.userRepository.findByIdWithSubscription(
@@ -111,10 +109,7 @@ export class HealthCheckService extends BaseService {
     );
 
     if (!userData) {
-      return {
-        success: false,
-        error: "User not found",
-      };
+      return ServiceResponseBuilder.error("User not found");
     }
 
     const planLimits = getPlanLimits(userData.subscription);
@@ -123,44 +118,21 @@ export class HealthCheckService extends BaseService {
     );
 
     if (currentHealthChecks >= planLimits.maxHealthChecks) {
-      return {
-        success: false,
-        error: `Health check limit reached. You can create up to ${planLimits.maxHealthChecks} health checks on the ${planLimits.name} plan.`,
-      };
+      return ServiceResponseBuilder.error(
+        `Health check limit reached. You can create up to ${planLimits.maxHealthChecks} health checks on the ${planLimits.name} plan.`
+      );
     }
 
-    try {
-      healthCheckSchemas.create.parse({
-        ...data,
-        apiConnectionId: connectionId,
-      });
-    } catch (error) {
-      if (error instanceof z.ZodError) {
-        return {
-          success: false,
-          error: `Validation failed: ${error.errors
-            .map((e) => e.message)
-            .join(", ")}`,
-          zodError: error.errors.map((err) => ({
-            field: err.path.join("."),
-            message: err.message,
-            code: err.code,
-          })),
-        };
-      }
-      if (error instanceof Error) {
-        return {
-          success: false,
-          error: `Validation failed: ${error.message}`,
-        };
-      }
-      return {
-        success: false,
-        error: "Invalid input data",
-      };
+    // Validate the data
+    const validationResult = HealthCheckValidator.validateCreateData(
+      connectionId,
+      data
+    );
+    if (!validationResult.success) {
+      return validationResult;
     }
 
-    await this.healthCheckRepository.create({
+    const healthCheck = await this.healthCheckRepository.create({
       apiConnection: {
         connect: { id: connectionId },
       },
@@ -176,9 +148,10 @@ export class HealthCheckService extends BaseService {
       lastExecutedAt: null,
     });
 
-    return {
-      success: true,
-    };
+    return ServiceResponseBuilder.success(
+      healthCheck,
+      "Health check created successfully"
+    );
   }
 
   async deleteHealthCheck(healthCheckId: string) {

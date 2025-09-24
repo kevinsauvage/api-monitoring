@@ -1,158 +1,17 @@
-import axios from "axios";
 import { decrypt } from "@/lib/infrastructure/encryption";
-import type { InputJsonValue } from "@prisma/client/runtime/library";
 import { BaseService } from "./base.service";
-import type {
-  CostTrackingStrategy,
-  CostTrackingResult,
-} from "@/lib/core/types";
-
-function getCurrentPeriod() {
-  const now = new Date();
-  return {
-    start: new Date(now.getFullYear(), now.getMonth(), 1),
-    end: new Date(now.getFullYear(), now.getMonth() + 1, 0),
-    period: `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}`,
-  };
-}
-
-class StripeCostTrackingStrategy implements CostTrackingStrategy {
-  async trackCosts(
-    credentials: Record<string, string>
-  ): Promise<CostTrackingResult> {
-    try {
-      const { start, end, period } = getCurrentPeriod();
-      const response = await axios.get<{
-        data: Array<{ fee: number }>;
-      }>(
-        `https://api.stripe.com/v1/balance_transactions?created[gte]=${Math.floor(
-          start.getTime() / 1000
-        )}&created[lte]=${Math.floor(end.getTime() / 1000)}&limit=100`,
-        { headers: { Authorization: `Bearer ${credentials["secretKey"]}` } }
-      );
-
-      const transactions = response.data.data;
-      const totalFees = transactions.reduce(
-        (sum, transaction) => sum + (transaction.fee || 0),
-        0
-      );
-
-      return {
-        success: true,
-        costData: {
-          provider: "stripe",
-          amount: totalFees / 100,
-          currency: "USD",
-          period,
-          metadata: { transactionCount: transactions.length, totalFees },
-        },
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: `Stripe cost tracking failed: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
-      };
-    }
-  }
-}
-
-class TwilioCostTrackingStrategy implements CostTrackingStrategy {
-  async trackCosts(
-    credentials: Record<string, string>
-  ): Promise<CostTrackingResult> {
-    try {
-      const { start, end, period } = getCurrentPeriod();
-      const response = await axios.get<{
-        usage_records: Array<{ price?: string }>;
-      }>(
-        `https://api.twilio.com/2010-04-01/Accounts/${
-          credentials["accountSid"]
-        }/Usage/Records.json?StartDate=${
-          start.toISOString().split("T")[0]
-        }&EndDate=${end.toISOString().split("T")[0]}`,
-        {
-          auth: {
-            username: credentials["accountSid"],
-            password: credentials["authToken"],
-          },
-        }
-      );
-
-      const usage = response.data.usage_records;
-      const totalCost = usage.reduce(
-        (sum, record) => sum + parseFloat(record.price ?? "0"),
-        0
-      );
-
-      return {
-        success: true,
-        costData: {
-          provider: "twilio",
-          amount: totalCost,
-          currency: "USD",
-          period,
-          metadata: { usageCount: usage.length },
-        },
-      };
-    } catch (error) {
-      return {
-        success: false,
-        error: `Twilio cost tracking failed: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
-      };
-    }
-  }
-}
-
-class NoCostTrackingStrategy implements CostTrackingStrategy {
-  constructor(private readonly provider: string) {}
-
-  async trackCosts(
-    _credentials: Record<string, string>
-  ): Promise<CostTrackingResult> {
-    const now = new Date();
-    const period = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(
-      2,
-      "0"
-    )}`;
-
-    return Promise.resolve({
-      success: true,
-      costData: {
-        provider: this.provider,
-        amount: 0,
-        currency: "USD",
-        period,
-        metadata: { note: `${this.provider} cost tracking not implemented` },
-      },
-    });
-  }
-}
-
-class CostTrackingStrategyFactory {
-  static createStrategy(provider: string): CostTrackingStrategy {
-    switch (provider) {
-      case "stripe":
-        return new StripeCostTrackingStrategy();
-      case "twilio":
-        return new TwilioCostTrackingStrategy();
-      case "sendgrid":
-      case "github":
-      case "slack":
-        return new NoCostTrackingStrategy(provider);
-      default:
-        throw new Error(`Unsupported provider: ${provider}`);
-    }
-  }
-}
+import { CostTrackingStrategyFactory } from "@/lib/core/strategies/cost-tracking";
+import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
+import type { CostTrackingResult } from "@/lib/shared/types/api-results";
+import type { CostMetricService } from "./cost-metric.service";
 
 export class CostTrackingService extends BaseService {
+  private get costMetricService(): CostMetricService {
+    return this.resolve<CostMetricService>(
+      SERVICE_IDENTIFIERS.COST_METRIC_SERVICE
+    );
+  }
+
   async trackCostsForConnection(
     connectionId: string
   ): Promise<CostTrackingResult> {
@@ -179,12 +38,11 @@ export class CostTrackingService extends BaseService {
       const result = await strategy.trackCosts(credentials);
 
       if (result.success && result.costData) {
-        await this.costMetricRepository.create({
+        await this.costMetricService.createCostMetric(connectionId, {
           amount: result.costData.amount,
           currency: result.costData.currency,
           period: result.costData.period,
-          metadata: result.costData.metadata as InputJsonValue,
-          apiConnection: { connect: { id: connectionId } },
+          metadata: result.costData.metadata,
         });
       }
 
@@ -231,12 +89,11 @@ export class CostTrackingService extends BaseService {
           batch.map(async (connection) => {
             const result = await this.trackCostsForConnection(connection.id);
             if (result.success && result.costData) {
-              await this.costMetricRepository.create({
-                apiConnection: { connect: { id: connection.id } },
+              await this.costMetricService.createCostMetric(connection.id, {
                 amount: result.costData.amount,
                 currency: result.costData.currency,
                 period: result.costData.period,
-                metadata: result.costData.metadata as InputJsonValue,
+                metadata: result.costData.metadata,
               });
             }
           })
@@ -253,11 +110,12 @@ export class CostTrackingService extends BaseService {
   }
 
   async getCostAnalytics(userId: string, startDate?: Date, endDate?: Date) {
-    return this.costMetricRepository.getCostStatistics(
+    const result = await this.costMetricService.getCostAnalytics(
       userId,
       startDate,
       endDate
     );
+    return result.data;
   }
 
   async getCostMetricsForUser(
@@ -265,7 +123,12 @@ export class CostTrackingService extends BaseService {
     startDate?: Date,
     endDate?: Date
   ) {
-    return this.costMetricRepository.findByUserId(userId, startDate, endDate);
+    const result = await this.costMetricService.getCostMetricsForUser(
+      userId,
+      startDate,
+      endDate
+    );
+    return result.data ?? [];
   }
 
   async getCostMetricsForConnection(
@@ -273,10 +136,11 @@ export class CostTrackingService extends BaseService {
     startDate?: Date,
     endDate?: Date
   ) {
-    return this.costMetricRepository.findByConnectionId(
+    const result = await this.costMetricService.getCostMetricsForConnection(
       connectionId,
       startDate,
       endDate
     );
+    return result.data ?? [];
   }
 }

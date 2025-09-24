@@ -1,4 +1,7 @@
-import { serializeEntityTimestamps } from "@/lib/core/utils/serializer-utils";
+import {
+  serializeEntityTimestamps,
+  serializeTimestamp,
+} from "@/lib/core/utils/serializer-utils";
 import type { HealthCheck } from "@prisma/client";
 import type { SerializedHealthCheck } from "@/lib/core/types";
 
@@ -35,6 +38,7 @@ export function serializeHealthCheck(
     body: healthCheck.body,
     queryParams: healthCheck.queryParams as Record<string, string> | null,
     isActive: healthCheck.isActive,
+    lastExecutedAt: serializeTimestamp(healthCheck.lastExecutedAt),
     ...serializeEntityTimestamps(healthCheck),
   };
 }

@@ -16,7 +16,9 @@ describe("HealthCheckRepository", () => {
       const connectionId = "test-connection-id";
       const mockHealthChecks = [createTestHealthCheck()];
 
-      mockPrisma.healthCheck.findMany.mockResolvedValue(mockHealthChecks);
+      vi.mocked(mockPrisma.healthCheck.findMany).mockResolvedValue(
+        mockHealthChecks
+      );
 
       const result = await repository.findByConnectionId(connectionId);
 
@@ -219,5 +221,3 @@ describe("HealthCheckRepository", () => {
     });
   });
 });
-
-

@@ -203,10 +203,13 @@ describe("HealthCheckService", () => {
       mockHealthCheckRepository.countByUserId.mockResolvedValue(0);
       mockHealthCheckRepository.create.mockResolvedValue(mockHealthCheck);
 
-      const result = await service.createHealthCheck(healthCheckData);
+      const result = await service.createHealthCheck(
+        "test-connection-id",
+        healthCheckData
+      );
 
       expect(result.success).toBe(true);
-      expect(result.healthCheck).toEqual(mockHealthCheck);
+      expect(result.data).toEqual(mockHealthCheck);
     });
 
     it("should handle health check limit reached", async () => {
@@ -284,10 +287,9 @@ describe("HealthCheckService", () => {
       vi.mocked(getServerSession).mockResolvedValue({ user: mockUser });
       mockHealthCheckRepository.findFirstByUserAndId.mockResolvedValue(null);
 
-      const result = await service.deleteHealthCheck(healthCheckId);
-
-      expect(result.success).toBe(false);
-      expect(result.error).toContain("Health check not found");
+      await expect(service.deleteHealthCheck(healthCheckId)).rejects.toThrow(
+        "Health check with ID 'non-existent-health-check' not found"
+      );
     });
   });
 

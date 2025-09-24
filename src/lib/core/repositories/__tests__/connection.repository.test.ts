@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { ConnectionRepository } from "../connection.repository";
-import { mockPrisma, resetAllMocks } from "@/test/utils/test-helpers";
-import { createTestConnection, createTestUser } from "@/test/utils/test-data";
+import { mockPrisma, resetAllMocks } from "../../../../test/utils/test-helpers";
+import { createTestConnection } from "../../../../test/utils/test-data";
 
 describe("ConnectionRepository", () => {
   let repository: ConnectionRepository;
@@ -29,7 +29,9 @@ describe("ConnectionRepository", () => {
         },
       ];
 
-      mockPrisma.apiConnection.findMany.mockResolvedValue(mockConnections);
+      vi.mocked(mockPrisma.apiConnection.findMany).mockResolvedValue(
+        mockConnections
+      );
 
       const result = await repository.findByUserIdWithHealthChecks(userId);
 
@@ -61,7 +63,9 @@ describe("ConnectionRepository", () => {
         healthChecks: [],
       };
 
-      mockPrisma.apiConnection.findFirst.mockResolvedValue(mockConnection);
+      vi.mocked(mockPrisma.apiConnection.findFirst).mockResolvedValue(
+        mockConnection
+      );
 
       const result = await repository.findByIdWithHealthChecks(id, userId);
 
@@ -86,6 +90,7 @@ describe("ConnectionRepository", () => {
   describe("create", () => {
     it("should create a new connection", async () => {
       const connectionData = {
+        userId: "user-id",
         name: "Test Connection",
         provider: "REST",
         baseUrl: "https://api.example.com",
@@ -94,7 +99,9 @@ describe("ConnectionRepository", () => {
       };
 
       const mockConnection = createTestConnection();
-      mockPrisma.apiConnection.create.mockResolvedValue(mockConnection);
+      vi.mocked(mockPrisma.apiConnection.create).mockResolvedValue(
+        mockConnection
+      );
 
       const result = await repository.create(connectionData);
 
@@ -113,7 +120,9 @@ describe("ConnectionRepository", () => {
         name: "Updated Connection",
       });
 
-      mockPrisma.apiConnection.update.mockResolvedValue(mockConnection);
+      vi.mocked(mockPrisma.apiConnection.update).mockResolvedValue(
+        mockConnection
+      );
 
       const result = await repository.update(id, updateData);
 
@@ -129,7 +138,9 @@ describe("ConnectionRepository", () => {
     it("should delete a connection", async () => {
       const id = "test-connection-id";
 
-      mockPrisma.apiConnection.delete.mockResolvedValue(createTestConnection());
+      vi.mocked(mockPrisma.apiConnection.delete).mockResolvedValue(
+        createTestConnection()
+      );
 
       await repository.delete(id);
 
@@ -144,7 +155,7 @@ describe("ConnectionRepository", () => {
       const userId = "test-user-id";
       const count = 5;
 
-      mockPrisma.apiConnection.count.mockResolvedValue(count);
+      vi.mocked(mockPrisma.apiConnection.count).mockResolvedValue(count);
 
       const result = await repository.countByUserId(userId);
 
@@ -160,7 +171,7 @@ describe("ConnectionRepository", () => {
       const userId = "test-user-id";
       const count = 3;
 
-      mockPrisma.apiConnection.count.mockResolvedValue(count);
+      vi.mocked(mockPrisma.apiConnection.count).mockResolvedValue(count);
 
       const result = await repository.countActiveByUserId(userId);
 
@@ -177,7 +188,9 @@ describe("ConnectionRepository", () => {
       const userId = "test-user-id";
       const mockConnection = createTestConnection();
 
-      mockPrisma.apiConnection.findFirst.mockResolvedValue(mockConnection);
+      vi.mocked(mockPrisma.apiConnection.findFirst).mockResolvedValue(
+        mockConnection
+      );
 
       const result = await repository.findFirstByUserAndId(id, userId);
 
@@ -198,9 +211,18 @@ describe("ConnectionRepository", () => {
         baseUrl: "https://api.example.com",
         apiKey: "encrypted-key",
         secretKey: null,
+        accountSid: null,
+        authToken: null,
+        token: null,
+        isActive: true,
+        userId: "test-user-id",
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
-      mockPrisma.apiConnection.findUnique.mockResolvedValue(mockConnection);
+      vi.mocked(mockPrisma.apiConnection.findUnique).mockResolvedValue(
+        mockConnection
+      );
 
       const result = await repository.findByIdWithCredentials(id);
 
@@ -213,11 +235,12 @@ describe("ConnectionRepository", () => {
           baseUrl: true,
           apiKey: true,
           secretKey: true,
+          authToken: true,
+          accountSid: true,
+          token: true,
         },
       });
       expect(result).toEqual(mockConnection);
     });
   });
 });
-
-

@@ -236,6 +236,9 @@ describe("ConnectionService", () => {
 
       const { getServerSession } = await import("next-auth");
       vi.mocked(getServerSession).mockResolvedValue({ user: mockUser });
+      mockConnectionRepository.findFirstByUserAndId.mockResolvedValue(
+        createTestConnection()
+      );
       mockConnectionRepository.updateMany.mockResolvedValue({ count: 1 });
 
       const result = await service.updateConnection(connectionId, updateData);
@@ -255,6 +258,9 @@ describe("ConnectionService", () => {
 
       const { getServerSession } = await import("next-auth");
       vi.mocked(getServerSession).mockResolvedValue({ user: mockUser });
+      mockConnectionRepository.findFirstByUserAndId.mockResolvedValue(
+        createTestConnection()
+      );
       mockConnectionRepository.deleteMany.mockResolvedValue({ count: 1 });
 
       const result = await service.deleteConnection(connectionId);

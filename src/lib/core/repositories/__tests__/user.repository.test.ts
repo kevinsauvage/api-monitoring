@@ -18,7 +18,7 @@ describe("UserRepository", () => {
       const userId = "test-user-id";
       const mockUser = createTestUser();
 
-      mockPrisma.user.findUnique.mockResolvedValue(mockUser);
+      vi.mocked(mockPrisma.user.findUnique).mockResolvedValue(mockUser);
 
       const result = await repository.findById(userId);
 
@@ -31,7 +31,7 @@ describe("UserRepository", () => {
     it("should return null when user not found", async () => {
       const userId = "non-existent-user";
 
-      mockPrisma.user.findUnique.mockResolvedValue(null);
+      vi.mocked(mockPrisma.user.findUnique).mockResolvedValue(null);
 
       const result = await repository.findById(userId);
 
@@ -42,7 +42,7 @@ describe("UserRepository", () => {
       const userId = "test-user-id";
       const error = new Error("Database connection failed");
 
-      mockPrisma.user.findUnique.mockRejectedValue(error);
+      vi.mocked(mockPrisma.user.findUnique).mockRejectedValue(error);
 
       await expect(repository.findById(userId)).rejects.toThrow(
         "Failed to find user"
@@ -55,7 +55,7 @@ describe("UserRepository", () => {
       const email = "test@example.com";
       const mockUser = createTestUser();
 
-      mockPrisma.user.findUnique.mockResolvedValue(mockUser);
+      vi.mocked(mockPrisma.user.findUnique).mockResolvedValue(mockUser);
 
       const result = await repository.findByEmail(email);
 
@@ -68,7 +68,7 @@ describe("UserRepository", () => {
     it("should return null when user not found", async () => {
       const email = "nonexistent@example.com";
 
-      mockPrisma.user.findUnique.mockResolvedValue(null);
+      vi.mocked(mockPrisma.user.findUnique).mockResolvedValue(null);
 
       const result = await repository.findByEmail(email);
 
@@ -79,7 +79,7 @@ describe("UserRepository", () => {
       const email = "test@example.com";
       const error = new Error("Database connection failed");
 
-      mockPrisma.user.findUnique.mockRejectedValue(error);
+      vi.mocked(mockPrisma.user.findUnique).mockRejectedValue(error);
 
       await expect(repository.findByEmail(email)).rejects.toThrow(
         "Failed to find user"
@@ -96,7 +96,7 @@ describe("UserRepository", () => {
       };
       const mockUser = createTestUser();
 
-      mockPrisma.user.create.mockResolvedValue(mockUser);
+      vi.mocked(mockPrisma.user.create).mockResolvedValue(mockUser);
 
       const result = await repository.create(userData);
 
@@ -114,7 +114,7 @@ describe("UserRepository", () => {
       };
       const error = new Error("Database connection failed");
 
-      mockPrisma.user.create.mockRejectedValue(error);
+      vi.mocked(mockPrisma.user.create).mockRejectedValue(error);
 
       await expect(repository.create(userData)).rejects.toThrow(
         "Failed to create user"
@@ -129,10 +129,17 @@ describe("UserRepository", () => {
         id: userId,
         name: "Test User",
         email: "test@example.com",
-        subscription: "FREE" as const,
+        emailVerified: null,
+        image: null,
+        password: null,
+        subscription: "HOBBY" as const,
+        createdAt: new Date(),
+        updatedAt: new Date(),
       };
 
-      mockPrisma.user.findUnique.mockResolvedValue(mockUserWithSubscription);
+      vi.mocked(mockPrisma.user.findUnique).mockResolvedValue(
+        mockUserWithSubscription
+      );
 
       const result = await repository.findByIdWithSubscription(userId);
 
@@ -151,7 +158,7 @@ describe("UserRepository", () => {
     it("should return null when user not found", async () => {
       const userId = "non-existent-user";
 
-      mockPrisma.user.findUnique.mockResolvedValue(null);
+      vi.mocked(mockPrisma.user.findUnique).mockResolvedValue(null);
 
       const result = await repository.findByIdWithSubscription(userId);
 
@@ -162,7 +169,7 @@ describe("UserRepository", () => {
       const userId = "test-user-id";
       const error = new Error("Database connection failed");
 
-      mockPrisma.user.findUnique.mockRejectedValue(error);
+      vi.mocked(mockPrisma.user.findUnique).mockRejectedValue(error);
 
       await expect(repository.findByIdWithSubscription(userId)).rejects.toThrow(
         "Failed to find user with subscription"
@@ -179,7 +186,7 @@ describe("UserRepository", () => {
       };
       const mockUpdatedUser = createTestUser();
 
-      mockPrisma.user.update.mockResolvedValue(mockUpdatedUser);
+      vi.mocked(mockPrisma.user.update).mockResolvedValue(mockUpdatedUser);
 
       const result = await repository.update(userId, updateData);
 
@@ -193,11 +200,11 @@ describe("UserRepository", () => {
     it("should update subscription", async () => {
       const userId = "test-user-id";
       const updateData = {
-        subscription: "PREMIUM" as const,
+        subscription: "BUSINESS" as const,
       };
       const mockUpdatedUser = createTestUser();
 
-      mockPrisma.user.update.mockResolvedValue(mockUpdatedUser);
+      vi.mocked(mockPrisma.user.update).mockResolvedValue(mockUpdatedUser);
 
       const result = await repository.update(userId, updateData);
 
@@ -213,7 +220,7 @@ describe("UserRepository", () => {
       const updateData = { name: "Updated Name" };
       const error = new Error("Database connection failed");
 
-      mockPrisma.user.update.mockRejectedValue(error);
+      vi.mocked(mockPrisma.user.update).mockRejectedValue(error);
 
       await expect(repository.update(userId, updateData)).rejects.toThrow(
         "Failed to update user"
@@ -225,7 +232,7 @@ describe("UserRepository", () => {
     it("should delete user", async () => {
       const userId = "test-user-id";
 
-      mockPrisma.user.delete.mockResolvedValue(createTestUser());
+      vi.mocked(mockPrisma.user.delete).mockResolvedValue(createTestUser());
 
       await repository.delete(userId);
 
@@ -238,7 +245,7 @@ describe("UserRepository", () => {
       const userId = "test-user-id";
       const error = new Error("Database connection failed");
 
-      mockPrisma.user.delete.mockRejectedValue(error);
+      vi.mocked(mockPrisma.user.delete).mockRejectedValue(error);
 
       await expect(repository.delete(userId)).rejects.toThrow(
         "Failed to delete user"
@@ -251,7 +258,7 @@ describe("UserRepository", () => {
       const email = "test@example.com";
       const mockUser = createTestUser();
 
-      mockPrisma.user.findUnique.mockResolvedValue(mockUser);
+      vi.mocked(mockPrisma.user.findUnique).mockResolvedValue(mockUser);
 
       const result = await repository.existsByEmail(email);
 
@@ -261,7 +268,7 @@ describe("UserRepository", () => {
     it("should return false when user does not exist", async () => {
       const email = "nonexistent@example.com";
 
-      mockPrisma.user.findUnique.mockResolvedValue(null);
+      vi.mocked(mockPrisma.user.findUnique).mockResolvedValue(null);
 
       const result = await repository.existsByEmail(email);
 
@@ -272,7 +279,7 @@ describe("UserRepository", () => {
       const email = "test@example.com";
       const error = new Error("Database connection failed");
 
-      mockPrisma.user.findUnique.mockRejectedValue(error);
+      vi.mocked(mockPrisma.user.findUnique).mockRejectedValue(error);
 
       await expect(repository.existsByEmail(email)).rejects.toThrow(
         "Failed to find user"
@@ -284,7 +291,7 @@ describe("UserRepository", () => {
     it("should return user count", async () => {
       const count = 42;
 
-      mockPrisma.user.count.mockResolvedValue(count);
+      vi.mocked(mockPrisma.user.count).mockResolvedValue(count);
 
       const result = await repository.count();
 
@@ -295,7 +302,7 @@ describe("UserRepository", () => {
     it("should handle database errors", async () => {
       const error = new Error("Database connection failed");
 
-      mockPrisma.user.count.mockRejectedValue(error);
+      vi.mocked(mockPrisma.user.count).mockRejectedValue(error);
 
       await expect(repository.count()).rejects.toThrow("Failed to count users");
     });

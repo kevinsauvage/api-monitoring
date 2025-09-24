@@ -11,6 +11,7 @@ import { DashboardService } from "@/lib/core/services";
 import { MonitoringService } from "@/lib/core/services";
 import { CronService } from "@/lib/core/services";
 import { CostTrackingService } from "@/lib/core/services";
+import { CostMetricService } from "@/lib/core/services";
 
 /**
  * Register all repositories as singletons
@@ -79,6 +80,11 @@ export function registerServices(): void {
   container.registerSingleton(
     SERVICE_IDENTIFIERS.COST_TRACKING_SERVICE,
     () => new CostTrackingService()
+  );
+
+  container.registerSingleton(
+    SERVICE_IDENTIFIERS.COST_METRIC_SERVICE,
+    () => new CostMetricService()
   );
 }
 

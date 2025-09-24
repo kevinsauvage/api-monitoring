@@ -93,17 +93,18 @@ export async function validateApiConnection(
 
 async function validateStripeConnection(
   baseUrl: string,
-  _apiKey?: string,
+  apiKey?: string,
   secretKey?: string
 ): Promise<ValidationResult> {
-  if (!secretKey) {
-    return { success: false, message: "Secret key is required for Stripe" };
+  const stripeKey = secretKey ?? apiKey;
+  if (!stripeKey) {
+    return { success: false, message: "API key is required for Stripe" };
   }
 
   try {
     const response = await axios.get(`${baseUrl}/v1/charges?limit=1`, {
       headers: {
-        Authorization: `Bearer ${secretKey}`,
+        Authorization: `Bearer ${stripeKey}`,
       },
       timeout: 10000,
     });
@@ -328,7 +329,9 @@ export function getAuthHeaders(
   switch (provider.toLowerCase()) {
     case "stripe":
       return {
-        Authorization: `Bearer ${credentials["secretKey"]}`,
+        Authorization: `Bearer ${
+          credentials["secretKey"] ?? credentials["apiKey"]
+        }`,
       };
     case "twilio":
       return {

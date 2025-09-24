@@ -63,7 +63,11 @@ export class CostMetricRepository extends BaseRepository {
     startDate?: Date,
     endDate?: Date
   ): Promise<
-    Array<CostMetric & { apiConnection: { name: string; provider: string } }>
+    Array<
+      CostMetric & {
+        apiConnection: { id: string; name: string; provider: string };
+      }
+    >
   > {
     this.validateRequiredParams({ userId }, ["userId"]);
 
@@ -87,6 +91,7 @@ export class CostMetricRepository extends BaseRepository {
           include: {
             apiConnection: {
               select: {
+                id: true,
                 name: true,
                 provider: true,
               },
@@ -379,6 +384,105 @@ export class CostMetricRepository extends BaseRepository {
           where: { id },
         }),
       this.buildErrorMessage("delete", "cost metric", id)
+    );
+  }
+
+  async deleteByConnectionId(connectionId: string): Promise<void> {
+    this.validateRequiredParams({ connectionId }, ["connectionId"]);
+
+    await this.executeQuery(
+      async () =>
+        this.prisma.costMetric.deleteMany({
+          where: {
+            apiConnectionId: connectionId,
+          },
+        }),
+      this.buildErrorMessage(
+        "delete",
+        "cost metrics for connection",
+        connectionId
+      )
+    );
+  }
+
+  async findLatestByConnectionId(
+    connectionId: string
+  ): Promise<CostMetric | null> {
+    this.validateRequiredParams({ connectionId }, ["connectionId"]);
+
+    return this.executeQuery(
+      async () =>
+        this.prisma.costMetric.findFirst({
+          where: {
+            apiConnectionId: connectionId,
+          },
+          orderBy: {
+            timestamp: "desc",
+          },
+        }),
+      this.buildErrorMessage(
+        "find",
+        "latest cost metric for connection",
+        connectionId
+      )
+    );
+  }
+
+  async countByUserId(userId: string): Promise<number> {
+    this.validateRequiredParams({ userId }, ["userId"]);
+
+    return this.executeQuery(
+      async () =>
+        this.prisma.costMetric.count({
+          where: {
+            apiConnection: {
+              userId,
+            },
+          },
+        }),
+      this.buildErrorMessage("count", "cost metrics for user", userId)
+    );
+  }
+
+  async findByPeriod(
+    userId: string,
+    period: string
+  ): Promise<
+    Array<
+      CostMetric & {
+        apiConnection: { id: string; name: string; provider: string };
+      }
+    >
+  > {
+    this.validateRequiredParams({ userId, period }, ["userId", "period"]);
+
+    return this.executeQuery(
+      async () =>
+        this.prisma.costMetric.findMany({
+          where: {
+            period,
+            apiConnection: {
+              userId,
+            },
+          },
+          include: {
+            apiConnection: {
+              select: {
+                id: true,
+                name: true,
+                provider: true,
+              },
+            },
+          },
+          orderBy: {
+            timestamp: "desc",
+          },
+        }),
+      this.buildErrorMessage(
+        "find",
+        "cost metrics by period",
+        `${period} for user ${userId}`
+      )
     );
   }
 }

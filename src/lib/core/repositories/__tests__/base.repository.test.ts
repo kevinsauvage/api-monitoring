@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { BaseRepository } from "../base.repository";
-import { DatabaseError } from "@/lib/shared/errors";
-import { mockPrisma, resetAllMocks } from "@/test/utils/test-helpers";
+import { DatabaseError } from "../../../shared/errors";
+import { resetAllMocks } from "../../../../test/utils/test-helpers";
 
 // Test implementation of BaseRepository
 class TestRepository extends BaseRepository {
@@ -95,5 +95,3 @@ describe("BaseRepository", () => {
     });
   });
 });
-
-

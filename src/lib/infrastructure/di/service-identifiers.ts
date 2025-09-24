@@ -1,8 +1,3 @@
-/**
- * Service identifiers for dependency injection
- * Using symbols to prevent naming conflicts
- */
-
 export const SERVICE_IDENTIFIERS = {
   // Repositories
   USER_REPOSITORY: Symbol("UserRepository"),
@@ -19,5 +14,7 @@ export const SERVICE_IDENTIFIERS = {
   MONITORING_SERVICE: Symbol("MonitoringService"),
   CRON_SERVICE: Symbol("CronService"),
   COST_TRACKING_SERVICE: Symbol("CostTrackingService"),
+  COST_METRIC_SERVICE: Symbol("CostMetricService"),
   SERIALIZATION_SERVICE: Symbol("SerializationService"),
+  USER_SERVICE: Symbol("UserService"),
 } as const;
