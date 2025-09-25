@@ -34,6 +34,10 @@ export class ConnectionService extends BaseService {
 
     const connections =
       await this.connectionRepository.findByUserIdWithHealthChecks(userId);
+    console.log(
+      "🚀 ~ ConnectionService ~ getConnectionsForUser ~ connections:",
+      connections
+    );
     const planLimits = getPlanLimits(userData.subscription);
 
     return {
@@ -115,6 +119,10 @@ export class ConnectionService extends BaseService {
     const planLimits = getPlanLimits(userData.subscription);
     const currentConnections = await this.connectionRepository.countByUserId(
       user.id
+    );
+    console.log(
+      "🚀 ~ ConnectionService ~ createConnection ~ currentConnections:",
+      currentConnections
     );
 
     if (currentConnections >= planLimits.maxConnections) {

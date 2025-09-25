@@ -18,6 +18,7 @@ export function createDataAction<TInput, TOutput>(
     try {
       const validatedInput = schema.parse(input);
       const result = await serviceMethod(validatedInput);
+      console.log("🚀 ~ createDataAction ~ result:", result);
 
       if (revalidatePaths) {
         revalidatePaths.forEach((path) => revalidatePath(path));
@@ -29,6 +30,8 @@ export function createDataAction<TInput, TOutput>(
         message: "Action completed successfully",
       };
     } catch (error) {
+      console.log("🚀 ~ createDataAction ~ error:", error);
+
       const result = handleActionError(error);
       return {
         success: false,

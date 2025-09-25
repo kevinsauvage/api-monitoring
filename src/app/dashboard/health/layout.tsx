@@ -1,13 +1,7 @@
 import { getServerSession } from "next-auth";
 
-import HealthLayoutHeader from "@/components/features/health-checks/HealthLayoutHeader";
-import HealthMetricsCards from "@/components/features/health-checks/HealthMetricsCards";
-import HealthNavigation from "@/components/features/health-checks/HealthNavigation";
-import {
-  CheckResultRepository,
-  HealthCheckRepository,
-  MonitoringRepository,
-} from "@/lib/core/repositories";
+import HealthPageHeader from "@/components/features/health-checks/HealthPageHeader";
+import { HealthCheckRepository } from "@/lib/core/repositories";
 import { authOptions } from "@/lib/infrastructure/auth";
 
 import type { Session } from "next-auth";
@@ -18,50 +12,21 @@ export default async function HealthLayout({
   children: React.ReactNode;
 }) {
   const session = (await getServerSession(authOptions)) as Session;
-
-  const monitoringRepository = new MonitoringRepository();
   const healthCheckRepository = new HealthCheckRepository();
-  const checkResultRepository = new CheckResultRepository();
-
-  const monitoringStats = await monitoringRepository.getDashboardStats(
-    session.user.id
-  );
 
   const totalHealthChecks = await healthCheckRepository.countByUserId(
     session.user.id
   );
-
-  const activeHealthChecks = await healthCheckRepository.countActiveByUserId(
-    session.user.id
-  );
-
-  const recentResults = await checkResultRepository.findByUserIdWithDetails(
-    session.user.id,
-    50
-  );
-
-  const dashboardData = {
-    totalHealthChecks,
-    activeHealthChecks,
-    ...monitoringStats,
-    recentResults,
-  };
+  const hasHealthChecks = totalHealthChecks > 0;
 
   return (
     <div className="space-y-8">
-      <HealthLayoutHeader
-        title="Health Monitoring"
-        description="Monitor the health and performance of all your API endpoints"
-      />
-      <HealthMetricsCards
-        totalHealthChecks={dashboardData.totalHealthChecks}
-        activeHealthChecks={dashboardData.activeHealthChecks}
-        successRate={dashboardData.successRate}
-        averageResponseTime={dashboardData.averageResponseTime}
-        totalChecks={dashboardData.totalChecks}
-        recentFailures={dashboardData.recentFailures}
-      />
-      <HealthNavigation />
+      {hasHealthChecks && (
+        <HealthPageHeader
+          title="Health Dashboard"
+          description="Monitor your API endpoints and track their performance"
+        />
+      )}
       {children}
     </div>
   );

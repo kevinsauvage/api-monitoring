@@ -17,7 +17,7 @@ export default function BasicConfigSection({
   validationErrors = [],
 }: {
   defaultInterval: number;
-  intervalOptions: Array<{ value: number; label: string }>;
+  intervalOptions: Array<{ value: number; label: string; disabled?: boolean }>;
   validationErrors?: Array<{
     field: string;
     message: string;
@@ -114,6 +114,7 @@ export default function BasicConfigSection({
                   <SelectItem
                     key={option.value}
                     value={option.value.toString()}
+                    disabled={option.disabled}
                   >
                     {option.label}
                   </SelectItem>

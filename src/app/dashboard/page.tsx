@@ -1,6 +1,7 @@
 import { getServerSession } from "next-auth";
 
 import DashboardStats from "@/components/features/dashboard/DashboardStats";
+import EmptyDashboardState from "@/components/features/dashboard/EmptyDashboardState";
 import PerformanceMetrics from "@/components/features/dashboard/PerformanceMetrics";
 import RecentActivity from "@/components/features/dashboard/RecentActivity";
 import ResponseTimeChart from "@/components/shared/charts/ResponseTimeChart";
@@ -24,6 +25,12 @@ export default async function Dashboard() {
 
   const dashboardService = getDashboardService();
   const stats = await dashboardService.getDashboardStats(session.user.id);
+  const hasConnections = stats.totalConnections > 0;
+
+  if (!hasConnections) {
+    return <EmptyDashboardState />;
+  }
+
   const statusData = getStatusData(stats.recentResults);
   const uptimeData = getUptimeData(stats.recentResults);
   const serializedRecentResults = serializeCheckResultsWithDetails(

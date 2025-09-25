@@ -65,12 +65,8 @@ export class ConnectionRepository extends BaseRepository {
   }
 
   async create(data: Prisma.ApiConnectionCreateInput): Promise<ApiConnection> {
-    this.validateRequiredParams(data, [
-      "name",
-      "provider",
-      "baseUrl",
-      "userId",
-    ]);
+    console.log("🚀 ~ ConnectionRepository ~ create ~ data:", data);
+    this.validateRequiredParams(data, ["name", "provider", "baseUrl"]);
 
     return this.executeQuery(
       async () =>

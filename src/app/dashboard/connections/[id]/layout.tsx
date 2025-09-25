@@ -53,27 +53,24 @@ export default async function ConnectionLayout({
 
   return (
     <div className="space-y-6">
-      {/* Back Button */}
-      <div className="flex items-center space-x-4">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/dashboard/connections">
-            <ArrowLeft className="w-4 h-4" />
-          </Link>
-        </Button>
-        <div>
-          <h1 className="text-2xl font-bold text-foreground">
-            {connection.name}
-          </h1>
-          <p className="text-muted-foreground">
-            {connection.provider} • {connection.baseUrl}
-          </p>
+      <div className="flex items-center justify-between border-b pb-6">
+        <div className="flex items-center space-x-4">
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/dashboard/connections">
+              <ArrowLeft className="w-4 h-4" />
+            </Link>
+          </Button>
+          <div>
+            <h1 className="text-2xl font-bold text-foreground">
+              {connection.name}
+            </h1>
+            <p className="text-muted-foreground">
+              {connection.provider} • {connection.baseUrl}
+            </p>
+          </div>
         </div>
+        <ConnectionNavigation connectionId={connection.id} />
       </div>
-
-      {/* Navigation */}
-      <ConnectionNavigation connectionId={connection.id} />
-
-      {/* Content */}
       {children}
     </div>
   );

@@ -1,6 +1,7 @@
-import ConnectionsHeader from "@/components/features/connections/ConnectionsHeader";
-import ConnectionsList from "@/components/features/connections/ConnectionsList";
 import ConnectionsOverview from "@/components/features/connections/ConnectionsOverview";
+import ConnectionsPageHeader from "@/components/features/connections/ConnectionsPageHeader";
+import ConnectionsSection from "@/components/features/connections/ConnectionsSection";
+import EmptyConnectionsState from "@/components/features/connections/EmptyConnectionsState";
 import { serializeConnectionWithHealthChecksAndResults } from "@/lib/core/serializers";
 import {
   getConnectionService,
@@ -45,16 +46,25 @@ export default async function ConnectionsPage() {
     serializeConnectionWithHealthChecksAndResults
   );
 
+  const hasConnections = connections.length > 0;
+  console.log("🚀 ~ ConnectionsPage ~ connections:", connections);
+
   return (
     <div className="space-y-8">
-      <ConnectionsHeader
+      <ConnectionsPageHeader
         userSubscription={user.subscription}
         canCreateConnection={limits.canCreateConnection}
       />
 
-      <ConnectionsOverview connections={connections} limits={limits} />
+      {hasConnections && (
+        <ConnectionsOverview connections={connections} limits={limits} />
+      )}
 
-      <ConnectionsList connections={serializedConnections} />
+      {hasConnections ? (
+        <ConnectionsSection connections={serializedConnections} />
+      ) : (
+        <EmptyConnectionsState />
+      )}
     </div>
   );
 }

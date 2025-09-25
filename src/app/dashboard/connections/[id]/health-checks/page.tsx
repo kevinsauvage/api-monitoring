@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
 
+import EmptyHealthChecksState from "@/components/features/health-checks/EmptyHealthChecksState";
 import HealthChecksHeader from "@/components/features/health-checks/HealthChecksHeader";
-import HealthChecksList from "@/components/features/health-checks/HealthChecksList";
 import HealthChecksOverview from "@/components/features/health-checks/HealthChecksOverview";
+import HealthChecksSection from "@/components/features/health-checks/HealthChecksSection";
 import {
   getConnectionService,
   getHealthCheckService,
 } from "@/lib/infrastructure/di";
-
 
 export const revalidate = 300; // 5 minutes
 
@@ -31,20 +31,29 @@ export default async function ConnectionHealthChecksPage({
       parameters.id
     );
 
+  const hasHealthChecks = healthChecks.length > 0;
+
   return (
     <div className="space-y-8">
-      <HealthChecksHeader
-        connectionProvider={connection.provider}
-        connectionId={parameters.id}
-      />
-
-      <HealthChecksOverview healthChecks={healthChecks} />
-
-      <HealthChecksList
-        healthChecks={healthChecks}
-        connectionName={connection.name}
-        connectionId={parameters.id}
-      />
+      {hasHealthChecks ? (
+        <>
+          <HealthChecksHeader
+            connectionProvider={connection.provider}
+            connectionId={parameters.id}
+          />
+          <HealthChecksOverview healthChecks={healthChecks} />
+          <HealthChecksSection
+            healthChecks={healthChecks}
+            connectionName={connection.name}
+            connectionId={parameters.id}
+          />
+        </>
+      ) : (
+        <EmptyHealthChecksState
+          connectionName={connection.name}
+          connectionId={parameters.id}
+        />
+      )}
     </div>
   );
 }
