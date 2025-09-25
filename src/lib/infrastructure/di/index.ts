@@ -16,4 +16,5 @@ export {
   getCheckResultRepository,
   getSettingsService,
   getBillingService,
+  getAlertService,
 } from "./service-factory";

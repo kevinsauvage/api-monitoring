@@ -7,6 +7,7 @@ import {
   UserPreferencesRepository,
   NotificationSettingsRepository,
   BillingRepository,
+  AlertRepository,
 } from "@/lib/core/repositories";
 import {
   ConnectionService,
@@ -16,6 +17,7 @@ import {
   CronService,
   SettingsService,
   BillingService,
+  AlertService,
 } from "@/lib/core/services";
 
 import { container } from "./container";
@@ -64,6 +66,11 @@ export function registerRepositories(): void {
     SERVICE_IDENTIFIERS.BILLING_REPOSITORY,
     () => new BillingRepository()
   );
+
+  container.registerSingleton(
+    SERVICE_IDENTIFIERS.ALERT_REPOSITORY,
+    () => new AlertRepository()
+  );
 }
 
 /**
@@ -103,6 +110,11 @@ export function registerServices(): void {
   container.registerSingleton(
     SERVICE_IDENTIFIERS.BILLING_SERVICE,
     () => new BillingService()
+  );
+
+  container.registerSingleton(
+    SERVICE_IDENTIFIERS.ALERT_SERVICE,
+    () => new AlertService()
   );
 }
 

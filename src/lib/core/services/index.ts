@@ -6,3 +6,4 @@ export { MonitoringService } from "./monitoring.service";
 export { CronService } from "./cron.service";
 export { SettingsService } from "./settings.service";
 export { BillingService } from "./billing.service";
+export { AlertService } from "./alert.service";

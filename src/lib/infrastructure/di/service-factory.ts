@@ -7,6 +7,7 @@ import type {
   CronService,
   SettingsService,
   BillingService,
+  AlertService,
 } from "@/lib/core/services";
 
 import { container } from "./container";
@@ -73,4 +74,9 @@ export function getSettingsService(): SettingsService {
 export function getBillingService(): BillingService {
   ensureInitialized();
   return container.resolve<BillingService>(SERVICE_IDENTIFIERS.BILLING_SERVICE);
+}
+
+export function getAlertService(): AlertService {
+  ensureInitialized();
+  return container.resolve<AlertService>(SERVICE_IDENTIFIERS.ALERT_SERVICE);
 }

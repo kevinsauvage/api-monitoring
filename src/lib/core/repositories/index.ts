@@ -7,3 +7,4 @@ export { MonitoringRepository } from "./monitoring.repository";
 export { UserPreferencesRepository } from "./user-preferences.repository";
 export { NotificationSettingsRepository } from "./notification-settings.repository";
 export { BillingRepository } from "./billing.repository";
+export { AlertRepository } from "./alert.repository";

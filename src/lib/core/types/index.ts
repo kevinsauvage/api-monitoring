@@ -222,5 +222,79 @@ export type ConnectionWithCredentials = {
   token?: string | null;
 };
 
+// Alert types
+export interface SerializedAlert {
+  id: string;
+  userId: string;
+  apiConnectionId: string | null;
+  type: "ERROR_RATE" | "RESPONSE_TIME" | "RATE_LIMIT" | "UPTIME" | "CUSTOM";
+  condition: string;
+  threshold: number;
+  isActive: boolean;
+  channels: string[];
+  webhookUrl: string | null;
+  slackChannel: string | null;
+  lastTriggered: string | null;
+  createdAt: string;
+  updatedAt: string;
+  apiConnection?: {
+    id: string;
+    name: string;
+    baseUrl: string;
+  } | null;
+}
+
+export interface SerializedAlertHistory {
+  id: string;
+  alertId: string;
+  message: string;
+  severity: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+  timestamp: string;
+  resolved: boolean;
+  resolvedAt: string | null;
+}
+
+export interface AlertWithHistory {
+  id: string;
+  userId: string;
+  apiConnectionId: string | null;
+  type: "ERROR_RATE" | "RESPONSE_TIME" | "RATE_LIMIT" | "UPTIME" | "CUSTOM";
+  condition: string;
+  threshold: number;
+  isActive: boolean;
+  channels: string[];
+  webhookUrl: string | null;
+  slackChannel: string | null;
+  lastTriggered: string | null;
+  createdAt: string;
+  updatedAt: string;
+  alertHistory: SerializedAlertHistory[];
+  apiConnection?: {
+    id: string;
+    name: string;
+    baseUrl: string;
+  } | null;
+}
+
+export interface AlertStats {
+  totalAlerts: number;
+  activeAlerts: number;
+  triggeredAlerts: number;
+  resolvedAlerts: number;
+}
+
+export interface AlertFilters {
+  type?: "ERROR_RATE" | "RESPONSE_TIME" | "RATE_LIMIT" | "UPTIME" | "CUSTOM";
+  isActive?: boolean;
+  apiConnectionId?: string;
+  severity?: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL";
+}
+
+export interface AlertDashboardData {
+  alerts: AlertWithHistory[];
+  stats: AlertStats;
+  recentTriggered: AlertWithHistory[];
+}
+
 // Re-export billing types
 export type { BillingData, BillingHistoryItem, PaymentMethod } from "./billing";

@@ -31,3 +31,19 @@ export {
   getUserPreferences,
   getNotificationSettings,
 } from "./settings-actions";
+
+// Alert actions
+export {
+  createAlert,
+  updateAlert,
+  deleteAlert,
+  toggleAlert,
+  getAlerts,
+  getAlertById,
+  getAlertStats,
+  getAlertDashboardData,
+  getRecentTriggeredAlerts,
+  addAlertHistory,
+  getAlertHistory,
+  markHistoryAsResolved,
+} from "./alert-actions";

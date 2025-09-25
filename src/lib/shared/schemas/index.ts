@@ -189,6 +189,87 @@ export const settingsSchemas = {
   emptyInput: z.object({}),
 };
 
+// Alert schemas
+export const alertSchemas = {
+  create: z.object({
+    apiConnectionId: z.string().optional(),
+    type: z.enum([
+      "ERROR_RATE",
+      "RESPONSE_TIME",
+      "RATE_LIMIT",
+      "UPTIME",
+      "CUSTOM",
+    ]),
+    condition: z.string().min(1, "Condition is required"),
+    threshold: z.number().min(0, "Threshold must be positive"),
+    isActive: z.boolean().optional(),
+    channels: z.array(z.string()).min(1, "At least one channel is required"),
+    webhookUrl: z.string().url().optional().or(z.literal("")),
+    slackChannel: z.string().optional(),
+  }),
+  update: z.object({
+    id: z.string().min(1, "Alert ID is required"),
+    apiConnectionId: z.string().optional(),
+    type: z
+      .enum(["ERROR_RATE", "RESPONSE_TIME", "RATE_LIMIT", "UPTIME", "CUSTOM"])
+      .optional(),
+    condition: z.string().min(1, "Condition is required").optional(),
+    threshold: z.number().min(0, "Threshold must be positive").optional(),
+    isActive: z.boolean().optional(),
+    channels: z
+      .array(z.string())
+      .min(1, "At least one channel is required")
+      .optional(),
+    webhookUrl: z.string().url().optional().or(z.literal("")),
+    slackChannel: z.string().optional(),
+  }),
+  delete: z.object({
+    id: z.string().min(1, "Alert ID is required"),
+  }),
+  toggle: z.object({
+    id: z.string().min(1, "Alert ID is required"),
+  }),
+  getById: z.object({
+    id: z.string().min(1, "Alert ID is required"),
+  }),
+  getAlerts: z.object({
+    filters: z
+      .object({
+        type: z
+          .enum([
+            "ERROR_RATE",
+            "RESPONSE_TIME",
+            "RATE_LIMIT",
+            "UPTIME",
+            "CUSTOM",
+          ])
+          .optional(),
+        isActive: z.boolean().optional(),
+        apiConnectionId: z.string().optional(),
+        severity: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]).optional(),
+      })
+      .optional(),
+    limit: z.number().min(1).max(100).optional(),
+  }),
+  getRecent: z.object({
+    limit: z.number().min(1).max(50).optional(),
+  }),
+  addHistory: z.object({
+    alertId: z.string().min(1, "Alert ID is required"),
+    message: z.string().min(1, "Message is required"),
+    severity: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]),
+  }),
+  getHistory: z.object({
+    alertId: z.string().min(1, "Alert ID is required"),
+    limit: z.number().min(1).max(100).optional(),
+  }),
+  markResolved: z.object({
+    historyId: z.string().min(1, "History ID is required"),
+    alertId: z.string().min(1, "Alert ID is required"),
+  }),
+  emptyInput: z.object({}),
+};
+
 // Export type inference helpers
 export type ConnectionValidationInput = z.infer<
   typeof connectionSchemas.validation

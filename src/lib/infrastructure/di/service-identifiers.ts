@@ -8,6 +8,7 @@ export const SERVICE_IDENTIFIERS = {
   USER_PREFERENCES_REPOSITORY: Symbol("UserPreferencesRepository"),
   NOTIFICATION_SETTINGS_REPOSITORY: Symbol("NotificationSettingsRepository"),
   BILLING_REPOSITORY: Symbol("BillingRepository"),
+  ALERT_REPOSITORY: Symbol("AlertRepository"),
 
   // Services
   CONNECTION_SERVICE: Symbol("ConnectionService"),
@@ -19,4 +20,5 @@ export const SERVICE_IDENTIFIERS = {
   USER_SERVICE: Symbol("UserService"),
   SETTINGS_SERVICE: Symbol("SettingsService"),
   BILLING_SERVICE: Symbol("BillingService"),
+  ALERT_SERVICE: Symbol("AlertService"),
 } as const;
