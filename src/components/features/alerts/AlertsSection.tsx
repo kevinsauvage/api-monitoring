@@ -1,10 +1,11 @@
-import { Plus } from "lucide-react";
 import Link from "next/link";
 
-import AlertTable from "./AlertTable";
-import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
 import type { AlertWithHistory } from "@/lib/core/types";
+
+import AlertTable from "./AlertTable";
 
 interface AlertsSectionProps {
   alerts: AlertWithHistory[];
@@ -21,7 +22,6 @@ interface AlertsSectionProps {
 
 export default function AlertsSection({
   alerts,
-  apiConnections = [],
   onEdit,
   onDelete,
   onToggle,

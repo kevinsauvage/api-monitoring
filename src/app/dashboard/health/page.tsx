@@ -4,7 +4,6 @@ import { getServerSession } from "next-auth";
 import EmptyHealthState from "@/components/features/health-checks/EmptyHealthState";
 import HealthCheckResultsTable from "@/components/features/health-checks/HealthCheckResultsTable";
 import HealthMetricsSection from "@/components/features/health-checks/HealthMetricsSection";
-import HealthPageHeader from "@/components/features/health-checks/HealthPageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckResultRepository } from "@/lib/core/repositories";
@@ -32,12 +31,6 @@ export default async function HealthPage() {
   const totalChecks = serializedResults.length;
   const successfulChecks = serializedResults.filter(
     (r) => r.status === "SUCCESS"
-  ).length;
-  const _failedChecks = serializedResults.filter(
-    (r) => r.status === "FAILURE" || r.status === "ERROR"
-  ).length;
-  const _timeoutChecks = serializedResults.filter(
-    (r) => r.status === "TIMEOUT"
   ).length;
 
   const successRate =

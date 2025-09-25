@@ -80,8 +80,28 @@ export default function SecuritySettings({}) {
 
     try {
       const result = enabled
-        ? await enableTwoFactor()
-        : await disableTwoFactor();
+        ? await enableTwoFactor({
+            theme: "system",
+            language: "en",
+            timezone: "UTC",
+            dateFormat: "MM/dd/yyyy",
+            timeFormat: "12h",
+            showNotifications: true,
+            showTooltips: true,
+            enableAnalytics: false,
+            enableCrashReporting: false,
+          })
+        : await disableTwoFactor({
+            theme: "system",
+            language: "en",
+            timezone: "UTC",
+            dateFormat: "MM/dd/yyyy",
+            timeFormat: "12h",
+            showNotifications: true,
+            showTooltips: true,
+            enableAnalytics: false,
+            enableCrashReporting: false,
+          });
 
       if (result.success) {
         setTwoFactorEnabled(enabled);

@@ -8,7 +8,6 @@ export { default as HealthCheckCard } from "./HealthCheckCard";
 export { default as HealthChecksHeader } from "./HealthChecksHeader";
 export { default as HealthChecksList } from "./HealthChecksList";
 export { default as HealthChecksOverview } from "./HealthChecksOverview";
-export { default as HealthLayoutHeader } from "./HealthLayoutHeader";
 export { default as HealthMetricsCards } from "./HealthMetricsCards";
 export { default as PlanInfoCard } from "./PlanInfoCard";
 export { default as RefreshHealthButton } from "./RefreshHealthButton";

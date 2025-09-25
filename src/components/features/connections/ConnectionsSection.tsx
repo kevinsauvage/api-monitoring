@@ -1,8 +1,3 @@
-import Link from "next/link";
-
-import { Plus } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
 import type { SerializedConnectionWithHealthChecks } from "@/lib/core/serializers";
 import type { CheckResultWithDetails } from "@/lib/core/types";
 
