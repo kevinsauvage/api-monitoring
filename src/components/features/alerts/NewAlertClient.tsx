@@ -10,13 +10,7 @@ import { z } from "zod";
 
 import { createAlert } from "@/actions/alert-actions";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Form,
   FormControl,
@@ -34,8 +28,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
-import { Textarea } from "@/components/ui/textarea";
+
+import AlertConditionBuilder from "./AlertConditionBuilder";
 
 const alertFormSchema = z.object({
   apiConnectionId: z.string().optional(),
@@ -195,7 +189,8 @@ export default function NewAlertClient({
                         </SelectContent>
                       </Select>
                       <FormDescription>
-                        Leave as "Global Alert" to monitor all connections
+                        Leave as &quot;Global Alert&quot; to monitor all
+                        connections
                       </FormDescription>
                       <FormMessage />
                     </FormItem>
@@ -203,52 +198,39 @@ export default function NewAlertClient({
                 />
               </div>
 
-              <FormField
-                control={form.control}
-                name="condition"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Alert Condition</FormLabel>
-                    <FormControl>
-                      <Textarea
-                        placeholder="e.g., error_rate > 5%, response_time > 2000ms, uptime < 99%"
-                        className="min-h-[100px]"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      Describe the condition that should trigger this alert. Be
-                      specific about what you want to monitor.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="space-y-4">
+                <div>
+                  <FormLabel>Alert Condition</FormLabel>
+                  <FormDescription className="mt-1">
+                    Configure the condition that should trigger this alert using
+                    YAML format
+                  </FormDescription>
+                </div>
 
-              <FormField
-                control={form.control}
-                name="threshold"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Threshold Value</FormLabel>
-                    <FormControl>
-                      <Input
-                        type="number"
-                        step="0.01"
-                        placeholder="0.00"
-                        {...field}
-                        onChange={(e) =>
-                          field.onChange(parseFloat(e.target.value) || 0)
-                        }
-                      />
-                    </FormControl>
-                    <FormDescription>
-                      The numeric value that triggers the alert
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <AlertConditionBuilder
+                  alertType={form.watch("type")}
+                  threshold={form.watch("threshold")}
+                  onConditionChange={(condition) =>
+                    form.setValue("condition", condition)
+                  }
+                  onThresholdChange={(threshold) =>
+                    form.setValue("threshold", threshold)
+                  }
+                />
+
+                <FormField
+                  control={form.control}
+                  name="condition"
+                  render={({ field }) => (
+                    <FormItem className="hidden">
+                      <FormControl>
+                        <Input {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
             </div>
 
             {/* Notification Settings Section */}

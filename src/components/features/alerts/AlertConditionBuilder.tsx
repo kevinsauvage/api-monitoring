@@ -2,25 +2,26 @@
 
 import { useState, useEffect } from "react";
 
-import { AlertTriangle, Clock, TrendingDown, TrendingUp } from "lucide-react";
+import {
+  AlertTriangle,
+  Clock,
+  TrendingDown,
+  TrendingUp,
+  Code,
+  ChevronDown,
+  ChevronRight,
+  Copy,
+  Check,
+} from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { FormLabel } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
 import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+  validateAlertCondition,
+  type AlertCondition,
+} from "@/lib/shared/schemas/alert-condition.schema";
 
 interface AlertConditionBuilderProps {
   alertType: string;
@@ -36,14 +37,43 @@ const CONDITION_TEMPLATES = {
     icon: AlertTriangle,
     color: "text-red-600",
     bgColor: "bg-red-100 dark:bg-red-900",
-    operators: [
-      { value: "greater_than", label: "is greater than", symbol: ">" },
-      { value: "greater_equal", label: "is greater than or equal to", symbol: ">=" },
-    ],
-    unit: "%",
+    jsonTemplate: {
+      condition: "error_rate" as const,
+      operator: ">" as const,
+      threshold: 5,
+      unit: "%" as const,
+      timeWindow: 5,
+      description: "Alert when error rate exceeds threshold",
+      severity: "MEDIUM" as const,
+      tags: ["monitoring", "errors"],
+    },
     examples: [
-      { condition: "Error rate > 5%", description: "Alert when more than 5% of requests fail" },
-      { condition: "Error rate >= 10%", description: "Alert when 10% or more requests fail" },
+      {
+        json: {
+          condition: "error_rate" as const,
+          operator: ">" as const,
+          threshold: 5,
+          unit: "%" as const,
+          timeWindow: 5,
+          description: "Alert when error rate > 5% for 5 minutes",
+          severity: "HIGH" as const,
+          tags: ["critical", "errors"],
+        },
+        description: "Alert when error rate > 5% for 5 minutes",
+      },
+      {
+        json: {
+          condition: "error_rate" as const,
+          operator: ">=" as const,
+          threshold: 10,
+          unit: "%" as const,
+          timeWindow: 1,
+          description: "Alert when error rate >= 10% for 1 minute",
+          severity: "CRITICAL" as const,
+          tags: ["urgent", "errors"],
+        },
+        description: "Alert when error rate >= 10% for 1 minute",
+      },
     ],
   },
   RESPONSE_TIME: {
@@ -52,14 +82,43 @@ const CONDITION_TEMPLATES = {
     icon: Clock,
     color: "text-orange-600",
     bgColor: "bg-orange-100 dark:bg-orange-900",
-    operators: [
-      { value: "greater_than", label: "is greater than", symbol: ">" },
-      { value: "greater_equal", label: "is greater than or equal to", symbol: ">=" },
-    ],
-    unit: "ms",
+    jsonTemplate: {
+      condition: "response_time" as const,
+      operator: ">" as const,
+      threshold: 2000,
+      unit: "ms" as const,
+      timeWindow: 5,
+      description: "Alert when response time exceeds threshold",
+      severity: "MEDIUM" as const,
+      tags: ["performance", "latency"],
+    },
     examples: [
-      { condition: "Response time > 2000ms", description: "Alert when responses take longer than 2 seconds" },
-      { condition: "Response time >= 5000ms", description: "Alert when responses take 5+ seconds" },
+      {
+        json: {
+          condition: "response_time" as const,
+          operator: ">" as const,
+          threshold: 2000,
+          unit: "ms" as const,
+          timeWindow: 5,
+          description: "Alert when response time > 2 seconds for 5 minutes",
+          severity: "HIGH" as const,
+          tags: ["performance", "slow"],
+        },
+        description: "Alert when response time > 2 seconds for 5 minutes",
+      },
+      {
+        json: {
+          condition: "response_time" as const,
+          operator: ">=" as const,
+          threshold: 5000,
+          unit: "ms" as const,
+          timeWindow: 1,
+          description: "Alert when response time >= 5 seconds for 1 minute",
+          severity: "CRITICAL" as const,
+          tags: ["performance", "timeout"],
+        },
+        description: "Alert when response time >= 5 seconds for 1 minute",
+      },
     ],
   },
   UPTIME: {
@@ -68,14 +127,43 @@ const CONDITION_TEMPLATES = {
     icon: TrendingDown,
     color: "text-green-600",
     bgColor: "bg-green-100 dark:bg-green-900",
-    operators: [
-      { value: "less_than", label: "is less than", symbol: "<" },
-      { value: "less_equal", label: "is less than or equal to", symbol: "<=" },
-    ],
-    unit: "%",
+    jsonTemplate: {
+      condition: "uptime" as const,
+      operator: "<" as const,
+      threshold: 99,
+      unit: "%" as const,
+      timeWindow: 5,
+      description: "Alert when uptime drops below threshold",
+      severity: "HIGH" as const,
+      tags: ["availability", "uptime"],
+    },
     examples: [
-      { condition: "Uptime < 99%", description: "Alert when uptime drops below 99%" },
-      { condition: "Uptime <= 95%", description: "Alert when uptime is 95% or lower" },
+      {
+        json: {
+          condition: "uptime" as const,
+          operator: "<" as const,
+          threshold: 99,
+          unit: "%" as const,
+          timeWindow: 5,
+          description: "Alert when uptime < 99% for 5 minutes",
+          severity: "HIGH" as const,
+          tags: ["availability", "downtime"],
+        },
+        description: "Alert when uptime &lt; 99% for 5 minutes",
+      },
+      {
+        json: {
+          condition: "uptime" as const,
+          operator: "<=" as const,
+          threshold: 95,
+          unit: "%" as const,
+          timeWindow: 1,
+          description: "Alert when uptime <= 95% for 1 minute",
+          severity: "CRITICAL" as const,
+          tags: ["availability", "critical"],
+        },
+        description: "Alert when uptime &lt;= 95% for 1 minute",
+      },
     ],
   },
   RATE_LIMIT: {
@@ -84,159 +172,308 @@ const CONDITION_TEMPLATES = {
     icon: TrendingUp,
     color: "text-purple-600",
     bgColor: "bg-purple-100 dark:bg-purple-900",
-    operators: [
-      { value: "greater_than", label: "is greater than", symbol: ">" },
-      { value: "greater_equal", label: "is greater than or equal to", symbol: ">=" },
-    ],
-    unit: "requests/min",
+    jsonTemplate: {
+      condition: "rate_limit" as const,
+      operator: ">" as const,
+      threshold: 1000,
+      unit: "requests/min" as const,
+      timeWindow: 5,
+      description: "Alert when rate limit exceeds threshold",
+      severity: "MEDIUM" as const,
+      tags: ["rate-limit", "throttling"],
+    },
     examples: [
-      { condition: "Rate limit > 1000", description: "Alert when exceeding 1000 requests per minute" },
-      { condition: "Rate limit >= 500", description: "Alert when approaching rate limits" },
+      {
+        json: {
+          condition: "rate_limit" as const,
+          operator: ">" as const,
+          threshold: 1000,
+          unit: "requests/min" as const,
+          timeWindow: 5,
+          description:
+            "Alert when rate limit > 1000 requests/min for 5 minutes",
+          severity: "HIGH" as const,
+          tags: ["rate-limit", "high-usage"],
+        },
+        description: "Alert when rate limit > 1000 requests/min for 5 minutes",
+      },
+      {
+        json: {
+          condition: "rate_limit" as const,
+          operator: ">=" as const,
+          threshold: 500,
+          unit: "requests/min" as const,
+          timeWindow: 1,
+          description: "Alert when rate limit >= 500 requests/min for 1 minute",
+          severity: "MEDIUM" as const,
+          tags: ["rate-limit", "monitoring"],
+        },
+        description: "Alert when rate limit >= 500 requests/min for 1 minute",
+      },
     ],
   },
   CUSTOM: {
     title: "Custom Alert",
     description: "Define your own monitoring condition",
-    icon: AlertTriangle,
+    icon: Code,
     color: "text-blue-600",
     bgColor: "bg-blue-100 dark:bg-blue-900",
-    operators: [],
-    unit: "",
-    examples: [],
+    jsonTemplate: {
+      condition: "custom_metric" as const,
+      operator: ">" as const,
+      threshold: 100,
+      unit: "count" as const,
+      timeWindow: 5,
+      description: "Custom monitoring condition",
+      severity: "MEDIUM" as const,
+      tags: ["custom", "monitoring"],
+    },
+    examples: [
+      {
+        json: {
+          condition: "custom_metric" as const,
+          operator: ">" as const,
+          threshold: 80,
+          unit: "%" as const,
+          timeWindow: 5,
+          description: "Alert when memory usage > 80% for 5 minutes",
+          severity: "HIGH" as const,
+          tags: ["memory", "system"],
+        },
+        description: "Alert when memory usage > 80% for 5 minutes",
+      },
+      {
+        json: {
+          condition: "custom_metric" as const,
+          operator: ">=" as const,
+          threshold: 10,
+          unit: "count" as const,
+          timeWindow: 1,
+          description: "Alert when error count >= 10 for 1 minute",
+          severity: "CRITICAL" as const,
+          tags: ["errors", "count"],
+        },
+        description: "Alert when error count >= 10 for 1 minute",
+      },
+    ],
   },
 };
 
 export default function AlertConditionBuilder({
   alertType,
-  threshold,
+  threshold: _threshold,
   onConditionChange,
   onThresholdChange,
 }: AlertConditionBuilderProps) {
-  const [operator, setOperator] = useState<string>("greater_than");
-  const [timeWindow, setTimeWindow] = useState<string>("5");
+  const [jsonContent, setJsonContent] = useState<string>("");
+  const [isValidJson, setIsValidJson] = useState<boolean>(true);
+  const [jsonError, setJsonError] = useState<string>("");
+  const [isExamplesOpen, setIsExamplesOpen] = useState<boolean>(false);
+  const [copiedExample, setCopiedExample] = useState<number | null>(null);
 
-  const template = CONDITION_TEMPLATES[alertType as keyof typeof CONDITION_TEMPLATES];
+  const template =
+    CONDITION_TEMPLATES[alertType as keyof typeof CONDITION_TEMPLATES];
   const Icon = template.icon;
 
+  // Initialize JSON content when alert type changes
   useEffect(() => {
-    if (template.operators.length > 0) {
-      const operatorSymbol = template.operators.find(op => op.value === operator)?.symbol || ">";
-      const condition = `${template.title.toLowerCase().replace(" alert", "")} ${operatorSymbol} ${threshold}${template.unit}`;
-      onConditionChange(condition);
-    }
-  }, [alertType, operator, threshold, onConditionChange, template]);
+    const jsonString = JSON.stringify(template.jsonTemplate, null, 2);
+    setJsonContent(jsonString);
+    onConditionChange(jsonString);
+  }, [alertType, onConditionChange, template.jsonTemplate]);
 
-  if (alertType === "CUSTOM") {
-    return (
-      <div className="space-y-4">
+  // Validate JSON content
+  const validateJson = (content: string) => {
+    try {
+      const parsed = JSON.parse(content) as unknown;
+      const result = validateAlertCondition(parsed);
+
+      if (result.success) {
+        setIsValidJson(true);
+        setJsonError("");
+        return result.data;
+      } else {
+        setIsValidJson(false);
+        const errorMessages =
+          result.errors
+            ?.map((err) => `${err.path}: ${err.message}`)
+            .join("\n") ?? "Unknown validation error";
+        setJsonError(errorMessages);
+        return null;
+      }
+    } catch (error) {
+      setIsValidJson(false);
+      setJsonError(
+        error instanceof Error ? error.message : "Invalid JSON syntax"
+      );
+      return null;
+    }
+  };
+
+  const handleJsonChange = (content: string) => {
+    setJsonContent(content);
+    // Clear any previous validation errors when user is typing
+    if (!isValidJson) {
+      setIsValidJson(true);
+      setJsonError("");
+    }
+  };
+
+  const handleJsonBlur = () => {
+    // Only validate when user leaves the textarea
+    if (jsonContent.trim()) {
+      const parsed = validateJson(jsonContent);
+      if (parsed) {
+        onConditionChange(jsonContent);
+        // Update threshold if it's in the JSON
+        if (typeof parsed.threshold === "number") {
+          onThresholdChange(parsed.threshold);
+        }
+      }
+    }
+  };
+
+  const loadExample = (example: {
+    json: AlertCondition;
+    description: string;
+  }) => {
+    const jsonString = JSON.stringify(example.json, null, 2);
+    setJsonContent(jsonString);
+  };
+
+  const copyExample = async (example: AlertCondition, index: number) => {
+    const jsonString = JSON.stringify(example, null, 2);
+    await navigator.clipboard.writeText(jsonString);
+    setCopiedExample(index);
+    setTimeout(() => setCopiedExample(null), 2000);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className={`p-2 rounded-lg ${template.bgColor}`}>
             <Icon className={`h-5 w-5 ${template.color}`} />
           </div>
           <div>
             <h4 className="font-medium">{template.title}</h4>
-            <p className="text-sm text-muted-foreground">{template.description}</p>
-          </div>
-        </div>
-        
-        <div className="space-y-2">
-          <FormLabel>Custom Condition</FormLabel>
-          <Input
-            placeholder="e.g., custom_metric > 100, specific_error_count >= 5"
-            onChange={(e) => onConditionChange(e.target.value)}
-          />
-          <p className="text-xs text-muted-foreground">
-            Define your own monitoring condition using any metric or expression
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <div className="space-y-4">
-      <div className="flex items-center space-x-2">
-        <div className={`p-2 rounded-lg ${template.bgColor}`}>
-          <Icon className={`h-5 w-5 ${template.color}`} />
-        </div>
-        <div>
-          <h4 className="font-medium">{template.title}</h4>
-          <p className="text-sm text-muted-foreground">{template.description}</p>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="space-y-2">
-          <FormLabel>Operator</FormLabel>
-          <Select value={operator} onValueChange={setOperator}>
-            <FormControl>
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              {template.operators.map((op) => (
-                <SelectItem key={op.value} value={op.value}>
-                  {op.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="space-y-2">
-          <FormLabel>Threshold Value</FormLabel>
-          <div className="flex items-center space-x-2">
-            <Input
-              type="number"
-              value={threshold}
-              onChange={(e) => onThresholdChange(parseFloat(e.target.value) || 0)}
-              step="0.01"
-              min="0"
-            />
-            <span className="text-sm text-muted-foreground">{template.unit}</span>
+            <p className="text-sm text-muted-foreground">
+              {template.description}
+            </p>
           </div>
         </div>
       </div>
 
       <div className="space-y-2">
-        <FormLabel>Time Window (minutes)</FormLabel>
-        <Select value={timeWindow} onValueChange={setTimeWindow}>
-          <FormControl>
-            <SelectTrigger>
-              <SelectValue />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectItem value="1">1 minute</SelectItem>
-            <SelectItem value="5">5 minutes</SelectItem>
-            <SelectItem value="15">15 minutes</SelectItem>
-            <SelectItem value="30">30 minutes</SelectItem>
-            <SelectItem value="60">1 hour</SelectItem>
-          </SelectContent>
-        </Select>
+        <FormLabel>JSON Condition</FormLabel>
+        <Textarea
+          value={jsonContent}
+          onChange={(e) => handleJsonChange(e.target.value)}
+          onBlur={handleJsonBlur}
+          onMouseLeave={handleJsonBlur}
+          className="min-h-[200px] font-mono text-sm"
+          placeholder="Enter JSON condition..."
+        />
+        {!isValidJson && jsonError && (
+          <div className="space-y-1">
+            <p className="text-sm font-medium text-red-600">
+              Validation Error:
+            </p>
+            <pre className="text-xs text-red-600 bg-red-50 dark:bg-red-900/20 p-2 rounded border overflow-x-auto">
+              {jsonError}
+            </pre>
+          </div>
+        )}
         <p className="text-xs text-muted-foreground">
-          How long the condition must be true before triggering
+          Define your alert condition using JSON format with schema validation
         </p>
       </div>
 
       {template.examples.length > 0 && (
         <Card>
-          <CardHeader className="pb-3">
-            <CardTitle className="text-sm">Examples</CardTitle>
-          </CardHeader>
-          <CardContent className="pt-0">
-            <div className="space-y-2">
-              {template.examples.map((example, index) => (
-                <div key={index} className="text-sm">
-                  <code className="bg-muted px-2 py-1 rounded text-xs">
-                    {example.condition}
-                  </code>
-                  <p className="text-muted-foreground mt-1">{example.description}</p>
-                </div>
-              ))}
+          <CardHeader
+            className="grid-rows-1 py-3 cursor-pointer hover:bg-muted/50 transition-colors"
+            onClick={() => setIsExamplesOpen(!isExamplesOpen)}
+          >
+            <div className="flex items-center justify-between">
+              <CardTitle className="text-sm flex items-center gap-2">
+                {isExamplesOpen ? (
+                  <ChevronDown className="h-4 w-4" />
+                ) : (
+                  <ChevronRight className="h-4 w-4" />
+                )}
+                Examples ({template.examples.length})
+              </CardTitle>
+              <p className="text-xs text-muted-foreground">
+                Click to {isExamplesOpen ? "hide" : "show"} examples
+              </p>
             </div>
-          </CardContent>
+          </CardHeader>
+          {isExamplesOpen && (
+            <CardContent className="pt-0">
+              <div className="space-y-4">
+                {template.examples.map((example, index) => (
+                  <div
+                    key={index}
+                    className="space-y-3 border rounded-lg p-4 bg-muted/30"
+                  >
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex-1">
+                        <p className="text-sm font-medium text-foreground mb-1">
+                          {example.description}
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          {example.json.tags.map((tag, tagIndex) => (
+                            <span
+                              key={tagIndex}
+                              className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-primary/10 text-primary"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-secondary text-secondary-foreground">
+                            {example.json.severity}
+                          </span>
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          type="button"
+                          onClick={() => void copyExample(example.json, index)}
+                          className="h-8 px-3"
+                        >
+                          {copiedExample === index ? (
+                            <Check className="h-3 w-3" />
+                          ) : (
+                            <Copy className="h-3 w-3" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="default"
+                          size="sm"
+                          type="button"
+                          onClick={() => loadExample(example)}
+                          className="h-8 px-3"
+                        >
+                          Use
+                        </Button>
+                      </div>
+                    </div>
+                    <details className="group">
+                      <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground transition-colors">
+                        View JSON
+                      </summary>
+                      <pre className="mt-2 bg-muted p-3 rounded text-xs overflow-x-auto border">
+                        <code>{JSON.stringify(example.json, null, 2)}</code>
+                      </pre>
+                    </details>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          )}
         </Card>
       )}
     </div>
