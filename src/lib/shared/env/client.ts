@@ -20,4 +20,4 @@ if (!clientEnv.success) {
   throw new Error("Invalid client environment variables");
 }
 
-export default clientEnv;
+export default clientEnv.data;
