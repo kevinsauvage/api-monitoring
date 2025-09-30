@@ -1,34 +1,36 @@
 # API Pulse - Unified API Monitoring Platform
 
-API Pulse is a comprehensive platform for monitoring, tracking, and optimizing APIs across multiple providers. Get real-time health checks, cost monitoring, and intelligent alerts for all your API integrations.
+API Pulse is a platform for monitoring, tracking, and optimizing APIs across providers. It provides real-time health checks, configurable schedules, and alerting.
 
 ## Features
 
 - **Unified Dashboard**: Monitor all your APIs in one place
-- **Health Checks**: Automated monitoring with customizable intervals
-- **Cost Tracking**: Monitor spending across API providers
-- **Smart Alerts**: Get notified via Slack, email, or webhook
-- **Rate Limit Monitoring**: Track usage to prevent throttling
-- **Secure Key Vault**: Encrypted storage with audit logs
-- **Multi-tier Subscriptions**: Hobby, Startup, and Business plans
+- **Health Checks**: Scheduled checks with timeouts and concurrency controls
+- **Alerts**: Notify via Slack, email, or webhook
+- **Encryption**: Secure storage for secrets
+- **Developer UX**: Strong typing, linting, tests and coverage
 
 ## Tech Stack
 
-- **Frontend**: Next.js 15, React 19, TypeScript, Tailwind CSS
-- **Backend**: Next.js API Routes, Prisma ORM
-- **Database**: PostgreSQL
-- **Authentication**: NextAuth.js
-- **UI Components**: Radix UI, Lucide React
+- **Runtime**: Node.js 18+
+- **Web**: Next.js 15.5, React 19, TypeScript
+- **Styling**: Tailwind CSS v4
+- **API/Server**: Next.js Route Handlers
+- **ORM**: Prisma 5
+- **DB**: PostgreSQL
+- **Auth**: NextAuth.js (+ Prisma adapter)
+- **UI**: Radix UI, Lucide React
 - **Charts**: Recharts
-- **Encryption**: Node.js crypto module
+- **Testing**: Vitest (+ @testing-library)
+- **Linting**: ESLint 9
 
 ## Getting Started
 
 ### Prerequisites
 
 - Node.js 18+
-- PostgreSQL database
-- npm or yarn
+- PostgreSQL
+- npm
 
 ### Installation
 
@@ -45,13 +47,13 @@ API Pulse is a comprehensive platform for monitoring, tracking, and optimizing A
    npm install
    ```
 
-3. **Set up environment variables**
+3. **Configure environment variables**
 
    ```bash
    cp env.example .env.local
    ```
 
-   Update `.env.local` with your configuration:
+   Edit `.env.local` (see `env.example` for all options):
 
    ```env
    # Database
@@ -61,105 +63,128 @@ API Pulse is a comprehensive platform for monitoring, tracking, and optimizing A
    NEXTAUTH_URL="http://localhost:3000"
    NEXTAUTH_SECRET="your-secret-key-here"
 
-   # OAuth Providers (optional)
+   # Providers (optional)
    GOOGLE_CLIENT_ID=""
    GOOGLE_CLIENT_SECRET=""
    GITHUB_CLIENT_ID=""
    GITHUB_CLIENT_SECRET=""
 
-   # Email Configuration
+   # Email
    SMTP_HOST=""
    SMTP_PORT=""
    SMTP_USER=""
    SMTP_PASSWORD=""
    FROM_EMAIL=""
 
-   # Slack Integration
+   # Slack
    SLACK_BOT_TOKEN=""
    SLACK_SIGNING_SECRET=""
 
    # Encryption
    ENCRYPTION_KEY="your-32-character-encryption-key"
+
+   # Monitoring
+   DEFAULT_CHECK_INTERVAL=300
+   DEFAULT_TIMEOUT=5000
+   MAX_CONCURRENT_CHECKS=10
+
+   # Logging
+   LOG_LEVEL=info
    ```
 
-4. **Set up the database**
+4. **Database setup**
+
+   If you are developing locally and want to apply pending migrations and create a new one if needed:
+
+   ```bash
+   npx prisma migrate dev
+   ```
+
+   If you only need to generate the client and apply existing migrations:
 
    ```bash
    npx prisma generate
-   npx prisma db push
+   npx prisma migrate deploy
    ```
 
-5. **Run the development server**
+5. **Start the app (development)**
 
    ```bash
    npm run dev
    ```
 
-6. **Open your browser**
-   Navigate to [http://localhost:3000](http://localhost:3000)
+6. **Open the app**
+   Visit http://localhost:3000
+
+## Scripts
+
+```bash
+# Development
+npm run dev
+
+# Build & start
+npm run build
+npm start
+
+# Linting & types
+npm run lint
+npm run lint:fix
+npm run type-check
+npm run check-all
+
+# Tests
+npm run test        # interactive
+npm run test:run    # CI
+npm run test:watch  # watch mode
+npm run test:coverage
+npm run test:ui     # open Vitest UI
+```
 
 ## Project Structure
 
 ```
 src/
-├── app/                    # Next.js app directory
-│   ├── api/               # API routes
-│   ├── auth/              # Authentication pages
-│   ├── dashboard/         # Dashboard pages
-│   └── globals.css        # Global styles
-├── components/            # Reusable components
-├── lib/                   # Utility functions
-│   ├── auth.ts           # NextAuth configuration
-│   ├── db.ts             # Prisma client
-│   └── encryption.ts     # Encryption utilities
-└── prisma/               # Database schema
-    └── schema.prisma     # Prisma schema
+├── app/                         # Next.js app router (routes, pages, API handlers)
+│   └── api/                     # Route handlers (e.g. auth, cron)
+├── components/                  # UI components (features + shared)
+├── lib/
+│   ├── core/                    # Domain core: services, repositories, types, utils
+│   ├── infrastructure/          # Auth, database, DI, encryption, etc.
+│   └── shared/                  # Shared constants, errors, helpers
+└── test/                        # Test setup, mocks, utilities
+
+prisma/
+└── schema.prisma                # Prisma schema and migrations
 ```
 
-## Subscription Tiers
+Notable files:
 
-### Hobby (Free)
+- `src/lib/infrastructure/auth/auth.ts` – NextAuth config and helpers
+- `src/lib/infrastructure/database/db.ts` – Prisma client
+- `src/lib/infrastructure/encryption/encryption.ts` – crypto helpers
+- `src/app/api/cron/health-checks/route.ts` – cron endpoint for health checks
 
-- 3 API connections
-- 5-minute monitoring intervals
-- 7-day data retention
-- Email alerts only
-
-### Startup ($49/month)
-
-- 15 API connections
-- 1-minute monitoring intervals
-- 30-day data retention
-- Slack + email alerts
-- Cost analytics
-
-### Business ($199/month)
-
-- Unlimited API connections
-- Real-time monitoring
-- 90-day data retention
-- All alert channels
-- Team collaboration
-
-## Development
-
-### Database Commands
+## Database: common commands
 
 ```bash
 # Generate Prisma client
 npx prisma generate
 
-# Push schema changes
-npx prisma db push
+# Apply migrations in dev
+npx prisma migrate dev
 
-# Open Prisma Studio
+# Apply migrations in prod/CI
+npx prisma migrate deploy
+
+# Prisma Studio
 npx prisma studio
-
-# Reset database
-npx prisma db push --force-reset
 ```
 
-### Building for Production
+## Cron jobs
+
+See `CRON_JOBS.md` for the available scheduled tasks and how to trigger them.
+
+## Building for production
 
 ```bash
 npm run build
@@ -170,14 +195,10 @@ npm start
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Submit a pull request
+3. Make your changes (with tests when applicable)
+4. Run linting and tests locally
+5. Open a pull request
 
 ## License
 
-This project is licensed under the MIT License.
-
-## Support
-
-For support, email support@apipulse.com or join our Discord community.
+MIT
