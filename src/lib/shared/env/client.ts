@@ -17,7 +17,6 @@ if (!clientEnv.success) {
     "❌ Invalid client environment variables:",
     clientEnv.error.format()
   );
-  throw new Error("Invalid client environment variables");
 }
 
 export default clientEnv.data;

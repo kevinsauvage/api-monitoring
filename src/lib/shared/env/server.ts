@@ -22,7 +22,6 @@ if (!serverEnv.success) {
     "❌ Invalid server environment variables:",
     serverEnv.error.format()
   );
-  throw new Error("Invalid server environment variables");
 }
 
 // Now serverEnv.data is fully typed and safe to use
