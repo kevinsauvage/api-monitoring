@@ -6,21 +6,22 @@ const envSchemaPrivate = z.object({
   GOOGLE_CLIENT_SECRET: z.string().min(1),
   GITHUB_CLIENT_ID: z.string().min(1),
   GITHUB_CLIENT_SECRET: z.string().min(1),
-  NEXT_PUBLIC_APP_URL: z.string().url(),
   CRON_SECRET: z.string().min(1),
-  NODE_ENV: z.string().min(1),
   ENCRYPTION_KEY: z.string().min(1),
-  LOG_LEVEL: z.string().optional(),
 });
 
 const envSchemaPublic = z.object({
-  NEXT_PUBLIC_APP_URL: z.string().url(),
+  NEXT_PUBLIC_APP_URL: z.string().url().optional(),
+  NEXT_PUBLIC_LOG_LEVEL: z.string().optional(),
 });
 
-// Parse once at module load. If invalid, this will throw during startup
-export const envPrivate = () => envSchemaPrivate.parse(process.env);
+export const envPrivate = () => {
+  return envSchemaPrivate.parse(process.env);
+};
 
-export const envPublic = () => envSchemaPublic.parse(process.env);
+export const envPublic = () => {
+  return envSchemaPublic.parse(process.env);
+};
 
 export type EnvPrivate = z.infer<typeof envSchemaPrivate>;
 export type EnvPublic = z.infer<typeof envSchemaPublic>;

@@ -13,7 +13,7 @@ import type { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
-  debug: envPrivate().NODE_ENV === "development",
+  debug: process.env.NODE_ENV === "development",
   secret: envPrivate().NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
