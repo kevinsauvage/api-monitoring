@@ -7,15 +7,9 @@ const envSchemaPublic = z.object({
   NEXT_PUBLIC_LOG_LEVEL: z.string(),
 });
 
-let clientEnv;
-
-try {
-  clientEnv = envSchemaPublic.parse({
-    NEXT_PUBLIC_APP_URL: process.env["NEXT_PUBLIC_APP_URL"],
-    NEXT_PUBLIC_LOG_LEVEL: process.env["NEXT_PUBLIC_LOG_LEVEL"],
-  });
-} catch (error) {
-  console.error("❌ Invalid client environment variables:", error);
-}
+const clientEnv = envSchemaPublic.parse({
+  NEXT_PUBLIC_APP_URL: process.env["NEXT_PUBLIC_APP_URL"],
+  NEXT_PUBLIC_LOG_LEVEL: process.env["NEXT_PUBLIC_LOG_LEVEL"],
+});
 
 export default clientEnv;

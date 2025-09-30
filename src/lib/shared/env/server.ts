@@ -15,12 +15,5 @@ const envSchemaPrivate = z.object({
   BASIC_AUTH_PASSWORD: z.string().min(1),
 });
 
-let serverEnv;
-
-try {
-  serverEnv = envSchemaPrivate.parse(process.env);
-} catch (error) {
-  console.error("❌ Invalid server environment variables:", error);
-}
-
+const serverEnv = envSchemaPrivate.parse(process.env);
 export default serverEnv;
