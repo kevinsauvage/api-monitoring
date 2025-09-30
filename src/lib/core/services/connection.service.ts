@@ -120,10 +120,6 @@ export class ConnectionService extends BaseService {
     const currentConnections = await this.connectionRepository.countByUserId(
       user.id
     );
-    console.log(
-      "🚀 ~ ConnectionService ~ createConnection ~ currentConnections:",
-      currentConnections
-    );
 
     if (currentConnections >= planLimits.maxConnections) {
       return {
