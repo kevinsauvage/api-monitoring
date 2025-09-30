@@ -8,6 +8,9 @@ const envSchemaPrivate = z.object({
   GITHUB_CLIENT_SECRET: z.string().min(1),
   CRON_SECRET: z.string().min(1),
   ENCRYPTION_KEY: z.string().min(1),
+  BASIC_AUTH_ENABLED: z.string().min(1),
+  BASIC_AUTH_USERNAME: z.string().min(1),
+  BASIC_AUTH_PASSWORD: z.string().min(1),
 });
 
 const envSchemaPublic = z.object({
