@@ -3,11 +3,6 @@ import type { NextRequest } from "next/server";
 
 import serverEnv from "./lib/shared/env/server";
 
-function isBasicAuthEnabled(): boolean {
-  if (process.env.NODE_ENV === "production") return false;
-  return serverEnv.BASIC_AUTH_ENABLED === "true";
-}
-
 function unauthorizedResponse(): NextResponse {
   const res = new NextResponse("Authentication required", { status: 401 });
   res.headers.set("WWW-Authenticate", 'Basic realm="Protected"');
@@ -15,8 +10,6 @@ function unauthorizedResponse(): NextResponse {
 }
 
 export function middleware(req: NextRequest): NextResponse | undefined {
-  if (!isBasicAuthEnabled()) return;
-
   // Skip API routes and static assets
   const { pathname } = req.nextUrl;
   if (
