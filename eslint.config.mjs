@@ -4,6 +4,7 @@ import { FlatCompat } from "@eslint/eslintrc";
 import typescriptEslint from "@typescript-eslint/eslint-plugin";
 import typescriptParser from "@typescript-eslint/parser";
 import importPlugin from "eslint-plugin-import";
+import nextPlugin from "@next/eslint-plugin-next";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -13,7 +14,14 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
+  // Enable Next.js recommended rules (including Core Web Vitals) in flat config
+  {
+    name: "next/core-web-vitals (flat)",
+    plugins: {
+      "@next/next": nextPlugin,
+    },
+    rules: nextPlugin.configs["core-web-vitals"]?.rules ?? {},
+  },
   {
     files: ["**/*.ts", "**/*.tsx"],
     ignores: [
@@ -35,6 +43,7 @@ const eslintConfig = [
     plugins: {
       "@typescript-eslint": typescriptEslint,
       import: importPlugin,
+      "@next/next": nextPlugin,
     },
     rules: {
       // TypeScript-specific rules
