@@ -1,9 +1,9 @@
 import log from "loglevel";
 
-import { envPublic } from "./env";
+import clientEnv from "../env/client";
 
 // Set log level based on environment
-const logLevel = envPublic().NEXT_PUBLIC_LOG_LEVEL ?? "info";
+const logLevel = clientEnv.NEXT_PUBLIC_LOG_LEVEL;
 log.setLevel(logLevel as log.LogLevelDesc);
 
 export { log };

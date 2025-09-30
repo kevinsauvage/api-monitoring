@@ -1,9 +1,9 @@
 import crypto from "crypto";
 
-import { envPrivate } from "@/lib/shared/utils/env";
+import serverEnv from "@/lib/shared/env/server";
 
 const algorithm = "aes-256-gcm";
-const envKey = envPrivate().ENCRYPTION_KEY;
+const envKey = serverEnv.ENCRYPTION_KEY;
 
 if (!envKey || envKey.length !== 32) {
   throw new Error("ENCRYPTION_KEY must be exactly 32 characters long");

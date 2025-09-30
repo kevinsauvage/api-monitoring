@@ -2,7 +2,7 @@ import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { getCronService } from "@/lib/infrastructure/di";
-import { envPrivate } from "@/lib/shared/utils/env";
+import serverEnv from "@/lib/shared/env/server";
 import { log } from "@/lib/shared/utils/logger";
 
 /**
@@ -16,10 +16,7 @@ export async function GET() {
   try {
     const requestHeaders = await headers();
     const providedSecret = requestHeaders.get("x-cron-secret") as string;
-    if (
-      !envPrivate().CRON_SECRET ||
-      providedSecret !== envPrivate().CRON_SECRET
-    ) {
+    if (!serverEnv.CRON_SECRET || providedSecret !== serverEnv.CRON_SECRET) {
       return NextResponse.json(
         { success: false, message: "Unauthorized" },
         { status: 401 }

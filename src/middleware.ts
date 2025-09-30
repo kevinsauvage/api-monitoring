@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
-import { envPrivate } from "./lib/shared/utils/env";
+import serverEnv from "./lib/shared/env/server";
 
 function isBasicAuthEnabled(): boolean {
   if (process.env.NODE_ENV === "production") return false;
-  return envPrivate().BASIC_AUTH_ENABLED === "true";
+  return serverEnv.BASIC_AUTH_ENABLED === "true";
 }
 
 function unauthorizedResponse(): NextResponse {
@@ -40,8 +40,8 @@ export function middleware(req: NextRequest): NextResponse | undefined {
       .toString()
       .split(":");
 
-    const expectedUser = envPrivate().BASIC_AUTH_USERNAME;
-    const expectedPass = envPrivate().BASIC_AUTH_PASSWORD;
+    const expectedUser = serverEnv.BASIC_AUTH_USERNAME;
+    const expectedPass = serverEnv.BASIC_AUTH_PASSWORD;
 
     if (username !== expectedUser || password !== expectedPass) {
       return unauthorizedResponse();

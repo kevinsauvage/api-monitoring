@@ -50,10 +50,10 @@ API Pulse is a platform for monitoring, tracking, and optimizing APIs across pro
 3. **Configure environment variables**
 
    ```bash
-   cp env.example .env.local
+   cp env.example .env
    ```
 
-   Edit `.env.local` (see `env.example` for all options):
+   Edit `.env` (see `env.example` for all options):
 
    ```env
    # Database
@@ -202,3 +202,13 @@ npm start
 ## License
 
 MIT
+
+## Development Basic Auth
+
+To gate the app in non-production, set in `.env` and restart dev server:
+
+```env
+BASIC_AUTH_ENABLED=true
+BASIC_AUTH_USERNAME=your-user
+BASIC_AUTH_PASSWORD=your-pass
+```

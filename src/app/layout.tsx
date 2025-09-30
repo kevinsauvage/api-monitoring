@@ -5,7 +5,7 @@ import { ThemeProvider } from "next-themes";
 
 import SessionProvider from "@/components/shared/layout/SessionProvider";
 import { Toaster } from "@/components/ui/sonner";
-import { envPublic } from "@/lib/shared/utils/env";
+import clientEnv from "@/lib/shared/env/client";
 
 import type { Metadata } from "next";
 
@@ -20,7 +20,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(envPublic().NEXT_PUBLIC_APP_URL),
+  metadataBase: new URL(clientEnv.NEXT_PUBLIC_APP_URL),
   title: {
     default: "API Pulse - Unified API Monitoring Platform",
     template: "%s | API Pulse",
