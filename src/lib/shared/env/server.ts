@@ -15,15 +15,12 @@ const envSchemaPrivate = z.object({
   BASIC_AUTH_PASSWORD: z.string().min(1),
 });
 
-const serverEnv = envSchemaPrivate.safeParse(process.env);
+let serverEnv;
 
-if (!serverEnv.success) {
-  console.error(
-    "❌ Invalid server environment variables:",
-    serverEnv.error.format()
-  );
+try {
+  serverEnv = envSchemaPrivate.parse(process.env);
+} catch (error) {
+  console.error("❌ Invalid server environment variables:", error);
 }
 
-// Now serverEnv.data is fully typed and safe to use
-
-export default serverEnv.data;
+export default serverEnv;
