@@ -6,22 +6,23 @@ import GoogleProvider from "next-auth/providers/google";
 
 import { UserRepository } from "@/lib/core/repositories";
 import { prisma } from "@/lib/infrastructure/database";
+import { envPrivate } from "@/lib/shared/utils/env";
 import { log } from "@/lib/shared/utils/logger";
 
 import type { NextAuthOptions } from "next-auth";
 
 export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
-  debug: process.env.NODE_ENV === "development",
-  secret: process.env.NEXTAUTH_SECRET as string,
+  debug: envPrivate().NODE_ENV === "development",
+  secret: envPrivate().NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
-      clientId: process.env["GOOGLE_CLIENT_ID"] as string,
-      clientSecret: process.env["GOOGLE_CLIENT_SECRET"] as string,
+      clientId: envPrivate().GOOGLE_CLIENT_ID,
+      clientSecret: envPrivate().GOOGLE_CLIENT_SECRET,
     }),
     GitHubProvider({
-      clientId: process.env["GITHUB_CLIENT_ID"] as string,
-      clientSecret: process.env["GITHUB_CLIENT_SECRET"] as string,
+      clientId: envPrivate().GITHUB_CLIENT_ID,
+      clientSecret: envPrivate().GITHUB_CLIENT_SECRET,
     }),
     CredentialsProvider({
       name: "credentials",

@@ -1,14 +1,31 @@
+import { headers } from "next/headers";
 import { NextResponse } from "next/server";
 
 import { getCronService } from "@/lib/infrastructure/di";
+import { envPrivate } from "@/lib/shared/utils/env";
 import { log } from "@/lib/shared/utils/logger";
 
 /**
  * Cron job endpoint for running health checks
  * This runs every minute to execute health checks that are due based on their individual intervals
  */
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export async function GET() {
   try {
+    const requestHeaders = await headers();
+    const providedSecret = requestHeaders.get("x-cron-secret") as string;
+    if (
+      !envPrivate().CRON_SECRET ||
+      providedSecret !== envPrivate().CRON_SECRET
+    ) {
+      return NextResponse.json(
+        { success: false, message: "Unauthorized" },
+        { status: 401 }
+      );
+    }
+
     log.info("Starting scheduled health checks");
 
     const cronService = getCronService();

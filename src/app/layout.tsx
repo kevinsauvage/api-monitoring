@@ -5,6 +5,7 @@ import { ThemeProvider } from "next-themes";
 
 import SessionProvider from "@/components/shared/layout/SessionProvider";
 import { Toaster } from "@/components/ui/sonner";
+import { envPublic } from "@/lib/shared/utils/env";
 
 import type { Metadata } from "next";
 
@@ -19,16 +20,30 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "API Pulse - Unified API Monitoring Platform",
+  metadataBase: new URL(envPublic().NEXT_PUBLIC_APP_URL),
+  title: {
+    default: "API Pulse - Unified API Monitoring Platform",
+    template: "%s | API Pulse",
+  },
   description:
     "Monitor, track, and optimize your APIs across multiple providers. Get real-time health checks, and intelligent alerts.",
   keywords: ["API monitoring", "health checks", "rate limits", "alerts"],
   authors: [{ name: "API Pulse Team" }],
+  alternates: { canonical: "/" },
   openGraph: {
     title: "API Pulse - Unified API Monitoring Platform",
     description:
       "Monitor, track, and optimize your APIs across multiple providers",
     type: "website",
+    url: "/",
+    images: ["/opengraph-image.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "API Pulse - Unified API Monitoring Platform",
+    description:
+      "Monitor, track, and optimize your APIs across multiple providers",
+    images: ["/opengraph-image.png"],
   },
 };
 

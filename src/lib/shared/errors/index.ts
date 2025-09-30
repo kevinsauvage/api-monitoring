@@ -1,8 +1,6 @@
-/**
- * Centralized error handling for the API monitoring platform
- */
-
 import { log } from "@/lib/shared/utils/logger";
+
+import { envPrivate } from "../utils/env";
 
 export class AppError extends Error {
   public readonly code: string;
@@ -140,7 +138,7 @@ export function logError(error: Error, context?: Record<string, unknown>) {
   };
 
   // In production, you would send this to your error tracking service
-  if (process.env.NODE_ENV === "production") {
+  if (envPrivate().NODE_ENV === "production") {
     // Example: Sentry.captureException(error, { extra: context });
     log.error("Production error", errorInfo);
   } else {
@@ -158,7 +156,7 @@ export function getClientErrorMessage(error: unknown): string {
 
   if (error instanceof Error) {
     // In production, don't expose internal error details
-    if (process.env.NODE_ENV === "production") {
+    if (envPrivate().NODE_ENV === "production") {
       return "An unexpected error occurred. Please try again.";
     }
     return error.message;

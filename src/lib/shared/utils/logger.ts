@@ -1,9 +1,11 @@
 import log from "loglevel";
 
+import { envPrivate } from "./env";
+
 // Set log level based on environment
 const logLevel =
-  process.env["LOG_LEVEL"] ??
-  (process.env.NODE_ENV === "production" ? "info" : "debug");
+  envPrivate().LOG_LEVEL ??
+  (envPrivate().NODE_ENV === "production" ? "info" : "debug");
 log.setLevel(logLevel as log.LogLevelDesc);
 
 export { log };
