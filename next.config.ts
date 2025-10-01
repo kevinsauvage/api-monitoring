@@ -16,11 +16,11 @@ const nextConfig: NextConfig = {
     // If you add external analytics, fonts, or CDNs, explicitly list them here.
     const csp = [
       "default-src 'self'",
-      `script-src 'self'${isDev ? " 'unsafe-eval'" : ""}`,
+      `script-src 'self' 'unsafe-inline' 'unsafe-eval'`,
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob:",
       "font-src 'self' data:",
-      "connect-src 'self'",
+      `connect-src 'self'${isDev ? " ws: wss:" : ""}`,
       "frame-ancestors 'none'",
       "base-uri 'self'",
       "form-action 'self'",
@@ -31,29 +31,41 @@ const nextConfig: NextConfig = {
 
     const commonSecurityHeaders = [
       { key: "Content-Security-Policy", value: csp },
-      { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-      { key: "X-Frame-Options", value: "DENY" },
+      { key: "Referrer-Policy", value: "origin-when-cross-origin" },
+      { key: "X-Frame-Options", value: "SAMEORIGIN" },
       { key: "X-Content-Type-Options", value: "nosniff" },
-      { key: "X-DNS-Prefetch-Control", value: "off" },
+      { key: "X-DNS-Prefetch-Control", value: "on" },
+      {
+        key: "Strict-Transport-Security",
+        value: "max-age=63072000; includeSubDomains; preload",
+      },
       {
         key: "Permissions-Policy",
-        value: "camera=(), microphone=(), geolocation=()",
+        value: "camera=(), microphone=(), geolocation=(), browsing-topics=()",
       },
     ];
 
-    // Apply HSTS only when not running locally. Browsers ignore HSTS on http anyway,
-    // but this prevents accidentally caching HSTS for localhost via custom domains.
-    const hstsHeader = {
-      key: "Strict-Transport-Security",
-      value: "max-age=63072000; includeSubDomains; preload",
-    } as const;
-
     return [
       {
+        source: "/api/:path*",
+        headers: [
+          {
+            key: "Access-Control-Allow-Origin",
+            value: "*", // Set your origin
+          },
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, PUT, DELETE, OPTIONS",
+          },
+          {
+            key: "Access-Control-Allow-Headers",
+            value: "Content-Type, Authorization",
+          },
+        ],
+      },
+      {
         source: "/:path*",
-        headers: isDev
-          ? commonSecurityHeaders
-          : [...commonSecurityHeaders, hstsHeader],
+        headers: commonSecurityHeaders,
       },
     ];
   },
