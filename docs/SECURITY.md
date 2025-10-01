@@ -44,6 +44,7 @@ npm install package-name@version --save-dev
 ### Issue
 
 - ESBuild ≤0.24.2 vulnerability affecting development server
+
 - npm audit suggested Vitest 3.x upgrade
 - Vitest 3.x introduced ESM-only breaking changes
 
@@ -57,6 +58,7 @@ npm install package-name@version --save-dev
 
 - `package.json`: Downgraded vitest packages
 - `vitest.config.ts`: Maintained 2.x compatible config
+
 - `.github/workflows/security.yml`: More resilient audit handling
 - `.husky/pre-commit`: Removed deprecated v10 incompatible lines
 
