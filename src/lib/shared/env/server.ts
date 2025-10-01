@@ -2,6 +2,8 @@ import { z } from "zod";
 
 const isTest = process.env.NODE_ENV !== "production";
 
+console.log(" process.env.NODE_ENV ", process.env.NODE_ENV);
+
 const envSchemaPrivate = z.object({
   NEXTAUTH_SECRET: z.string().min(1, "NEXTAUTH_SECRET is required"),
   GOOGLE_CLIENT_ID: z.string().min(1),
