@@ -44,11 +44,12 @@ export class HealthCheckExecutor {
 
       const response: AxiosResponse = await axios(requestConfig);
 
+      const measured = Date.now() - startTime;
+      const responseTime = Math.max(1, measured);
       log.debug("Health check response", {
         statusCode: response.status,
-        responseTime: Date.now() - startTime,
+        responseTime,
       });
-      const responseTime = Date.now() - startTime;
 
       const status = this.determineStatus(
         response,
@@ -79,7 +80,7 @@ export class HealthCheckExecutor {
       log.error("Health check execution error", {
         error: error instanceof Error ? error.message : String(error),
       });
-      const responseTime = Date.now() - startTime;
+      const responseTime = Math.max(1, Date.now() - startTime);
       const err = error as { code?: string; message?: string; name?: string };
       const isTimeout =
         err.code === "ECONNABORTED" || err.message?.includes("timeout");

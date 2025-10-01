@@ -19,7 +19,7 @@ vi.mock("@/lib/shared/utils/plan-limits", () => ({
 }));
 
 import { ConnectionService } from "../connection.service";
-import { mockPrisma, resetAllMocks } from "@/test/utils/test-helpers";
+import { resetAllMocks } from "@/test/utils/test-helpers";
 import { createTestUser, createTestConnection } from "@/test/utils/test-data";
 
 // Mock the DI container

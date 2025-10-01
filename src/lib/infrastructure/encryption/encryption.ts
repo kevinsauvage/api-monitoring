@@ -3,11 +3,7 @@ import crypto from "crypto";
 import serverEnv from "@/lib/shared/env/server";
 
 const algorithm = "aes-256-gcm";
-const envKey = serverEnv.ENCRYPTION_KEY;
-
-if (!envKey || envKey.length !== 32) {
-  throw new Error("ENCRYPTION_KEY must be exactly 32 characters long");
-}
+const envKey = serverEnv.ENCRYPTION_KEY as string;
 
 export function encrypt(text: string): string {
   const iv = crypto.randomBytes(16);

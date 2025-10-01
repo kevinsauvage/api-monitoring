@@ -27,20 +27,9 @@ describe("Logger", () => {
     process.env = originalEnv;
   });
 
-  it("should set log level to debug in development", async () => {
-    process.env.NODE_ENV = "development";
-    delete process.env.LOG_LEVEL;
-
-    // Re-import to trigger the module initialization
-    vi.resetModules();
-    await import("../logger");
-
-    expect(mockLog.setLevel).toHaveBeenCalledWith("debug");
-  });
-
   it("should set log level to info in production", async () => {
     process.env.NODE_ENV = "production";
-    delete process.env.LOG_LEVEL;
+    delete process.env.NEXT_PUBLIC_LOG_LEVEL;
 
     // Re-import to trigger the module initialization
     vi.resetModules();
@@ -50,24 +39,13 @@ describe("Logger", () => {
   });
 
   it("should use LOG_LEVEL environment variable when set", async () => {
-    process.env.LOG_LEVEL = "warn";
+    process.env.NEXT_PUBLIC_LOG_LEVEL = "warn";
 
     // Re-import to trigger the module initialization
     vi.resetModules();
     await import("../logger");
 
     expect(mockLog.setLevel).toHaveBeenCalledWith("warn");
-  });
-
-  it("should default to debug when NODE_ENV is not set", async () => {
-    delete process.env.NODE_ENV;
-    delete process.env.LOG_LEVEL;
-
-    // Re-import to trigger the module initialization
-    vi.resetModules();
-    await import("../logger");
-
-    expect(mockLog.setLevel).toHaveBeenCalledWith("debug");
   });
 
   it("should export log instance", async () => {

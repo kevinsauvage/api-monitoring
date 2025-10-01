@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi, beforeAll } from "vitest";
 
 // Mock getServerSession before importing the service
 vi.mock("next-auth", () => ({
@@ -38,25 +38,18 @@ import { createTestUser } from "@/test/utils/test-data";
 
 describe("BaseService", () => {
   let ConnectionService: any;
-  let HealthCheckService: any;
 
   beforeAll(async () => {
-    // Import services that extend BaseService
     const connectionModule = await import("../connection.service");
-    const healthCheckModule = await import("../health-check.service");
-
     ConnectionService = connectionModule.ConnectionService;
-    HealthCheckService = healthCheckModule.HealthCheckService;
   });
 
   let connectionService: any;
-  let healthCheckService: any;
 
   beforeEach(async () => {
     resetAllMocks();
 
-    // Mock DI container resolution
-    const { container } = await import("@/lib/infrastructure/di");
+    const { container } = await import("../../../infrastructure/di");
     (container.resolve as any).mockImplementation((identifier: string) => {
       if (identifier === "CONNECTION_REPOSITORY")
         return mockPrisma.apiConnection;
@@ -69,7 +62,6 @@ describe("BaseService", () => {
     });
 
     connectionService = new ConnectionService();
-    healthCheckService = new HealthCheckService();
   });
 
   describe("getCurrentUser", () => {
@@ -134,12 +126,10 @@ describe("BaseService", () => {
 
   describe("executeWithErrorHandling", () => {
     it("should execute operation successfully", async () => {
-      // Test through a service method that uses executeWithErrorHandling
       const mockUser = createTestUser();
       const { getServerSession } = await import("next-auth");
       vi.mocked(getServerSession).mockResolvedValue({ user: mockUser });
 
-      // Mock the repository to return empty array
       mockPrisma.apiConnection.findByUserIdWithHealthChecks.mockResolvedValue(
         []
       );

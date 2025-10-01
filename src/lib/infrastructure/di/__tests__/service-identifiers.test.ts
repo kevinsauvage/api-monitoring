@@ -98,7 +98,7 @@ describe("Service Identifiers", () => {
   describe("identifier properties", () => {
     it("should have correct number of identifiers", () => {
       const identifierKeys = Object.keys(SERVICE_IDENTIFIERS);
-      expect(identifierKeys).toHaveLength(15); // Updated count with new services
+      expect(identifierKeys).toHaveLength(19); // Updated count with new services
     });
 
     it("should have all expected repository keys", () => {

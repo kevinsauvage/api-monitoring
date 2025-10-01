@@ -11,8 +11,7 @@ import type {
 } from "@/lib/core";
 import { authOptions } from "@/lib/infrastructure/auth";
 import type { ServiceIdentifier } from "@/lib/infrastructure/di";
-import { container } from "@/lib/infrastructure/di/container";
-import { SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di/service-identifiers";
+import { container, SERVICE_IDENTIFIERS } from "@/lib/infrastructure/di";
 import {
   UnauthorizedError,
   handleError,

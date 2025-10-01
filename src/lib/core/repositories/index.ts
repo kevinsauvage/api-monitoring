@@ -1,6 +1,6 @@
 export { BaseRepository } from "./base.repository";
-export { UserRepository } from "./user.repository";
 export { ConnectionRepository } from "./connection.repository";
+export { UserRepository } from "./user.repository";
 export { HealthCheckRepository } from "./health-check.repository";
 export { CheckResultRepository } from "./check-result.repository";
 export { MonitoringRepository } from "./monitoring.repository";

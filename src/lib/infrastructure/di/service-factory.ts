@@ -14,14 +14,8 @@ import { container } from "./container";
 import { initializeDI } from "./init";
 import { SERVICE_IDENTIFIERS } from "./service-identifiers";
 
-// Lazy initialization - only initialize when first service is requested
-let isInitialized = false;
-
 function ensureInitialized(): void {
-  if (!isInitialized) {
-    initializeDI();
-    isInitialized = true;
-  }
+  initializeDI();
 }
 
 export function getConnectionService(): ConnectionService {

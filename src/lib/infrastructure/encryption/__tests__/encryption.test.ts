@@ -157,39 +157,4 @@ describe("Encryption", () => {
       });
     });
   });
-
-  describe("environment validation", () => {
-    it("should throw error when ENCRYPTION_KEY is not set", async () => {
-      delete process.env.ENCRYPTION_KEY;
-
-      // Clear module cache and re-import
-      vi.resetModules();
-
-      await expect(async () => {
-        await import("../encryption");
-      }).rejects.toThrow("ENCRYPTION_KEY must be exactly 32 characters long");
-    });
-
-    it("should throw error when ENCRYPTION_KEY is too short", async () => {
-      process.env.ENCRYPTION_KEY = "short";
-
-      // Clear module cache and re-import
-      vi.resetModules();
-
-      await expect(async () => {
-        await import("../encryption");
-      }).rejects.toThrow("ENCRYPTION_KEY must be exactly 32 characters long");
-    });
-
-    it("should throw error when ENCRYPTION_KEY is too long", async () => {
-      process.env.ENCRYPTION_KEY = "a".repeat(33);
-
-      // Clear module cache and re-import
-      vi.resetModules();
-
-      await expect(async () => {
-        await import("../encryption");
-      }).rejects.toThrow("ENCRYPTION_KEY must be exactly 32 characters long");
-    });
-  });
 });

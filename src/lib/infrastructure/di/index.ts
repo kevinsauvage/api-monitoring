@@ -18,3 +18,4 @@ export {
   getBillingService,
   getAlertService,
 } from "./service-factory";
+export { SERVICE_IDENTIFIERS } from "./service-identifiers";
