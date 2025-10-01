@@ -1,10 +1,7 @@
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
-import bcrypt from "bcryptjs";
-import CredentialsProvider from "next-auth/providers/credentials";
 import GitHubProvider from "next-auth/providers/github";
 import GoogleProvider from "next-auth/providers/google";
 
-import { UserRepository } from "@/lib/core/repositories";
 import { prisma } from "@/lib/infrastructure/database";
 import serverEnv from "@/lib/shared/env/server";
 import { log } from "@/lib/shared/utils/logger";
@@ -17,53 +14,12 @@ export const authOptions: NextAuthOptions = {
   secret: serverEnv.NEXTAUTH_SECRET,
   providers: [
     GoogleProvider({
-      clientId: serverEnv.GOOGLE_CLIENT_ID,
-      clientSecret: serverEnv.GOOGLE_CLIENT_SECRET,
+      clientId: serverEnv.GOOGLE_CLIENT_ID as string,
+      clientSecret: serverEnv.GOOGLE_CLIENT_SECRET as string,
     }),
     GitHubProvider({
-      clientId: serverEnv.GITHUB_CLIENT_ID,
-      clientSecret: serverEnv.GITHUB_CLIENT_SECRET,
-    }),
-    CredentialsProvider({
-      name: "credentials",
-      credentials: {
-        email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" },
-      },
-      async authorize(credentials) {
-        if (!credentials?.email || !credentials.password) {
-          return null;
-        }
-
-        const userRepository = new UserRepository();
-        const user = await userRepository.findByEmail(credentials.email);
-
-        if (!user) {
-          return null;
-        }
-
-        // For OAuth users, they don't have a password
-        if (!user.password) {
-          return null;
-        }
-
-        const isPasswordValid = await bcrypt.compare(
-          credentials.password,
-          user.password
-        );
-
-        if (!isPasswordValid) {
-          return null;
-        }
-
-        return {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          image: user.image,
-          subscription: user.subscription,
-        };
-      },
+      clientId: serverEnv.GITHUB_CLIENT_ID as string,
+      clientSecret: serverEnv.GITHUB_CLIENT_SECRET as string,
     }),
   ],
   session: {

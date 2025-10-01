@@ -30,7 +30,7 @@ export class UserRepository extends BaseRepository {
   }
 
   async create(data: Prisma.UserCreateInput): Promise<User> {
-    this.validateRequiredParams(data, ["name", "email", "password"]);
+    this.validateRequiredParams(data, ["name", "email"]);
 
     return this.executeQuery(
       async () =>

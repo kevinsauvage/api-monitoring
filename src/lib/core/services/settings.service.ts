@@ -1,5 +1,3 @@
-import * as bcrypt from "bcryptjs";
-
 import type { settingsSchemas } from "@/lib/shared/schemas";
 
 import { BaseService } from "./base.service";
@@ -25,38 +23,6 @@ export class SettingsService extends BaseService {
     });
 
     return { success: true, message: "Profile updated successfully" };
-  }
-
-  async updatePassword(
-    data: typeof settingsSchemas.updatePassword._type
-  ): Promise<{ success: boolean; message: string }> {
-    const user = await this.requireAuth();
-
-    // Get current user to verify password
-    const currentUser = await this.userRepository.findById(user.id);
-    if (!currentUser?.password) {
-      return { success: false, message: "User not found or no password set" };
-    }
-
-    // Verify current password
-    const isCurrentPasswordValid = await bcrypt.compare(
-      data.currentPassword,
-      currentUser.password
-    );
-
-    if (!isCurrentPasswordValid) {
-      return { success: false, message: "Current password is incorrect" };
-    }
-
-    // Hash new password
-    const hashedNewPassword = await bcrypt.hash(data.newPassword, 12);
-
-    // Update password in database
-    await this.userRepository.update(user.id, {
-      password: hashedNewPassword,
-    });
-
-    return { success: true, message: "Password updated successfully" };
   }
 
   async updateNotificationSettings(

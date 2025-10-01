@@ -31,7 +31,7 @@ const settingsSections = [
   {
     id: "security",
     title: "Security",
-    description: "Password and authentication settings",
+    description: "Authentication and security settings",
     icon: Shield,
     href: "/dashboard/settings/security",
   },
@@ -102,4 +102,3 @@ export default function SettingsNavigation() {
     </Card>
   );
 }
-

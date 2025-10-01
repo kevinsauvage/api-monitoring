@@ -43,7 +43,6 @@ model User {
   email         String    @unique
   emailVerified DateTime?
   image         String?
-  password      String?   // For credentials provider
   subscription  Subscription @default(HOBBY)
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt

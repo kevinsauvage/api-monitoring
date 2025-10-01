@@ -1,5 +1,4 @@
-// Auth actions
-export { registerUser } from "./auth-actions";
+// Auth actions - Email/password authentication removed, only OAuth supported
 
 // Connection actions
 export {
@@ -21,7 +20,6 @@ export {
 // Settings actions
 export {
   updateUserProfile,
-  updatePassword,
   enableTwoFactor,
   disableTwoFactor,
   updateNotificationSettings,

@@ -97,21 +97,6 @@ export const connectionSchemas = {
   }),
 };
 
-// Auth schemas
-export const authSchemas = {
-  registration: z
-    .object({
-      name: commonSchemas.name,
-      email: commonSchemas.email,
-      password: commonSchemas.password,
-      confirmPassword: z.string(),
-    })
-    .refine((data) => data.password === data.confirmPassword, {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
-    }),
-};
-
 // Health check schemas
 export const healthCheckSchemas = {
   create: z.object({
@@ -154,16 +139,6 @@ export const settingsSchemas = {
     name: z.string().min(1, "Name is required").max(100, "Name is too long"),
     email: commonSchemas.email,
   }),
-  updatePassword: z
-    .object({
-      currentPassword: z.string().min(1, "Current password is required"),
-      newPassword: commonSchemas.password,
-      confirmPassword: z.string().min(1, "Please confirm your password"),
-    })
-    .refine((data) => data.newPassword === data.confirmPassword, {
-      message: "Passwords do not match",
-      path: ["confirmPassword"],
-    }),
   updateNotificationSettings: z.object({
     emailNotifications: z.boolean(),
     pushNotifications: z.boolean(),
@@ -277,7 +252,6 @@ export type ConnectionValidationInput = z.infer<
 export type ConnectionCreateInput = z.infer<typeof connectionSchemas.create>;
 export type ConnectionUpdateInput = z.infer<typeof connectionSchemas.update>;
 export type ConnectionDeleteInput = z.infer<typeof connectionSchemas.delete>;
-export type RegistrationInput = z.infer<typeof authSchemas.registration>;
 export type HealthCheckDeleteInput = z.infer<typeof healthCheckSchemas.delete>;
 export type HealthCheckTriggerInput = z.infer<
   typeof healthCheckSchemas.trigger

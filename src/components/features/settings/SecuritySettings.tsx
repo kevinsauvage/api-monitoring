@@ -2,78 +2,18 @@
 
 import { useState } from "react";
 
-import {
-  Shield,
-  Key,
-  Smartphone,
-  Eye,
-  EyeOff,
-  CheckCircle,
-  AlertTriangle,
-  Clock,
-} from "lucide-react";
+import { Shield, Smartphone, CheckCircle, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
 
-import { updatePassword, enableTwoFactor, disableTwoFactor } from "@/actions";
+import { enableTwoFactor, disableTwoFactor } from "@/actions";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 
 export default function SecuritySettings({}) {
   const [isLoading, setIsLoading] = useState(false);
-  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-  const [showNewPassword, setShowNewPassword] = useState(false);
-  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
-
-  const handlePasswordChange = (field: string, value: string) => {
-    setPasswordForm((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-  };
-
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      toast.error("New passwords do not match");
-      return;
-    }
-
-    setIsLoading(true);
-
-    try {
-      const result = await updatePassword({
-        currentPassword: passwordForm.currentPassword,
-        newPassword: passwordForm.newPassword,
-        confirmPassword: passwordForm.confirmPassword,
-      });
-
-      if (result.success) {
-        toast.success("Password updated successfully");
-        setPasswordForm({
-          currentPassword: "",
-          newPassword: "",
-          confirmPassword: "",
-        });
-      } else {
-        toast.error(result.message || "Failed to update password");
-      }
-    } catch {
-      toast.error("An error occurred while updating your password");
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   const handleTwoFactorToggle = async (enabled: boolean) => {
     setIsLoading(true);
@@ -124,117 +64,6 @@ export default function SecuritySettings({}) {
 
   return (
     <div className="space-y-6">
-      {/* Password Settings */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Key className="h-5 w-5" />
-            Password & Authentication
-          </CardTitle>
-        </CardHeader>
-        <CardContent>
-          <form
-            onSubmit={(e) => void handlePasswordSubmit(e)}
-            className="space-y-6"
-          >
-            <div className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="current-password">Current Password</Label>
-                <div className="relative">
-                  <Input
-                    id="current-password"
-                    type={showCurrentPassword ? "text" : "password"}
-                    value={passwordForm.currentPassword}
-                    onChange={(e) =>
-                      handlePasswordChange("currentPassword", e.target.value)
-                    }
-                    placeholder="Enter your current password"
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowCurrentPassword(!showCurrentPassword)}
-                  >
-                    {showCurrentPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="new-password">New Password</Label>
-                <div className="relative">
-                  <Input
-                    id="new-password"
-                    type={showNewPassword ? "text" : "password"}
-                    value={passwordForm.newPassword}
-                    onChange={(e) =>
-                      handlePasswordChange("newPassword", e.target.value)
-                    }
-                    placeholder="Enter your new password"
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowNewPassword(!showNewPassword)}
-                  >
-                    {showNewPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="confirm-password">Confirm New Password</Label>
-                <div className="relative">
-                  <Input
-                    id="confirm-password"
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={passwordForm.confirmPassword}
-                    onChange={(e) =>
-                      handlePasswordChange("confirmPassword", e.target.value)
-                    }
-                    placeholder="Confirm your new password"
-                    required
-                  />
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? (
-                      <EyeOff className="h-4 w-4" />
-                    ) : (
-                      <Eye className="h-4 w-4" />
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </div>
-
-            <div className="flex justify-end">
-              <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Updating..." : "Update Password"}
-              </Button>
-            </div>
-          </form>
-        </CardContent>
-      </Card>
-
       {/* Two-Factor Authentication */}
       <Card>
         <CardHeader>
@@ -316,12 +145,10 @@ export default function SecuritySettings({}) {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <Clock className="h-4 w-4 text-muted-foreground" />
-                <span className="text-sm">Last Password Change</span>
+                <Shield className="h-4 w-4 text-green-500" />
+                <span className="text-sm">OAuth Authentication</span>
               </div>
-              <span className="text-sm text-muted-foreground">
-                {new Date().toLocaleDateString()}
-              </span>
+              <Badge variant="default">Active</Badge>
             </div>
           </div>
         </CardContent>

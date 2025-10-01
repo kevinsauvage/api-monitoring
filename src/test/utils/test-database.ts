@@ -1,4 +1,4 @@
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient, Subscription } from "@prisma/client";
 
 // Test database configuration
 export const testDatabase = {
@@ -33,8 +33,7 @@ export const testDatabaseUtils = {
         id: "test-user-id",
         name: "Test User",
         email: "test@example.com",
-        password: "hashed-password",
-        subscription: "FREE",
+        subscription: Subscription.HOBBY,
       },
     });
 
@@ -74,5 +73,3 @@ export const testDatabaseUtils = {
     await testPrisma.$disconnect();
   },
 };
-
-

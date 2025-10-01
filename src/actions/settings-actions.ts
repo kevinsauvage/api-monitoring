@@ -15,12 +15,6 @@ export const updateUserProfile = createAuthenticatedAction(
   ["/dashboard/settings"]
 );
 
-export const updatePassword = createAuthenticatedAction(
-  settingsSchemas.updatePassword,
-  async (input, _userId) => settingsService.updatePassword(input),
-  ["/dashboard/settings"]
-);
-
 export const updateNotificationSettings = createAuthenticatedAction(
   settingsSchemas.updateNotificationSettings,
   async (input, _userId) => settingsService.updateNotificationSettings(input),

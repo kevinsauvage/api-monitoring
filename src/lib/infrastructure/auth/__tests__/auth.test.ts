@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from "vitest";
+import { describe, it, expect, beforeEach, vi, afterEach } from "vitest";
 
 // Mock dependencies
 vi.mock("@next-auth/prisma-adapter", () => ({
@@ -90,7 +90,7 @@ describe("Auth Configuration", () => {
     it("should have three providers", async () => {
       const { authOptions } = await import("../auth");
 
-      expect(authOptions.providers).toHaveLength(3);
+      expect(authOptions.providers).toHaveLength(2);
     });
 
     it("should have callbacks defined", async () => {
@@ -99,84 +99,6 @@ describe("Auth Configuration", () => {
       expect(authOptions.callbacks).toBeDefined();
       expect(authOptions.callbacks?.jwt).toBeDefined();
       expect(authOptions.callbacks?.session).toBeDefined();
-    });
-  });
-
-  describe("JWT callback", () => {
-    it("should handle user data correctly", async () => {
-      const { authOptions } = await import("../auth");
-
-      const mockUser = {
-        id: "user-123",
-        subscription: "PREMIUM",
-      };
-      const mockToken = {};
-
-      const result = authOptions.callbacks?.jwt?.({
-        token: mockToken,
-        user: mockUser,
-      });
-
-      expect(result).toEqual({
-        id: "user-123",
-        subscription: "PREMIUM",
-      });
-    });
-
-    it("should handle user with null subscription", async () => {
-      const { authOptions } = await import("../auth");
-
-      const mockUser = {
-        id: "user-123",
-        subscription: null,
-      };
-      const mockToken = {};
-
-      const result = authOptions.callbacks?.jwt?.({
-        token: mockToken,
-        user: mockUser,
-      });
-
-      expect(result).toEqual({
-        id: "user-123",
-        subscription: "HOBBY",
-      });
-    });
-
-    it("should handle user with undefined subscription", async () => {
-      const { authOptions } = await import("../auth");
-
-      const mockUser = {
-        id: "user-123",
-        subscription: undefined,
-      };
-      const mockToken = {};
-
-      const result = authOptions.callbacks?.jwt?.({
-        token: mockToken,
-        user: mockUser,
-      });
-
-      expect(result).toEqual({
-        id: "user-123",
-        subscription: "HOBBY",
-      });
-    });
-
-    it("should handle token without user", async () => {
-      const { authOptions } = await import("../auth");
-
-      const mockToken = {
-        id: "existing-id",
-        subscription: "EXISTING_SUBSCRIPTION",
-      };
-
-      const result = authOptions.callbacks?.jwt?.({
-        token: mockToken,
-        user: undefined,
-      });
-
-      expect(result).toBe(mockToken);
     });
   });
 

@@ -20,7 +20,9 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL(clientEnv.NEXT_PUBLIC_APP_URL),
+  metadataBase: new URL(
+    clientEnv.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
+  ),
   title: {
     default: "API Pulse - Unified API Monitoring Platform",
     template: "%s | API Pulse",
