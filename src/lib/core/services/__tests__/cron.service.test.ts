@@ -9,11 +9,11 @@ vi.mock("next/headers", () => ({
   headers: vi.fn(() => new Map()),
 }));
 
-vi.mock("@/lib/infrastructure/encryption", () => ({
+vi.mock("../../../../lib/infrastructure/encryption", () => ({
   decrypt: vi.fn((data: string) => data.replace("encrypted_", "")),
 }));
 
-vi.mock("@/lib/core/monitoring/health-check-executor", () => ({
+vi.mock("../../monitoring/health-check-executor", () => ({
   healthCheckExecutor: {
     executeHealthCheck: vi.fn(),
   },
@@ -28,7 +28,7 @@ import {
 } from "../../../../test/utils/test-data";
 
 // Mock the DI container
-vi.mock("@/lib/infrastructure/di", () => ({
+vi.mock("../../../../lib/infrastructure/di", () => ({
   container: {
     resolve: vi.fn(),
   },
@@ -75,7 +75,7 @@ describe("CronService", () => {
     };
 
     // Mock DI container resolution
-    const { container } = await import("@/lib/infrastructure/di");
+    const { container } = await import("../../../../lib/infrastructure/di");
     (container.resolve as any).mockImplementation((identifier: string) => {
       if (identifier === "CONNECTION_REPOSITORY")
         return mockConnectionRepository;
@@ -113,6 +113,10 @@ describe("CronService", () => {
           apiConnection: {
             id: "connection-1",
             isActive: true,
+            user: {
+              id: "user-1",
+              subscription: "HOBBY",
+            },
           },
         },
         {
@@ -127,6 +131,10 @@ describe("CronService", () => {
           apiConnection: {
             id: "connection-2",
             isActive: true,
+            user: {
+              id: "user-2",
+              subscription: "STARTUP",
+            },
           },
         },
       ];
@@ -145,6 +153,35 @@ describe("CronService", () => {
 
     it("should return empty array when no health checks are due", async () => {
       mockHealthCheckRepository.findDueForExecution.mockResolvedValue([]);
+
+      const result = await service.getHealthChecksDueForExecution();
+
+      expect(result).toEqual([]);
+    });
+
+    it("should respect plan minimum intervals when determining readiness", async () => {
+      const notDueHealthCheck = {
+        id: "health-check-3",
+        apiConnectionId: "connection-3",
+        endpoint: "/status",
+        method: "GET",
+        expectedStatus: 200,
+        timeout: 30,
+        interval: 60,
+        lastExecutedAt: new Date(Date.now() - 120000),
+        apiConnection: {
+          id: "connection-3",
+          isActive: true,
+          user: {
+            id: "user-3",
+            subscription: "HOBBY",
+          },
+        },
+      };
+
+      mockHealthCheckRepository.findDueForExecution.mockResolvedValue([
+        notDueHealthCheck,
+      ]);
 
       const result = await service.getHealthChecksDueForExecution();
 
@@ -173,12 +210,14 @@ describe("CronService", () => {
       };
       const mockConnection = createTestConnection();
       const mockResult = {
+        id: "result-1",
         healthCheckId: healthCheck.id,
-        status: "SUCCESS",
+        status: "SUCCESS" as const,
         responseTime: 150,
         statusCode: 200,
         errorMessage: null,
         metadata: {},
+        timestamp: new Date(),
       };
 
       mockConnectionRepository.findByIdWithCredentials.mockResolvedValue(
@@ -186,7 +225,7 @@ describe("CronService", () => {
       );
 
       const { healthCheckExecutor } = await import(
-        "@/lib/core/monitoring/health-check-executor"
+        "../../monitoring/health-check-executor"
       );
       vi.mocked(healthCheckExecutor.executeHealthCheck).mockResolvedValue(
         mockResult
@@ -269,7 +308,7 @@ describe("CronService", () => {
       );
 
       const { healthCheckExecutor } = await import(
-        "@/lib/core/monitoring/health-check-executor"
+        "../../monitoring/health-check-executor"
       );
       vi.mocked(healthCheckExecutor.executeHealthCheck).mockRejectedValue(
         error
@@ -309,12 +348,14 @@ describe("CronService", () => {
       };
       const mockConnection = createTestConnection();
       const mockResult = {
+        id: "result-2",
         healthCheckId: healthCheck.id,
-        status: "SUCCESS",
+        status: "SUCCESS" as const,
         responseTime: 150,
         statusCode: 200,
         errorMessage: null,
         metadata: {},
+        timestamp: new Date(),
       };
 
       mockConnectionRepository.findByIdWithCredentials.mockResolvedValue(
@@ -322,7 +363,7 @@ describe("CronService", () => {
       );
 
       const { healthCheckExecutor } = await import(
-        "@/lib/core/monitoring/health-check-executor"
+        "../../monitoring/health-check-executor"
       );
       vi.mocked(healthCheckExecutor.executeHealthCheck).mockResolvedValue(
         mockResult
@@ -347,12 +388,14 @@ describe("CronService", () => {
       };
       const mockConnection = createTestConnection();
       const mockResult = {
+        id: "result-3",
         healthCheckId: healthCheck.id,
-        status: "SUCCESS",
+        status: "SUCCESS" as const,
         responseTime: 150,
         statusCode: 200,
         errorMessage: null,
         metadata: {},
+        timestamp: new Date(),
       };
 
       mockConnectionRepository.findByIdWithCredentials.mockResolvedValue(
@@ -360,7 +403,7 @@ describe("CronService", () => {
       );
 
       const { healthCheckExecutor } = await import(
-        "@/lib/core/monitoring/health-check-executor"
+        "../../monitoring/health-check-executor"
       );
       vi.mocked(healthCheckExecutor.executeHealthCheck).mockResolvedValue(
         mockResult

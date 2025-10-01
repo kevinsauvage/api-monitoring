@@ -16,15 +16,19 @@ export class MonitoringRepository extends BaseRepository {
         orderBy: { createdAt: "desc" },
       });
 
-      return Promise.all(
-        healthChecks.map(async (healthCheck) => {
-          const stats = await this.getHealthCheckStats(healthCheck.id, 7);
-          return {
-            ...healthCheck,
-            stats,
-          };
-        })
+      if (healthChecks.length === 0) {
+        return [];
+      }
+
+      const statsMap = await this.getAggregatedStatsForHealthChecks(
+        healthChecks.map((healthCheck) => healthCheck.id),
+        7
       );
+
+      return healthChecks.map((healthCheck) => ({
+        ...healthCheck,
+        stats: statsMap.get(healthCheck.id) ?? this.calculateStats(0, 0, 0),
+      }));
     }, this.buildErrorMessage("get", "health checks with stats for connection", connectionId));
   }
 
@@ -35,39 +39,12 @@ export class MonitoringRepository extends BaseRepository {
     this.validateRequiredParams({ healthCheckId, days }, ["healthCheckId"]);
 
     return this.executeQuery(async () => {
-      const startDate = new Date();
-      startDate.setDate(startDate.getDate() - days);
+      const statsMap = await this.getAggregatedStatsForHealthChecks(
+        [healthCheckId],
+        days
+      );
 
-      const results = await this.prisma.checkResult.findMany({
-        where: {
-          healthCheckId,
-          timestamp: {
-            gte: startDate,
-          },
-        },
-        orderBy: { timestamp: "desc" },
-      });
-
-      const totalChecks = results.length;
-      const successfulChecks = results.filter(
-        (r) => r.status === "SUCCESS"
-      ).length;
-      const successRate =
-        totalChecks > 0 ? (successfulChecks / totalChecks) * 100 : 0;
-      const averageResponseTime =
-        totalChecks > 0
-          ? results.reduce((sum, r) => sum + r.responseTime, 0) / totalChecks
-          : 0;
-      const recentFailures = results.filter(
-        (r) => r.status !== "SUCCESS"
-      ).length;
-
-      return {
-        totalChecks,
-        successRate,
-        averageResponseTime,
-        recentFailures,
-      };
+      return statsMap.get(healthCheckId) ?? this.calculateStats(0, 0, 0);
     }, this.buildErrorMessage("get", "health check statistics", healthCheckId));
   }
 
@@ -78,7 +55,7 @@ export class MonitoringRepository extends BaseRepository {
       const startDate = new Date();
       startDate.setDate(startDate.getDate() - 7);
 
-      const results = await this.prisma.checkResult.findMany({
+      const totals = await this.prisma.checkResult.aggregate({
         where: {
           healthCheck: {
             apiConnection: {
@@ -89,29 +66,33 @@ export class MonitoringRepository extends BaseRepository {
             gte: startDate,
           },
         },
-        orderBy: { timestamp: "desc" },
+        _count: {
+          _all: true,
+        },
+        _avg: {
+          responseTime: true,
+        },
       });
 
-      const totalChecks = results.length;
-      const successfulChecks = results.filter(
-        (r) => r.status === "SUCCESS"
-      ).length;
-      const successRate =
-        totalChecks > 0 ? (successfulChecks / totalChecks) * 100 : 0;
-      const averageResponseTime =
-        totalChecks > 0
-          ? results.reduce((sum, r) => sum + r.responseTime, 0) / totalChecks
-          : 0;
-      const recentFailures = results.filter(
-        (r) => r.status !== "SUCCESS"
-      ).length;
+      const successCount = await this.prisma.checkResult.count({
+        where: {
+          healthCheck: {
+            apiConnection: {
+              userId,
+            },
+          },
+          timestamp: {
+            gte: startDate,
+          },
+          status: "SUCCESS",
+        },
+      });
 
-      return {
-        totalChecks,
-        successRate,
-        averageResponseTime,
-        recentFailures,
-      };
+      return this.calculateStats(
+        totals._count._all,
+        successCount,
+        totals._avg.responseTime
+      );
     }, this.buildErrorMessage("get", "dashboard statistics for user", userId));
   }
 
@@ -143,5 +124,113 @@ export class MonitoringRepository extends BaseRepository {
         }),
       this.buildErrorMessage("store", "health check result", data.healthCheckId)
     );
+  }
+
+  private async getAggregatedStatsForHealthChecks(
+    healthCheckIds: string[],
+    days: number
+  ): Promise<Map<string, Stats>> {
+    if (healthCheckIds.length === 0) {
+      return new Map();
+    }
+
+    const startDate = new Date();
+    startDate.setDate(startDate.getDate() - days);
+
+    const aggregatedResults = await this.prisma.checkResult.groupBy({
+      by: ["healthCheckId", "status"],
+      where: {
+        healthCheckId: {
+          in: healthCheckIds,
+        },
+        timestamp: {
+          gte: startDate,
+        },
+      },
+      _count: {
+        _all: true,
+      },
+      _avg: {
+        responseTime: true,
+      },
+    });
+
+    type AccumulatedStats = {
+      totalChecks: number;
+      successCount: number;
+      weightedResponseSum: number;
+    };
+
+    const accumulatorMap = new Map<string, AccumulatedStats>();
+
+    for (const row of aggregatedResults) {
+      const accumulator = accumulatorMap.get(row.healthCheckId) ?? {
+        totalChecks: 0,
+        successCount: 0,
+        weightedResponseSum: 0,
+      };
+
+      const count = row._count._all;
+
+      accumulator.totalChecks += count;
+
+      if (row.status === "SUCCESS") {
+        accumulator.successCount += count;
+      }
+
+      if (typeof row._avg.responseTime === "number" && count > 0) {
+        accumulator.weightedResponseSum += row._avg.responseTime * count;
+      }
+
+      accumulatorMap.set(row.healthCheckId, accumulator);
+    }
+
+    const statsMap = new Map<string, Stats>();
+
+    for (const id of healthCheckIds) {
+      const accumulator = accumulatorMap.get(id);
+
+      if (!accumulator) {
+        statsMap.set(id, this.calculateStats(0, 0, 0));
+        continue;
+      }
+
+      const averageResponseTime =
+        accumulator.totalChecks > 0
+          ? accumulator.weightedResponseSum / accumulator.totalChecks
+          : 0;
+
+      statsMap.set(
+        id,
+        this.calculateStats(
+          accumulator.totalChecks,
+          accumulator.successCount,
+          averageResponseTime
+        )
+      );
+    }
+
+    return statsMap;
+  }
+
+  private calculateStats(
+    totalChecks: number,
+    successCount: number,
+    averageResponseTime: number | null
+  ): Stats {
+    const safeTotal = Math.max(0, totalChecks);
+    const safeSuccess = Math.min(Math.max(0, successCount), safeTotal);
+    const successRate = safeTotal > 0 ? (safeSuccess / safeTotal) * 100 : 0;
+    const safeAverage =
+      safeTotal > 0 && typeof averageResponseTime === "number"
+        ? Number(averageResponseTime)
+        : 0;
+
+    return {
+      totalChecks: safeTotal,
+      successRate,
+      averageResponseTime: safeAverage,
+      recentFailures: Math.max(0, safeTotal - safeSuccess),
+    };
   }
 }

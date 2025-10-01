@@ -1,7 +1,12 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { HealthCheckRepository } from "../health-check.repository";
-import { mockPrisma, resetAllMocks } from "@/test/utils/test-helpers";
-import { createTestHealthCheck } from "@/test/utils/test-data";
+import { mockPrisma, resetAllMocks } from "../../../../test/utils/test-helpers";
+import { createTestHealthCheck } from "../../../../test/utils/test-data";
+
+const healthCheckModel = mockPrisma.healthCheck as unknown as Record<
+  string,
+  ReturnType<typeof vi.fn>
+>;
 
 describe("HealthCheckRepository", () => {
   let repository: HealthCheckRepository;
@@ -16,9 +21,7 @@ describe("HealthCheckRepository", () => {
       const connectionId = "test-connection-id";
       const mockHealthChecks = [createTestHealthCheck()];
 
-      vi.mocked(mockPrisma.healthCheck.findMany).mockResolvedValue(
-        mockHealthChecks
-      );
+      healthCheckModel.findMany.mockResolvedValue(mockHealthChecks);
 
       const result = await repository.findByConnectionId(connectionId);
 
@@ -47,7 +50,7 @@ describe("HealthCheckRepository", () => {
       };
 
       const mockHealthCheck = createTestHealthCheck();
-      mockPrisma.healthCheck.create.mockResolvedValue(mockHealthCheck);
+      healthCheckModel.create.mockResolvedValue(mockHealthCheck);
 
       const result = await repository.create(healthCheckData);
 
@@ -64,7 +67,7 @@ describe("HealthCheckRepository", () => {
       const updateData = { isActive: false };
       const mockHealthCheck = createTestHealthCheck({ isActive: false });
 
-      mockPrisma.healthCheck.update.mockResolvedValue(mockHealthCheck);
+      healthCheckModel.update.mockResolvedValue(mockHealthCheck);
 
       const result = await repository.update(id, updateData);
 
@@ -80,7 +83,7 @@ describe("HealthCheckRepository", () => {
     it("should delete a health check", async () => {
       const id = "test-health-check-id";
 
-      mockPrisma.healthCheck.delete.mockResolvedValue(createTestHealthCheck());
+      healthCheckModel.delete.mockResolvedValue(createTestHealthCheck());
 
       await repository.delete(id);
 
@@ -95,7 +98,7 @@ describe("HealthCheckRepository", () => {
       const id = "test-health-check-id";
       const mockHealthCheck = createTestHealthCheck();
 
-      mockPrisma.healthCheck.findUnique.mockResolvedValue(mockHealthCheck);
+      healthCheckModel.findUnique.mockResolvedValue(mockHealthCheck);
 
       const result = await repository.findById(id);
 
@@ -111,7 +114,7 @@ describe("HealthCheckRepository", () => {
       const userId = "test-user-id";
       const count = 10;
 
-      mockPrisma.healthCheck.count.mockResolvedValue(count);
+      healthCheckModel.count.mockResolvedValue(count);
 
       const result = await repository.countByUserId(userId);
 
@@ -129,7 +132,7 @@ describe("HealthCheckRepository", () => {
       const userId = "test-user-id";
       const count = 8;
 
-      mockPrisma.healthCheck.count.mockResolvedValue(count);
+      healthCheckModel.count.mockResolvedValue(count);
 
       const result = await repository.countActiveByUserId(userId);
 
@@ -149,7 +152,7 @@ describe("HealthCheckRepository", () => {
       const userId = "test-user-id";
       const mockHealthCheck = createTestHealthCheck();
 
-      mockPrisma.healthCheck.findFirst.mockResolvedValue(mockHealthCheck);
+      healthCheckModel.findFirst.mockResolvedValue(mockHealthCheck);
 
       const result = await repository.findFirstByUserAndId(id, userId);
 
@@ -179,13 +182,19 @@ describe("HealthCheckRepository", () => {
           apiConnection: {
             id: "conn-1",
             isActive: true,
+            user: {
+              id: "user-1",
+              subscription: "HOBBY",
+            },
           },
         },
       ];
 
-      mockPrisma.healthCheck.findMany.mockResolvedValue(mockHealthChecks);
+      healthCheckModel.findMany.mockResolvedValue(mockHealthChecks);
 
       const result = await repository.findDueForExecution(currentTime);
+
+      const minimumPlanIntervalSeconds = 30;
 
       expect(mockPrisma.healthCheck.findMany).toHaveBeenCalledWith({
         where: {
@@ -194,7 +203,9 @@ describe("HealthCheckRepository", () => {
             { lastExecutedAt: null },
             {
               lastExecutedAt: {
-                lte: new Date(currentTime.getTime() - 300000), // 5 minutes ago
+                lte: new Date(
+                  currentTime.getTime() - minimumPlanIntervalSeconds * 1000
+                ),
               },
             },
           ],
@@ -212,6 +223,12 @@ describe("HealthCheckRepository", () => {
             select: {
               id: true,
               isActive: true,
+              user: {
+                select: {
+                  id: true,
+                  subscription: true,
+                },
+              },
             },
           },
         },

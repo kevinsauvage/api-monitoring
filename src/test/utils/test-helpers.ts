@@ -45,9 +45,10 @@ export const createMockError = (message: string, code?: string) => {
 
 // Helper to mock Prisma transaction
 export const mockTransaction = <T>(result: T) => {
-  mockPrisma.$transaction.mockImplementation(async (callback) => {
-    return callback(mockPrisma);
-  });
+  mockPrisma.$transaction.mockImplementation(
+    async (callback: (db: typeof mockPrisma) => Promise<unknown> | unknown) =>
+      callback(mockPrisma)
+  );
   return result;
 };
 
@@ -64,7 +65,9 @@ export const resetAllMocks = () => {
       ) {
         Object.values(model).forEach((method) => {
           if (typeof method === "function") {
-            vi.mocked(method).mockClear();
+            if (vi.isMockFunction(method)) {
+              method.mockReset();
+            }
           }
         });
       }

@@ -12,10 +12,12 @@ const createMockModel = () => ({
   delete: vi.fn(),
   deleteMany: vi.fn(),
   count: vi.fn(),
+  aggregate: vi.fn(),
+  groupBy: vi.fn(),
 });
 
 // Mock Prisma Client
-export const mockPrisma = {
+const prismaMock: any = {
   user: {
     ...createMockModel(),
     findByIdWithSubscription: vi.fn(),
@@ -29,22 +31,24 @@ export const mockPrisma = {
   $transaction: vi.fn(),
   $connect: vi.fn(),
   $disconnect: vi.fn(),
-  reset: () => {
-    Object.values(mockPrisma).forEach((model) => {
+  reset() {
+    Object.values(prismaMock).forEach((model) => {
       if (
         typeof model === "object" &&
         model !== null &&
-        model !== mockPrisma.reset
+        model !== prismaMock.reset
       ) {
         Object.values(model).forEach((method) => {
-          if (typeof method === "function") {
-            vi.mocked(method).mockReset();
+          if (typeof method === "function" && vi.isMockFunction(method)) {
+            method.mockReset();
           }
         });
       }
     });
   },
-} as unknown as PrismaClient;
+};
+
+export const mockPrisma = prismaMock as PrismaClient & typeof prismaMock;
 
 // Mock the prisma instance
 vi.mock("@/lib/infrastructure/database", () => ({

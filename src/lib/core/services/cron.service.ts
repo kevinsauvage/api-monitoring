@@ -1,29 +1,43 @@
 import { healthCheckExecutor } from "@/lib/core/monitoring/health-check-executor";
+import type { HealthCheckWithConnectionAndSubscription } from "@/lib/core/types";
 import { decrypt } from "@/lib/infrastructure/encryption";
 import { NotFoundError } from "@/lib/shared/errors";
+import { getPlanLimits } from "@/lib/shared/utils/plan-limits";
 
 import { BaseService } from "./base.service";
 
 export class CronService extends BaseService {
   async getHealthChecksDueForExecution(): Promise<
-    Array<{
-      id: string;
-      apiConnectionId: string;
-      endpoint: string;
-      method: string;
-      expectedStatus: number;
-      timeout: number;
-      interval: number;
-      lastExecutedAt: Date | null;
-      apiConnection: {
-        id: string;
-        isActive: boolean;
-      };
-    }>
+    HealthCheckWithConnectionAndSubscription[]
   > {
     const now = new Date();
 
-    return this.healthCheckRepository.findDueForExecution(now);
+    const healthChecks = await this.healthCheckRepository.findDueForExecution(
+      now
+    );
+
+    return healthChecks.filter((healthCheck) => {
+      if (!healthCheck.apiConnection.isActive) {
+        return false;
+      }
+
+      const planLimits = getPlanLimits(
+        healthCheck.apiConnection.user.subscription
+      );
+      const requiredIntervalSeconds = Math.max(
+        healthCheck.interval,
+        planLimits.minInterval
+      );
+
+      if (!healthCheck.lastExecutedAt) {
+        return true;
+      }
+
+      const elapsedMilliseconds =
+        now.getTime() - healthCheck.lastExecutedAt.getTime();
+
+      return elapsedMilliseconds >= requiredIntervalSeconds * 1000;
+    });
   }
 
   async executeHealthCheck(healthCheck: {

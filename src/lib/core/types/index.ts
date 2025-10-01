@@ -160,6 +160,32 @@ export type HealthCheckWithConnection = Prisma.HealthCheckGetPayload<{
   };
 }>;
 
+export type HealthCheckWithConnectionAndSubscription =
+  Prisma.HealthCheckGetPayload<{
+    select: {
+      id: true;
+      apiConnectionId: true;
+      endpoint: true;
+      method: true;
+      expectedStatus: true;
+      timeout: true;
+      interval: true;
+      lastExecutedAt: true;
+      apiConnection: {
+        select: {
+          id: true;
+          isActive: true;
+          user: {
+            select: {
+              id: true;
+              subscription: true;
+            };
+          };
+        };
+      };
+    };
+  }>;
+
 export interface SerializedUser {
   id: string;
   name: string | null;

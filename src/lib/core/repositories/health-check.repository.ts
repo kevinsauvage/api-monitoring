@@ -1,11 +1,16 @@
 import type {
-  HealthCheckWithConnection,
+  HealthCheckWithConnectionAndSubscription,
   PaginationInfo,
 } from "@/lib/core/types";
+import { PLAN_LIMITS } from "@/lib/shared/utils/plan-limits";
 
 import { BaseRepository } from "./base.repository";
 
 import type { HealthCheck, Prisma } from "@prisma/client";
+
+const MINIMUM_PLAN_INTERVAL_SECONDS = Math.min(
+  ...Object.values(PLAN_LIMITS).map((plan) => plan.minInterval)
+);
 
 export class HealthCheckRepository extends BaseRepository {
   async findByConnectionId(connectionId: string): Promise<HealthCheck[]> {
@@ -132,7 +137,7 @@ export class HealthCheckRepository extends BaseRepository {
 
   async findDueForExecution(
     currentTime: Date
-  ): Promise<Array<HealthCheckWithConnection>> {
+  ): Promise<Array<HealthCheckWithConnectionAndSubscription>> {
     this.validateRequiredParams({ currentTime }, ["currentTime"]);
 
     return this.executeQuery(
@@ -144,7 +149,9 @@ export class HealthCheckRepository extends BaseRepository {
               { lastExecutedAt: null },
               {
                 lastExecutedAt: {
-                  lte: new Date(currentTime.getTime() - 300000), // 5 minutes ago
+                  lte: new Date(
+                    currentTime.getTime() - MINIMUM_PLAN_INTERVAL_SECONDS * 1000
+                  ),
                 },
               },
             ],
@@ -162,6 +169,12 @@ export class HealthCheckRepository extends BaseRepository {
               select: {
                 id: true,
                 isActive: true,
+                user: {
+                  select: {
+                    id: true,
+                    subscription: true,
+                  },
+                },
               },
             },
           },
