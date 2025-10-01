@@ -10,6 +10,4 @@ export * from "./mocks/encryption.mock";
 export * from "./mocks/logger.mock";
 
 // Test setup
-export { default as testSetup } from "./setup";
-
-
+export * from "./setup";

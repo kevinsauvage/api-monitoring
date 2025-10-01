@@ -1,6 +1,10 @@
 # API Pulse - Unified API Monitoring Platform
 
-API Pulse is a platform for monitoring, tracking, and optimizing APIs across providers. It provides real-time health checks, configurable schedules, and alerting.
+[![CI](https://github.com/kevinsauvage/api-monitoring/actions/workflows/ci.yml/badge.svg)](https://github.com/kevinsauvage/api-monitoring/actions/workflows/ci.yml)
+[![Security](https://github.com/kevinsauvage/api-monitoring/actions/workflows/security.yml/badge.svg)](https://github.com/kevinsauvage/api-monitoring/actions/workflows/security.yml)
+
+API Pulse is a platform for monitoring, tracking, and optimizing APIs across providers. It provides
+real-time health checks, configurable schedules, and alerting.
 
 ## Features
 
@@ -23,6 +27,8 @@ API Pulse is a platform for monitoring, tracking, and optimizing APIs across pro
 - **Charts**: Recharts
 - **Testing**: Vitest (+ @testing-library)
 - **Linting**: ESLint 9
+- **Formatting**: Prettier
+- **Git Hooks**: Husky + lint-staged
 
 ## Getting Started
 
@@ -94,7 +100,8 @@ API Pulse is a platform for monitoring, tracking, and optimizing APIs across pro
 
 4. **Database setup**
 
-   If you are developing locally and want to apply pending migrations and create a new one if needed:
+   If you are developing locally and want to apply pending migrations and create a new one if
+   needed:
 
    ```bash
    npx prisma migrate dev
@@ -113,8 +120,7 @@ API Pulse is a platform for monitoring, tracking, and optimizing APIs across pro
    npm run dev
    ```
 
-6. **Open the app**
-   Visit http://localhost:3000
+6. **Open the app** Visit http://localhost:3000
 
 ## Scripts
 
@@ -195,9 +201,18 @@ npm start
 
 1. Fork the repository
 2. Create a feature branch
-3. Make your changes (with tests when applicable)
-4. Run linting and tests locally
-5. Open a pull request
+3. Install dependencies: `npm install`
+4. Make your changes (with tests when applicable)
+5. Pre-commit hooks will automatically:
+   - Format code with Prettier
+   - Lint with ESLint
+   - Run type checking
+   - Run quick tests
+6. Use conventional commit messages (enforced by commit-msg hook)
+7. Run full validation: `npm run ci:validate`
+8. Open a pull request
+
+See [Pre-commit Hooks Documentation](docs/PRE_COMMIT_HOOKS.md) for details.
 
 ## License
 
