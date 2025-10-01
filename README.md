@@ -57,11 +57,11 @@ API Pulse is a platform for monitoring, tracking, and optimizing APIs across pro
 
    ```env
    # Database
-   DATABASE_URL="postgresql://username:password@localhost:5432/api_pulse?schema=public"
+   PRISMA_DATABASE_URL="postgresql://username:password@localhost:5432/api_pulse?schema=public"
 
    # NextAuth.js
-   NEXTAUTH_URL="http://localhost:3000"
-   NEXTAUTH_SECRET="your-secret-key-here"
+   NEXTAUTH_URL=
+   NEXTAUTH_SECRET=
 
    # Providers (optional)
    GOOGLE_CLIENT_ID=""
@@ -81,7 +81,7 @@ API Pulse is a platform for monitoring, tracking, and optimizing APIs across pro
    SLACK_SIGNING_SECRET=""
 
    # Encryption
-   ENCRYPTION_KEY="your-32-character-encryption-key"
+   ENCRYPTION_KEY=
 
    # Monitoring
    DEFAULT_CHECK_INTERVAL=300
