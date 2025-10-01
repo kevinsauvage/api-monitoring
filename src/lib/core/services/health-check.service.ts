@@ -33,9 +33,8 @@ export class HealthCheckService extends BaseService {
       };
     }
 
-    const healthChecks = await this.healthCheckRepository.findByConnectionId(
-      connectionId
-    );
+    const healthChecks =
+      await this.healthCheckRepository.findByConnectionId(connectionId);
 
     return {
       healthChecks,
@@ -61,9 +60,8 @@ export class HealthCheckService extends BaseService {
       };
     }
 
-    const healthChecks = await this.healthCheckRepository.findByConnectionId(
-      connectionId
-    );
+    const healthChecks =
+      await this.healthCheckRepository.findByConnectionId(connectionId);
 
     const healthChecksWithResults = await Promise.all(
       healthChecks.map(async (healthCheck) => {

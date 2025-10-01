@@ -77,4 +77,3 @@ export class NotificationSettingsRepository extends BaseRepository {
     );
   }
 }
-

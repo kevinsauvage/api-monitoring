@@ -10,7 +10,6 @@ import {
   getHealthCheckService,
 } from "@/lib/infrastructure/di";
 
-
 export const revalidate = 300; // 5 minutes
 
 export default async function ConnectionHistoryPage({

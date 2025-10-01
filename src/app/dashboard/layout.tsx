@@ -7,7 +7,6 @@ import DashboardSidebar from "@/components/features/dashboard/DashboardSidebar";
 import { authOptions } from "@/lib/infrastructure/auth";
 import { getDashboardService } from "@/lib/infrastructure/di";
 
-
 export default async function DashboardLayout({
   children,
 }: {

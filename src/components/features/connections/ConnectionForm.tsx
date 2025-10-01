@@ -34,7 +34,6 @@ import { ZodError } from "@/components/ui/zod-error";
 import { API_PROVIDERS } from "@/components/utils/constants";
 import type { ConnectionCreateResult } from "@/lib/core/types";
 
-
 const initialState: ConnectionCreateResult = {
   success: false,
   message: "",

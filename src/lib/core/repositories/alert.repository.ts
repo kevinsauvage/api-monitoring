@@ -39,35 +39,40 @@ export class AlertRepository extends BaseRepository {
   ): Promise<AlertWithHistory[]> {
     this.validateRequiredParams({ userId }, ["userId"]);
 
-    return this.executeQuery(async () => {
-      const where: Prisma.AlertWhereInput = {
-        userId,
-        ...(filters?.type && { type: filters.type }),
-        ...(filters?.isActive !== undefined && { isActive: filters.isActive }),
-        ...(filters?.apiConnectionId && {
-          apiConnectionId: filters.apiConnectionId,
-        }),
-      };
+    return this.executeQuery(
+      async () => {
+        const where: Prisma.AlertWhereInput = {
+          userId,
+          ...(filters?.type && { type: filters.type }),
+          ...(filters?.isActive !== undefined && {
+            isActive: filters.isActive,
+          }),
+          ...(filters?.apiConnectionId && {
+            apiConnectionId: filters.apiConnectionId,
+          }),
+        };
 
-      return this.prisma.alert.findMany({
-        where,
-        include: {
-          alertHistory: {
-            orderBy: { timestamp: "desc" },
-            take: 5, // Get last 5 history entries
-          },
-          apiConnection: {
-            select: {
-              id: true,
-              name: true,
-              baseUrl: true,
+        return this.prisma.alert.findMany({
+          where,
+          include: {
+            alertHistory: {
+              orderBy: { timestamp: "desc" },
+              take: 5, // Get last 5 history entries
+            },
+            apiConnection: {
+              select: {
+                id: true,
+                name: true,
+                baseUrl: true,
+              },
             },
           },
-        },
-        orderBy: { createdAt: "desc" },
-        ...(limit && { take: limit }),
-      });
-    }, this.buildErrorMessage("find", "alerts for user", userId));
+          orderBy: { createdAt: "desc" },
+          ...(limit && { take: limit }),
+        });
+      },
+      this.buildErrorMessage("find", "alerts for user", userId)
+    );
   }
 
   async findById(id: string, userId: string): Promise<AlertWithHistory | null> {
@@ -123,58 +128,67 @@ export class AlertRepository extends BaseRepository {
   async delete(id: string, userId: string): Promise<void> {
     this.validateRequiredParams({ id, userId }, ["id", "userId"]);
 
-    return this.executeQuery(async () => {
-      await this.prisma.alert.delete({
-        where: { id, userId },
-      });
-    }, this.buildErrorMessage("delete", "alert", id));
+    return this.executeQuery(
+      async () => {
+        await this.prisma.alert.delete({
+          where: { id, userId },
+        });
+      },
+      this.buildErrorMessage("delete", "alert", id)
+    );
   }
 
   async toggleActive(id: string, userId: string): Promise<Alert> {
     this.validateRequiredParams({ id, userId }, ["id", "userId"]);
 
-    return this.executeQuery(async () => {
-      const alert = await this.prisma.alert.findFirst({
-        where: { id, userId },
-      });
+    return this.executeQuery(
+      async () => {
+        const alert = await this.prisma.alert.findFirst({
+          where: { id, userId },
+        });
 
-      if (!alert) {
-        throw new Error("Alert not found");
-      }
+        if (!alert) {
+          throw new Error("Alert not found");
+        }
 
-      return this.prisma.alert.update({
-        where: { id, userId },
-        data: { isActive: !alert.isActive },
-      });
-    }, this.buildErrorMessage("toggle", "alert", id));
+        return this.prisma.alert.update({
+          where: { id, userId },
+          data: { isActive: !alert.isActive },
+        });
+      },
+      this.buildErrorMessage("toggle", "alert", id)
+    );
   }
 
   async getStats(userId: string): Promise<AlertStats> {
     this.validateRequiredParams({ userId }, ["userId"]);
 
-    return this.executeQuery(async () => {
-      const [totalAlerts, activeAlerts, triggeredAlerts, resolvedAlerts] =
-        await Promise.all([
-          this.prisma.alert.count({ where: { userId } }),
-          this.prisma.alert.count({ where: { userId, isActive: true } }),
-          this.prisma.alert.count({
-            where: { userId, lastTriggered: { not: null } },
-          }),
-          this.prisma.alertHistory.count({
-            where: {
-              alert: { userId },
-              resolved: true,
-            },
-          }),
-        ]);
+    return this.executeQuery(
+      async () => {
+        const [totalAlerts, activeAlerts, triggeredAlerts, resolvedAlerts] =
+          await Promise.all([
+            this.prisma.alert.count({ where: { userId } }),
+            this.prisma.alert.count({ where: { userId, isActive: true } }),
+            this.prisma.alert.count({
+              where: { userId, lastTriggered: { not: null } },
+            }),
+            this.prisma.alertHistory.count({
+              where: {
+                alert: { userId },
+                resolved: true,
+              },
+            }),
+          ]);
 
-      return {
-        totalAlerts,
-        activeAlerts,
-        triggeredAlerts,
-        resolvedAlerts,
-      };
-    }, this.buildErrorMessage("get", "alert stats for user", userId));
+        return {
+          totalAlerts,
+          activeAlerts,
+          triggeredAlerts,
+          resolvedAlerts,
+        };
+      },
+      this.buildErrorMessage("get", "alert stats for user", userId)
+    );
   }
 
   async addAlertHistory(

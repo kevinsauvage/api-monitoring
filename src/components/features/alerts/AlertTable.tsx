@@ -169,8 +169,8 @@ export default function AlertTable({
                         health.status === "healthy"
                           ? "bg-green-500"
                           : health.status === "warning"
-                          ? "bg-yellow-500"
-                          : "bg-red-500"
+                            ? "bg-yellow-500"
+                            : "bg-red-500"
                       }`}
                     />
                     <div className="text-sm">

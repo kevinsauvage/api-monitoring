@@ -9,7 +9,6 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/shared/utils/utils";
 
-
 const navigation = [
   {
     name: "Recent Activity",

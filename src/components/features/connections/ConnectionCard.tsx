@@ -105,7 +105,7 @@ export default function ConnectionCard({
   const lastResult = recentResults.sort(
     (a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()
   )[0];
-  const lastStatus = lastResult?.status;
+  const lastStatus = lastResult.status;
 
   return (
     <>
@@ -168,8 +168,8 @@ export default function ConnectionCard({
                     {isToggling
                       ? "Updating..."
                       : connection.isActive
-                      ? "Deactivate"
-                      : "Activate"}
+                        ? "Deactivate"
+                        : "Activate"}
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
@@ -226,11 +226,11 @@ export default function ConnectionCard({
                     {getStatusIcon(lastStatus)}
                   </div>
                   <span className="text-sm font-medium">
-                    Last check: {lastStatus ?? "No data"}
+                    Last check: {lastStatus}
                   </span>
                 </div>
                 <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                  <span>{lastResult?.responseTime ?? "N/A"}ms</span>
+                  <span>{lastResult.responseTime}ms</span>
                   <span>
                     {formatTime(lastExecutedHealthCheck.lastExecutedAt)}
                   </span>

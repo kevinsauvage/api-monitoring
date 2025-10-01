@@ -65,8 +65,8 @@ export default function ResponseTimeChart({
                 trend < 0
                   ? "text-green-600"
                   : trend > 0
-                  ? "text-red-600"
-                  : "text-gray-600"
+                    ? "text-red-600"
+                    : "text-gray-600"
               }`}
             >
               {trend < 0 ? (

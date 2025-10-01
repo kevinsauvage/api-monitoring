@@ -35,10 +35,15 @@ describe("DIContainer", () => {
       const factory2 = vi.fn(() => "service2");
 
       testContainer.register(SERVICE_IDENTIFIERS.USER_REPOSITORY, factory1);
-      testContainer.register(SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY, factory2);
+      testContainer.register(
+        SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY,
+        factory2
+      );
 
       expect(testContainer.has(SERVICE_IDENTIFIERS.USER_REPOSITORY)).toBe(true);
-      expect(testContainer.has(SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY)).toBe(true);
+      expect(testContainer.has(SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY)).toBe(
+        true
+      );
     });
   });
 
@@ -139,15 +144,24 @@ describe("DIContainer", () => {
       const factory2 = vi.fn(() => "service2");
 
       testContainer.register(SERVICE_IDENTIFIERS.USER_REPOSITORY, factory1);
-      testContainer.registerSingleton(SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY, factory2);
+      testContainer.registerSingleton(
+        SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY,
+        factory2
+      );
 
       expect(testContainer.has(SERVICE_IDENTIFIERS.USER_REPOSITORY)).toBe(true);
-      expect(testContainer.has(SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY)).toBe(true);
+      expect(testContainer.has(SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY)).toBe(
+        true
+      );
 
       testContainer.clear();
 
-      expect(testContainer.has(SERVICE_IDENTIFIERS.USER_REPOSITORY)).toBe(false);
-      expect(testContainer.has(SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY)).toBe(false);
+      expect(testContainer.has(SERVICE_IDENTIFIERS.USER_REPOSITORY)).toBe(
+        false
+      );
+      expect(testContainer.has(SERVICE_IDENTIFIERS.CONNECTION_REPOSITORY)).toBe(
+        false
+      );
       expect(testContainer.singletons.size).toBe(0);
     });
   });

@@ -191,16 +191,16 @@ export default function AlertCard({
                   status === "active"
                     ? "bg-green-500"
                     : status === "triggered"
-                    ? "bg-red-500"
-                    : "bg-gray-500"
+                      ? "bg-red-500"
+                      : "bg-gray-500"
                 }`}
               />
               <span className="text-sm text-slate-600 dark:text-slate-300">
                 {status === "active"
                   ? "No active issues"
                   : status === "triggered"
-                  ? "Alert triggered"
-                  : "Alert disabled"}
+                    ? "Alert triggered"
+                    : "Alert disabled"}
               </span>
             </div>
             {alert.lastTriggered && (

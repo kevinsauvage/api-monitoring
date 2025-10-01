@@ -77,4 +77,3 @@ export class UserPreferencesRepository extends BaseRepository {
     );
   }
 }
-

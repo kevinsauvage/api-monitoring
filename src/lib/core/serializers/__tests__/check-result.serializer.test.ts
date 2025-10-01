@@ -136,5 +136,3 @@ describe("Check Result Serializers", () => {
     });
   });
 });
-
-

@@ -91,5 +91,3 @@ describe("User Serializers", () => {
     });
   });
 });
-
-

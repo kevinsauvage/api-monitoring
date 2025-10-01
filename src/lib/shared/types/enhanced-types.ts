@@ -44,12 +44,12 @@ export type ProviderCredentials = {
   [K in SupportedProvider]: K extends "stripe"
     ? { secretKey: string }
     : K extends "twilio"
-    ? { accountSid: string; authToken: string }
-    : K extends "sendgrid"
-    ? { apiKey: string }
-    : K extends "github" | "slack"
-    ? { token: string }
-    : Record<string, never>;
+      ? { accountSid: string; authToken: string }
+      : K extends "sendgrid"
+        ? { apiKey: string }
+        : K extends "github" | "slack"
+          ? { token: string }
+          : Record<string, never>;
 };
 
 // Enhanced response time categories

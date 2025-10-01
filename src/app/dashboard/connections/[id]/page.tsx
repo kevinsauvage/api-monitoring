@@ -19,7 +19,6 @@ import {
   getUptimeData,
 } from "@/lib/shared/utils/check-result-utils";
 
-
 export const revalidate = 300; // 5 minutes
 
 export default async function ConnectionOverviewPage({

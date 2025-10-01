@@ -28,8 +28,8 @@ export default function PerformanceMetrics({
         averageResponseTime < 500
           ? "excellent"
           : averageResponseTime < 1000
-          ? "good"
-          : "needs attention",
+            ? "good"
+            : "needs attention",
     },
     {
       title: "Success Rate",
@@ -42,8 +42,8 @@ export default function PerformanceMetrics({
         successRate >= 99
           ? "excellent"
           : successRate >= 95
-          ? "good"
-          : "needs attention",
+            ? "good"
+            : "needs attention",
     },
     {
       title: "System Uptime",
@@ -56,8 +56,8 @@ export default function PerformanceMetrics({
         uptime >= 99.9
           ? "excellent"
           : uptime >= 99
-          ? "good"
-          : "needs attention",
+            ? "good"
+            : "needs attention",
     },
     {
       title: "Total Checks",

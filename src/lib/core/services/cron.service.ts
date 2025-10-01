@@ -12,9 +12,8 @@ export class CronService extends BaseService {
   > {
     const now = new Date();
 
-    const healthChecks = await this.healthCheckRepository.findDueForExecution(
-      now
-    );
+    const healthChecks =
+      await this.healthCheckRepository.findDueForExecution(now);
 
     return healthChecks.filter((healthCheck) => {
       if (!healthCheck.apiConnection.isActive) {

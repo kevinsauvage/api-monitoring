@@ -11,5 +11,3 @@ export const mockLogger = {
 vi.mock("@/lib/shared/utils/logger", () => ({
   log: mockLogger,
 }));
-
-

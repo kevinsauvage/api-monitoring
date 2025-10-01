@@ -10,8 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { log } from "@/lib/shared/utils/logger";
 
-
-
 export default function ConnectionsError({
   error,
   reset,

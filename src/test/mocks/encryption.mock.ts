@@ -10,5 +10,3 @@ vi.mock("@/lib/infrastructure/encryption", () => ({
   encrypt: mockEncrypt,
   decrypt: mockDecrypt,
 }));
-
-

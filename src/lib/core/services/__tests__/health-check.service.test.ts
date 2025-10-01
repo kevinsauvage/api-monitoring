@@ -172,9 +172,8 @@ describe("HealthCheckService", () => {
         mockResults
       );
 
-      const result = await service.getHealthChecksWithResultsForConnection(
-        connectionId
-      );
+      const result =
+        await service.getHealthChecksWithResultsForConnection(connectionId);
 
       expect(result.healthChecks).toHaveLength(1);
       expect(result.healthChecks[0]).toHaveProperty("recentResults");

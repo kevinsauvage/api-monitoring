@@ -2,7 +2,8 @@
 
 ## Overview
 
-This application uses Next.js built-in cron job functionality to automatically run health checks every 5 minutes. This is much more efficient and reliable than custom background job systems.
+This application uses Next.js built-in cron job functionality to automatically run health checks
+every 5 minutes. This is much more efficient and reliable than custom background job systems.
 
 ## Configuration
 
@@ -54,12 +55,11 @@ curl -X GET http://localhost:3000/api/cron/health-checks
 
 ## Benefits of This Approach
 
-✅ **Native Next.js Support**: Uses built-in functionality, no external dependencies
-✅ **Serverless Compatible**: Works perfectly with Vercel, Netlify, and other platforms
-✅ **Automatic Scaling**: Handles multiple instances automatically
-✅ **Reliable**: Next.js manages the scheduling and execution
-✅ **Simple**: No complex background job management needed
-✅ **Debuggable**: Easy to test and monitor
+✅ **Native Next.js Support**: Uses built-in functionality, no external dependencies ✅ **Serverless
+Compatible**: Works perfectly with Vercel, Netlify, and other platforms ✅ **Automatic Scaling**:
+Handles multiple instances automatically ✅ **Reliable**: Next.js manages the scheduling and
+execution ✅ **Simple**: No complex background job management needed ✅ **Debuggable**: Easy to test
+and monitor
 
 ## Monitoring
 

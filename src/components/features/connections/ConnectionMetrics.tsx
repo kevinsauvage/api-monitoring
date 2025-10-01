@@ -74,8 +74,8 @@ export default function ConnectionMetrics({
         successRate >= 99
           ? "excellent"
           : successRate >= 95
-          ? "good"
-          : "needs attention",
+            ? "good"
+            : "needs attention",
     },
     {
       title: "Avg Response Time",
@@ -89,8 +89,8 @@ export default function ConnectionMetrics({
         averageResponseTime < 500
           ? "excellent"
           : averageResponseTime < 1000
-          ? "good"
-          : "needs attention",
+            ? "good"
+            : "needs attention",
     },
     {
       title: "Uptime",
@@ -104,8 +104,8 @@ export default function ConnectionMetrics({
         uptime >= 99.9
           ? "excellent"
           : uptime >= 99
-          ? "good"
-          : "needs attention",
+            ? "good"
+            : "needs attention",
     },
   ];
 

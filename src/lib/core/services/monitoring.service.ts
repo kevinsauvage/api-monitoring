@@ -58,9 +58,8 @@ export class MonitoringService extends BaseService {
   async triggerHealthCheck(healthCheckId: string): Promise<void> {
     await this.requireAuth();
 
-    const healthCheck = await this.healthCheckRepository.findById(
-      healthCheckId
-    );
+    const healthCheck =
+      await this.healthCheckRepository.findById(healthCheckId);
     if (!healthCheck) {
       throw new NotFoundError("Health check", healthCheckId);
     }
