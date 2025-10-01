@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-const isTest =
-  process.env.NODE_ENV === "test" || !!process.env["VITEST_WORKER_ID"];
+const isTest = process.env.NODE_ENV !== "production";
 
 const envSchemaPublic = z.object({
   NEXT_PUBLIC_APP_URL: z.string().url().default("http://localhost:3000"),

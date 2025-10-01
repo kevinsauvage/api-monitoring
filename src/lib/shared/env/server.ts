@@ -1,7 +1,6 @@
 import { z } from "zod";
 
-const isTest =
-  process.env.NODE_ENV === "test" || !!process.env["VITEST_WORKER_ID"];
+const isTest = process.env.NODE_ENV !== "production";
 
 const envSchemaPrivate = z.object({
   NEXTAUTH_SECRET: z.string().min(1, "NEXTAUTH_SECRET is required"),
