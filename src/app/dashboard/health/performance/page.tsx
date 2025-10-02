@@ -2,19 +2,16 @@ import { CheckCircle, XCircle, Clock, AlertTriangle } from "lucide-react";
 import { getServerSession } from "next-auth";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckResultRepository } from "@/lib/core/repositories";
 import { authOptions } from "@/lib/infrastructure/auth";
+
+import type { Session } from "next-auth";
 
 export const revalidate = 120; // 2 minutes
 
 export default async function PerformancePage() {
-  const session = await getServerSession(authOptions);
+  const session = (await getServerSession(authOptions)) as Session;
 
-  if (!session?.user.id) {
-    return null;
-  }
-
-  // Get recent results
-  const { CheckResultRepository } = await import("@/lib/core/repositories");
   const checkResultRepository = new CheckResultRepository();
 
   const recentResults = await checkResultRepository.findByUserIdWithDetails(

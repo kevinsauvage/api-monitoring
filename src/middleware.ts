@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+import { getToken } from "next-auth/jwt";
+
 import serverEnv from "./lib/shared/env/server";
 
 function unauthorizedResponse(): NextResponse {
@@ -9,18 +11,21 @@ function unauthorizedResponse(): NextResponse {
   return res;
 }
 
-export function middleware(req: NextRequest): NextResponse | undefined {
-  // Skip API routes and static assets
-  const { pathname } = req.nextUrl;
-  if (
-    pathname.startsWith("/api") ||
-    pathname.startsWith("/_next") ||
-    pathname.startsWith("/favicon.ico") ||
-    pathname.startsWith("/assets") ||
-    /\.[\w]+$/.test(pathname)
-  ) {
-    return;
+const handleAuthenticatedRoutes = async (req: NextRequest) => {
+  const token = await getToken({ req });
+  const isAuthPage = req.nextUrl.pathname.startsWith("/dashboard");
+
+  if (!token && isAuthPage) {
+    return NextResponse.redirect(new URL("/auth/signin", req.url));
   }
+
+  return false;
+};
+
+export async function middleware(
+  req: NextRequest
+): Promise<NextResponse | undefined> {
+  await handleAuthenticatedRoutes(req);
 
   const authHeader = req.headers.get("authorization");
   if (!authHeader?.startsWith("Basic ")) {

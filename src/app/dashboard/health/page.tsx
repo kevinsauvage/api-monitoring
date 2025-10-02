@@ -10,14 +10,12 @@ import { CheckResultRepository } from "@/lib/core/repositories";
 import { serializeCheckResultsWithDetails } from "@/lib/core/serializers";
 import { authOptions } from "@/lib/infrastructure/auth";
 
+import type { Session } from "next-auth";
+
 export const revalidate = 180; // 3 minutes
 
 export default async function HealthPage() {
-  const session = await getServerSession(authOptions);
-
-  if (!session) {
-    return null;
-  }
+  const session = (await getServerSession(authOptions)) as Session;
 
   const checkResultRepository = new CheckResultRepository();
 

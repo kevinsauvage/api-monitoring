@@ -1,10 +1,7 @@
 import { redirect } from "next/navigation";
 
-import { getServerSession } from "next-auth";
-
 import DashboardHeader from "@/components/features/dashboard/DashboardHeader";
 import DashboardSidebar from "@/components/features/dashboard/DashboardSidebar";
-import { authOptions } from "@/lib/infrastructure/auth";
 import { getDashboardService } from "@/lib/infrastructure/di";
 
 export default async function DashboardLayout({
@@ -12,12 +9,6 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    redirect("/auth/signin");
-  }
-
   const dashboardService = getDashboardService();
   const user = await dashboardService.getUser();
 

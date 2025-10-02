@@ -1,9 +1,6 @@
 import { redirect } from "next/navigation";
 
-import { getServerSession } from "next-auth";
-
 import SettingsNavigation from "@/components/features/settings/SettingsNavigation";
-import { authOptions } from "@/lib/infrastructure/auth";
 import { getDashboardService } from "@/lib/infrastructure/di";
 
 export default async function SettingsLayout({
@@ -11,12 +8,6 @@ export default async function SettingsLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await getServerSession(authOptions);
-
-  if (!session?.user) {
-    redirect("/auth/signin");
-  }
-
   const dashboardService = getDashboardService();
   const user = await dashboardService.getUser();
 

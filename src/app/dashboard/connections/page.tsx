@@ -28,12 +28,11 @@ export default async function ConnectionsPage() {
     );
   }
 
-  // Fetch recent results for each connection to calculate metrics
   const connectionsWithResults = await Promise.all(
     connections.map(async (connection) => {
       const recentResults = await checkResultRepository.findByConnectionId(
         connection.id,
-        10 // Get last 10 results for metrics calculation
+        10
       );
       return {
         ...connection,
@@ -47,7 +46,6 @@ export default async function ConnectionsPage() {
   );
 
   const hasConnections = connections.length > 0;
-  console.log("🚀 ~ ConnectionsPage ~ connections:", connections);
 
   return (
     <div className="space-y-8">

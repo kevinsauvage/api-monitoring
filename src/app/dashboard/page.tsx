@@ -15,13 +15,12 @@ import {
   getUptimeData,
 } from "@/lib/shared/utils/check-result-utils";
 
+import type { Session } from "next-auth";
+
 export const revalidate = 300; // 5 minutes
 
 export default async function Dashboard() {
-  const session = await getServerSession(authOptions);
-  if (!session?.user) {
-    return null;
-  }
+  const session = (await getServerSession(authOptions)) as Session;
 
   const dashboardService = getDashboardService();
   const stats = await dashboardService.getDashboardStats(session.user.id);
