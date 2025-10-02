@@ -42,7 +42,6 @@ export default function ConnectionActions({
 
       if (result.success) {
         toast.success("Connection updated successfully");
-        // Data will be automatically refreshed by revalidatePath in the server action
       } else {
         toast.error("Failed to update connection");
       }

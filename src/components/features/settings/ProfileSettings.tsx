@@ -37,10 +37,10 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
         email: formData.email,
       });
 
-      if (result.success) {
+      if (result?.success) {
         toast.success("Profile updated successfully");
       } else {
-        toast.error(result.message || "Failed to update profile");
+        toast.error(result?.message ?? "Failed to update profile");
       }
     } catch {
       toast.error("An error occurred while updating your profile");
@@ -67,7 +67,6 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
         </CardHeader>
         <CardContent>
           <form onSubmit={(e) => void handleSubmit(e)} className="space-y-6">
-            {/* Avatar Section */}
             <div className="flex items-center space-x-4">
               <Avatar className="h-20 w-20">
                 <AvatarImage
@@ -90,7 +89,6 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
 
             <Separator />
 
-            {/* Form Fields */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="name">Full Name</Label>
@@ -122,8 +120,6 @@ export default function ProfileSettings({ user }: ProfileSettingsProps) {
           </form>
         </CardContent>
       </Card>
-
-      {/* Account Information */}
       <Card>
         <CardHeader>
           <CardTitle>Account Information</CardTitle>

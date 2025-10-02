@@ -3,13 +3,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function NewConnectionLoading() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
-      {/* Header Loading */}
       <div className="text-center space-y-4">
         <Skeleton className="h-8 w-64 mx-auto" />
         <Skeleton className="h-4 w-96 mx-auto" />
       </div>
 
-      {/* Plan Limits Card Loading */}
       <div className="bg-card rounded-lg p-6">
         <Skeleton className="h-6 w-32 mb-4" />
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -24,7 +22,6 @@ export default function NewConnectionLoading() {
         </div>
       </div>
 
-      {/* Provider Selection Loading */}
       <div className="space-y-4">
         <Skeleton className="h-6 w-32" />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -65,7 +62,6 @@ export default function NewConnectionLoading() {
             </div>
           </div>
 
-          {/* API Credentials */}
           <div className="space-y-4">
             <Skeleton className="h-5 w-32" />
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -80,7 +76,6 @@ export default function NewConnectionLoading() {
             </div>
           </div>
 
-          {/* Form Actions */}
           <div className="flex items-center justify-between pt-4">
             <Skeleton className="h-10 w-32" />
             <div className="flex space-x-2">

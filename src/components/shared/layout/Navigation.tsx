@@ -1,9 +1,7 @@
-"use client";
-
 import Link from "next/link";
 
 import { Zap, User, LogOut, BarChart3 } from "lucide-react";
-import { useSession, signOut } from "next-auth/react";
+import { signOut } from "next-auth/react";
 
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -16,9 +14,9 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { log } from "@/lib/shared/utils/logger";
 
-export default function Navigation() {
-  const { data: session, status } = useSession();
+import type { Session } from "next-auth";
 
+export default function Navigation({ session }: { session: Session | null }) {
   return (
     <nav className="border-b border-border bg-background/80 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

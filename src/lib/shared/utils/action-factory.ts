@@ -168,9 +168,10 @@ export function createUpdateAction<TInput, TOutput>(
 export function createAuthenticatedAction<TInput, TOutput>(
   schema: z.ZodSchema<TInput>,
   serviceMethod: (input: TInput, userId: string) => Promise<TOutput>,
-  revalidatePaths?: string[]
+  revalidatePaths?: string[],
+  redirectPath?: string
 ) {
-  return async (input: TInput): Promise<ActionResult<TOutput>> => {
+  return async (input: TInput): Promise<ActionResult<TOutput> | void> => {
     try {
       const validatedInput = schema.parse(input);
 
@@ -191,11 +192,13 @@ export function createAuthenticatedAction<TInput, TOutput>(
         revalidatePaths.forEach((path) => revalidatePath(path));
       }
 
-      return {
-        success: true,
-        data: result,
-        message: "Action completed successfully",
-      };
+      if (!redirectPath) {
+        return {
+          success: true,
+          data: result,
+          message: "Action completed successfully",
+        };
+      }
     } catch (error) {
       const result = handleActionError(error);
       return {
@@ -203,6 +206,9 @@ export function createAuthenticatedAction<TInput, TOutput>(
         message: result.message,
         zodError: result.zodError ?? [],
       };
+    }
+    if (redirectPath) {
+      redirect(redirectPath);
     }
   };
 }

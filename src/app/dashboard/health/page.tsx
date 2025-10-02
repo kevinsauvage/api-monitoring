@@ -53,7 +53,6 @@ export default async function HealthPage() {
             successRate={successRate}
             avgResponseTime={avgResponseTime}
           />
-          {/* Health Check Results */}
           <Card className="shadow-sm">
             <CardHeader className="pb-4">
               <CardTitle className="flex items-center gap-2">

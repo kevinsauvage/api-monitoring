@@ -51,7 +51,6 @@ export const exportData = createDataAction(
   ["/dashboard/settings"]
 );
 
-// Two-factor authentication actions (placeholder for now)
 export const enableTwoFactor = createDataAction(
   settingsSchemas.updatePreferences, // Using same schema for now
   async (_input) =>

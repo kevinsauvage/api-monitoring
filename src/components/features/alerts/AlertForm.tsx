@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { logError } from "@/lib/shared/errors";
 
 import AlertConditionBuilder from "./AlertConditionBuilder";
 
@@ -50,7 +51,7 @@ const alertFormSchema = z.object({
 
 type AlertFormData = z.infer<typeof alertFormSchema>;
 
-interface NewAlertClientProps {
+interface AlertFormProps {
   apiConnections?: Array<{
     id: string;
     name: string;
@@ -58,11 +59,8 @@ interface NewAlertClientProps {
   }>;
 }
 
-export default function NewAlertClient({
-  apiConnections = [],
-}: NewAlertClientProps) {
+export default function AlertForm({ apiConnections = [] }: AlertFormProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const router = useRouter();
 
   const form = useForm<AlertFormData>({
     resolver: zodResolver(alertFormSchema),
@@ -81,7 +79,6 @@ export default function NewAlertClient({
   const onSubmit = async (data: AlertFormData) => {
     setIsSubmitting(true);
     try {
-      // Convert "global" to undefined for the API
       const alertData = {
         ...data,
         apiConnectionId:
@@ -89,9 +86,8 @@ export default function NewAlertClient({
       };
 
       await createAlert(alertData);
-      router.push("/dashboard/alerts");
     } catch (_error) {
-      // Handle error silently or show toast notification
+      logError(_error as Error);
     } finally {
       setIsSubmitting(false);
     }
@@ -119,7 +115,6 @@ export default function NewAlertClient({
             onSubmit={(e) => void form.handleSubmit(onSubmit)(e)}
             className="space-y-8"
           >
-            {/* Alert Configuration Section */}
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-medium text-slate-900 dark:text-white">
@@ -233,7 +228,6 @@ export default function NewAlertClient({
               </div>
             </div>
 
-            {/* Notification Settings Section */}
             <div className="space-y-6">
               <div>
                 <h3 className="text-lg font-medium text-slate-900 dark:text-white">
@@ -314,15 +308,14 @@ export default function NewAlertClient({
               )}
             </div>
 
-            {/* Form Actions */}
             <div className="flex justify-end space-x-4 pt-6 border-t">
               <Button
                 type="button"
                 variant="outline"
-                onClick={() => router.push("/dashboard/alerts")}
                 disabled={isSubmitting}
+                asChild
               >
-                Cancel
+                <Link href="/dashboard/alerts">Cancel</Link>
               </Button>
               <Button type="submit" disabled={isSubmitting}>
                 {isSubmitting ? "Creating Alert..." : "Create Alert"}

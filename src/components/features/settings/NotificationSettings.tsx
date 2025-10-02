@@ -61,10 +61,12 @@ export default function NotificationSettings({
         frequency: settings.frequency,
       });
 
-      if (result.success) {
+      if (result?.success) {
         toast.success("Notification settings updated successfully");
       } else {
-        toast.error(result.message || "Failed to update notification settings");
+        toast.error(
+          result?.message ?? "Failed to update notification settings"
+        );
       }
     } catch {
       toast.error("An error occurred while updating notification settings");

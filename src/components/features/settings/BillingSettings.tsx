@@ -40,7 +40,6 @@ export default function BillingSettings({
 }: BillingSettingsProps) {
   const [isLoading, setIsLoading] = useState(false);
 
-  // Use the real data passed from server-side
   if (!billingData) {
     return (
       <div className="space-y-6">
@@ -53,28 +52,24 @@ export default function BillingSettings({
 
   const handleUpgrade = () => {
     setIsLoading(true);
-    // In real app, this would redirect to Stripe or payment provider
     toast.success("Redirecting to upgrade page...");
     setIsLoading(false);
   };
 
   const handleManageBilling = () => {
     setIsLoading(true);
-    // In real app, this would redirect to billing portal
     toast.success("Redirecting to billing portal...");
     setIsLoading(false);
   };
 
   const handleDownloadInvoice = () => {
     setIsLoading(true);
-    // In real app, this would download the invoice
     toast.success("Downloading invoice...");
     setIsLoading(false);
   };
 
   return (
     <div className="space-y-6">
-      {/* Current Plan */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -126,7 +121,6 @@ export default function BillingSettings({
         </CardContent>
       </Card>
 
-      {/* Billing Information */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -184,7 +178,6 @@ export default function BillingSettings({
         </CardContent>
       </Card>
 
-      {/* Usage & Limits */}
       <Card>
         <CardHeader>
           <CardTitle>Usage & Limits</CardTitle>
@@ -240,7 +233,7 @@ export default function BillingSettings({
                               100
                             }%`,
                     }}
-                  ></div>
+                  />
                 </div>
               </div>
             </div>
@@ -275,7 +268,6 @@ export default function BillingSettings({
         </CardContent>
       </Card>
 
-      {/* Billing History */}
       <Card>
         <CardHeader>
           <CardTitle>Billing History</CardTitle>

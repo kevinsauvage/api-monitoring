@@ -1,5 +1,3 @@
-"use client";
-
 import { Clock, CheckCircle, Activity, Target } from "lucide-react";
 
 import { Card, CardContent, CardHeader } from "@/components/ui/card";

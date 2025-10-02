@@ -54,10 +54,10 @@ export default function PreferencesSettings({
     try {
       const result = await updatePreferences(preferences);
 
-      if (result.success) {
+      if (result?.success) {
         toast.success("Preferences updated successfully");
       } else {
-        toast.error(result.message || "Failed to update preferences");
+        toast.error(result?.message ?? "Failed to update preferences");
       }
     } catch (_error) {
       toast.error("An error occurred while updating preferences");

@@ -6,7 +6,7 @@ import { handleAsyncOperation } from "../utils/error-handling";
 
 import type { UseAsyncActionOptions, UseAsyncActionReturn } from "../types";
 
-export function useAsyncAction<T = unknown>(
+export function useAsyncAction<T>(
   options: UseAsyncActionOptions<T> = {}
 ): UseAsyncActionReturn<T> {
   const [isLoading, setIsLoading] = useState(false);

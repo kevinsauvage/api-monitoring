@@ -3,7 +3,6 @@ import { Skeleton } from "@/components/ui/skeleton";
 export default function ConnectionsLoading() {
   return (
     <div className="space-y-8">
-      {/* Header Loading */}
       <div className="flex items-center justify-between">
         <div>
           <Skeleton className="h-8 w-48 mb-2" />
@@ -12,7 +11,6 @@ export default function ConnectionsLoading() {
         <Skeleton className="h-10 w-32" />
       </div>
 
-      {/* Overview Cards Loading */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {Array.from({ length: 4 }).map((_, i) => (
           <div key={i} className="bg-card rounded-lg p-6">
@@ -23,7 +21,6 @@ export default function ConnectionsLoading() {
         ))}
       </div>
 
-      {/* Connections List Loading */}
       <div className="space-y-4">
         {Array.from({ length: 3 }).map((_, i) => (
           <div key={i} className="bg-card rounded-lg p-6">

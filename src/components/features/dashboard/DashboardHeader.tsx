@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 
 import { Bell, User, LogOut, Settings } from "lucide-react";
@@ -31,13 +29,11 @@ export default function DashboardHeader({ user }: DashboardHeaderProps) {
         </div>
 
         <div className="flex items-center space-x-4">
-          {/* Notifications */}
           <Button variant="ghost" size="icon" className="relative">
             <Bell className="h-5 w-5" />
             <Badge className="absolute -top-1 -right-1 h-2 w-2 p-0 bg-red-500" />
           </Button>
 
-          {/* User menu */}
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button

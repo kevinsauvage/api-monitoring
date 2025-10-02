@@ -34,7 +34,8 @@ export const createAlert = createAuthenticatedAction(
 
     return result;
   },
-  ["/dashboard/alerts", "/dashboard"]
+  ["/dashboard/alerts", "/dashboard"],
+  "/dashboard/alerts"
 );
 
 export const updateAlert = createAuthenticatedAction(

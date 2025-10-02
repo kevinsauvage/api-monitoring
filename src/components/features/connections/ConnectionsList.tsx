@@ -34,7 +34,6 @@ export default function ConnectionsList({
   const [providerFilter, setProviderFilter] = useState<string>("all");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
-  // Filter connections based on search and filters
   const filteredConnections = connections.filter((connection) => {
     const matchesSearch =
       connection.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -53,7 +52,6 @@ export default function ConnectionsList({
     return matchesSearch && matchesStatus && matchesProvider;
   });
 
-  // Get unique providers for filter
   const providers = Array.from(new Set(connections.map((c) => c.provider)));
 
   return (
@@ -105,7 +103,6 @@ export default function ConnectionsList({
           </div>
         ) : (
           <div className="space-y-6">
-            {/* Filters and Search */}
             <div className="flex flex-col sm:flex-row gap-4">
               <div className="relative flex-1">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
@@ -143,7 +140,6 @@ export default function ConnectionsList({
               </Select>
             </div>
 
-            {/* Active Filters Display */}
             {(searchTerm ||
               statusFilter !== "all" ||
               providerFilter !== "all") && (
@@ -193,7 +189,6 @@ export default function ConnectionsList({
               </div>
             )}
 
-            {/* Connections Display */}
             {filteredConnections.length === 0 ? (
               <div className="text-center py-8">
                 <Filter className="w-12 h-12 text-muted-foreground mx-auto mb-4" />

@@ -1,6 +1,6 @@
 import { getServerSession } from "next-auth";
 
-import NewAlertClient from "@/components/features/alerts/NewAlertClient";
+import AlertForm from "@/components/features/alerts/AlertForm";
 import NewAlertHeader from "@/components/features/alerts/NewAlertHeader";
 import { authOptions } from "@/lib/infrastructure/auth";
 import { getConnectionService } from "@/lib/infrastructure/di";
@@ -19,7 +19,7 @@ export default async function NewAlertPage() {
   return (
     <div className="max-w-4xl mx-auto space-y-8">
       <NewAlertHeader />
-      <NewAlertClient apiConnections={connectionData.connections} />
+      <AlertForm apiConnections={connectionData.connections} />
     </div>
   );
 }

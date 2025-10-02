@@ -18,7 +18,6 @@ export default function ConnectionsError({
   reset: () => void;
 }) {
   useEffect(() => {
-    // Log the error to console for debugging
     log.error("Connections error:", error.message);
   }, [error]);
 

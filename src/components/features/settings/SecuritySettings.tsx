@@ -64,7 +64,6 @@ export default function SecuritySettings({}) {
 
   return (
     <div className="space-y-6">
-      {/* Two-Factor Authentication */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -111,7 +110,6 @@ export default function SecuritySettings({}) {
         </CardContent>
       </Card>
 
-      {/* Security Status */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
